@@ -16,15 +16,13 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
   override val master: String = args(args.length - 1)
   override val sourceDir: String = args(2)
-  override val warhouseDir: String = "/user/hive/warehouse/"+args(3)+".db"
+  override val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
-    sparkSession.sql("use lndcl")
-    sparkSession.sql("show tables").show()
-   //val nsspAnaly = new NsspAnaly(args(0),args(1),args(2),args(3),sourceDir,warhouseDir)
-   //val kpiHourAnaly = new KpiHourAnaly(args(0),args(1),args(2),args(3),warhouseDir)
-    //nsspAnaly.analyse(sparkSession)
-   // kpiHourAnaly.analyse(sparkSession)
+    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
+    nsspAnaly.analyse(sparkSession)
+    kpiHourAnaly.analyse(sparkSession)
   }
 }
 
