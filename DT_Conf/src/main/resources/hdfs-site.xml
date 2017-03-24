@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<!-- Put site-specific property overrides in this file. -->
+<configuration>
+  <property>
+    <name>dfs.nameservices</name>
+    <value>dtcluster</value>
+  </property>
+  <property>
+    <name>dfs.ha.namenodes.dtcluster</name>
+    <value>nn1,nn2</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.dtcluster.nn1</name>
+    <value>namenode01:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.dtcluster.nn2</name>
+    <value>datanode01:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.dtcluster.nn1</name>
+    <value>namenode01:50070</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.dtcluster.nn2</name>
+    <value>datanode01:50070</value>
+  </property>
+  <property>
+    <name>dfs.namenode.handler.count</name>
+    <value>100</value>
+  </property>
+  <property>
+    <name>dfs.datanode.address</name>
+    <value>0.0.0.0:10010</value>
+  </property>
+  <property>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:10075</value>
+  </property>
+  <property>
+    <name>dfs.datanode.ipc.address</name>
+    <value>0.0.0.0:10020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>0.0.0.0:10070</value>
+  </property>
+  <property>
+    <name>dfs.namenode.shared.edits.dir</name>
+    <value>qjournal://datanode01:8485;datanode02:8485;datanode03:8485/dtcluster</value>
+  </property>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>/opt/app/hadoop/dfs_dir/</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/data1,/data2,/data3,/data4,/data5,/data6,/data7</value>
+  </property>
+  <property>
+    <name>dfs.datanode.failed.volumes.tolerated</name>
+    <value>2</value>
+    <description>datanode的硬盘坏掉2块，则不提供该节点不提供datanode相关多service</description>
+  </property>
+<!--  <property>
+      <name>dfs.client.read.shortcircuit</name>
+      <value>true</value>
+  </property>
+  <property>
+      <name>dfs.client.read.shortcircuit.streams.cache.size</name>
+      <value>4096</value>
+  </property>
+  <property>
+     <name>dfs.domain.socket.path</name>
+     <value>/var/lib/hadoop-hdfs/dn_socket</value>
+  </property> -->
+  <property>
+    <name>dfs.journalnode.edits.dir</name>
+    <value>/opt/app/hadoop/journal/</value>
+  </property>
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>dfs.ha.automatic-failover.enabled</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>ha.zookeeper.quorum</name>
+    <value>datanode01:2181,datanode02:2181,datanode03:2181</value>
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.dtcluster</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.methods</name>
+    <value>sshfence</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.ssh.private-key-files</name>
+    <value>/home/hadoop/.ssh/id_rsa</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.ssh.connect-timeout</name>
+    <value>3000</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>dfs.block.size</name>
+    <value>268435456</value>
+    <description>The default block size 64M for new files. change to 256M</description>
+  </property>
+  <property>
+    <name>dfs.datanode.max.xcievers</name>
+    <value>16384</value>
+  </property>
+  <property>
+    <name>dfs.support.append</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>ipc.server.listen.queue.size</name>
+    <value>512</value>
+    <description>Indicates the length of the listen queue for servers accepting
+               client connections.
+   	</description>
+  </property>
+  <property>
+    <name>dfs.balance.bandwidthPerSec</name>
+    <value>524288000</value>
+    <description>
+        Specifies the maximum amount of bandwidth that each datanode
+        can utilize for the balancing purpose in term of
+        the number of bytes per second.seting to 50M, has changed to 500M
+        </description>
+    <final>true</final>
+  </property>
+  <property>
+    <name>dfs.hosts.exclude</name>
+    <value>/opt/app/hdconf/excludes</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>dfs.permission</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>fs.trash.interval</name>
+    <value>1440</value>
+  </property>
+  <!--Better Mean Time to Recover -->
+  <property>
+    <name>dfs.client.socket-timeout</name>
+    <value>10000</value>
+    <description>Down the DFS timeout from 60 to 10 seconds.</description>
+  </property>
+  <property>
+    <name>dfs.datanode.socket.write.timeout</name>
+    <value>10000</value>
+    <description>Down the DFS timeout from 8 * 60 to 10 seconds.</description>
+  </property>
+  <property>
+    <name>ipc.client.connect.timeout</name>
+    <value>3000</value>
+    <description>Down from 60 seconds to 3.</description>
+  </property>
+  <property>
+    <name>ipc.client.connect.max.retries.on.timeouts</name>
+    <value>2</value>
+    <description>Down from 45 seconds to 3 (2 == 3 retries).</description>
+  </property>
+  <property>
+    <name>dfs.namenode.avoid.read.stale.datanode</name>
+    <value>true</value>
+    <description>Enable stale state in hdfs</description>
+  </property>
+  <property>
+    <name>dfs.namenode.stale.datanode.interval</name>
+    <value>20000</value>
+    <description>Down from default 30 seconds</description>
+  </property>
+  <property>
+    <name>dfs.namenode.avoid.write.stale.datanode</name>
+    <value>true</value>
+    <description>Enable stale state in hdfs</description>
+  </property>
+  <!--alluxio-->
+  <property>
+    <name>fs.alluxio.impl</name>
+    <value>alluxio.hadoop.FileSystem</value>
+    <description>The Alluxio FileSystem (Hadoop 1.x and 2.x)</description>
+  </property>
+  <property>
+    <name>fs.alluxio-ft.impl</name>
+    <value>alluxio.hadoop.FaultTolerantFileSystem</value>
+    <description>The Alluxio FileSystem (Hadoop 1.x and 2.x) with fault tolerant support</description>
+  </property>
+  <property>
+    <name>fs.AbstractFileSystem.alluxio.impl</name>
+    <value>alluxio.hadoop.AlluxioFileSystem</value>
+    <description>The Alluxio AbstractFileSystem (Hadoop 2.x)</description>
+  </property>
+</configuration>
