@@ -1,0 +1,4 @@
+# JobComplete.job
+type=command
+dependencies=multest,NsspAnaly
+command=echo "job complete!!!"

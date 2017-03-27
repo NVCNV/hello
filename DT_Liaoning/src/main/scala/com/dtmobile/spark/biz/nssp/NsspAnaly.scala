@@ -12,7 +12,6 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   **/
 class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.implicits._
     import sparkSession.sql
     //原始表初始化
     sql(s"use $SDB")

@@ -1,9 +1,8 @@
 package com.dtmobile.spark.biz.kpi
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
-
 /**
-  * NsspAnaly
+  * KpiHourAnaly
   *
   * @author heyongjin
   * @create 2017/03/02 10:36
@@ -3474,8 +3473,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   }
 
   def mrCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    val CAL_DATE = ANALY_DATE + " " + ANALY_HOUR + "00:00"
     import sparkSession.sql
+    val CAL_DATE = ANALY_DATE + " " + ANALY_HOUR + "00:00"
     sql(s"use $DDB")
     sql(s"alter table mr_gt_cell_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(
