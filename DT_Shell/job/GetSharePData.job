@@ -1,3 +1,0 @@
-# GetSharePData.job
-type=command
-command=sh /dt/bin/sharep2hdfs.sh

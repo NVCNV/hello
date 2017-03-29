@@ -1,4 +1,0 @@
-# multest.job
-type=command
-dependencies=ImportDataComplete
-command=sh /dt/bin/multest.sh

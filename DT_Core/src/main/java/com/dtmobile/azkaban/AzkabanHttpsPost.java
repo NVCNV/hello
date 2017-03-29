@@ -3,13 +3,11 @@ package com.dtmobile.azkaban;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.Properties;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -17,28 +15,10 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+
 
 public class AzkabanHttpsPost {
-    static String keystorePassword;
-    static String keystore;
-    static String truststore;
-
-    static {
-        String confDir = System.getProperty("user.dir")+"/conf/";
-        System.out.println(confDir);
-        InputStream is = Thread.currentThread().getContextClassLoader().
-                getResourceAsStream(confDir+"azkaban.properties");
-        Properties p = new Properties();
-        try {
-            p.load(is);
-            keystorePassword = p.getProperty("PASSWORD");
-            keystore = confDir+"keystore";
-            truststore = keystore;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static KeyStore getKeyStore(String password, String storePath)
             throws Exception {
@@ -58,14 +38,14 @@ public class AzkabanHttpsPost {
         KeyManagerFactory keyManagerFactory = KeyManagerFactory
                 .getInstance(KeyManagerFactory.getDefaultAlgorithm());
         // 获得密钥库
-        KeyStore keyStore = getKeyStore(AzkabanHttpsPost.keystorePassword, AzkabanHttpsPost.keystore);
+        KeyStore keyStore = getKeyStore(AzkabanOperator.keystorePassword, AzkabanOperator.keystore);
         // 初始化密钥工厂
-        keyManagerFactory.init(keyStore, AzkabanHttpsPost.keystorePassword.toCharArray());
+        keyManagerFactory.init(keyStore, AzkabanOperator.keystorePassword.toCharArray());
         // 实例化信任库
         TrustManagerFactory trustManagerFactory = TrustManagerFactory
                 .getInstance(TrustManagerFactory.getDefaultAlgorithm());
         // 获得信任库
-        KeyStore trustStore = getKeyStore(AzkabanHttpsPost.keystorePassword, AzkabanHttpsPost.truststore);
+        KeyStore trustStore = getKeyStore(AzkabanOperator.keystorePassword, AzkabanOperator.truststore);
         // 初始化信任库
         trustManagerFactory.init(trustStore);
         // 实例化SSL上下文
@@ -76,7 +56,6 @@ public class AzkabanHttpsPost {
         // 获得SSLSocketFactory
         return ctx;
     }
-
 
     public static void initHttpsURLConnection() throws Exception {
         // 声明SSL上下文
@@ -120,7 +99,7 @@ public class AzkabanHttpsPost {
             while ((temp = in.readLine()) != null) {
                 line = line + temp;
             }
-            jsonObj = JSONObject.fromObject(line);
+            jsonObj = JSONObject.parseObject(line);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

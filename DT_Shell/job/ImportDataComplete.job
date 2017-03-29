@@ -1,4 +1,0 @@
-# ImportDataComplete.job
-type=command
-dependencies=GetNsspData,GetSharePData
-command=sh /dt/bin/importDataComplete.sh

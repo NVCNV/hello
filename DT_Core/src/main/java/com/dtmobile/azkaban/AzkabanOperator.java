@@ -1,32 +1,31 @@
 package com.dtmobile.azkaban;
 
-import java.io.InputStream;
-import java.util.Properties;
 
-import net.sf.json.JSONObject;
-/**
- *
- * @author
- * @create 2017-03-28 14:38
- **/
+import com.alibaba.fastjson.JSONObject;
+
 public class AzkabanOperator {
-    public static String url;
-    public static String azkabanUser;
-    public static String azkabanPassword;
-    public static String GDI_Project;
-    public static String GDI_Workflow;
-    static {
-        String confDir = System.getProperty("user.dir")+"/conf/";
-        InputStream is = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(confDir+"azkaban.properties");
-        Properties p = new Properties();
+    static String url;
+    static String azkabanUser;
+    static String azkabanPassword;
+    static String GDI_Project;
+    static String GDI_Workflow;
+    static String keystorePassword;
+    static String keystore;
+    static String truststore;
+
+    @SuppressWarnings("static-access")
+    public AzkabanOperator(String url, String azkabanUser, String azkabanPassword, String gdi_Project, String gdi_Workflow
+            , String keystorePassword, String keystore, String truststore) {
         try {
-            p.load(is);
-            url = p.getProperty("URL");
-            azkabanUser = p.getProperty("AZKABANUSER");
-            azkabanPassword = p.getProperty("AZKABANPASSWORD");
-            GDI_Project = p.getProperty("GDI_Project");
-            GDI_Workflow = p.getProperty("GDI_Workflow");
+            this.url = url;
+            ;
+            this.azkabanUser = azkabanUser;
+            this.azkabanPassword = azkabanPassword;
+            this.GDI_Project = gdi_Project;
+            this.GDI_Workflow = gdi_Workflow;
+            this.keystorePassword = keystorePassword;
+            this.keystore = keystore;
+            this.truststore = truststore;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,6 +38,7 @@ public class AzkabanOperator {
         result = AzkabanHttpsPost.post(url, queryStr);
         return result;
     }
+
     public JSONObject executeGDIFlow(String sessionID, String project,
                                      String flow, String cwParams, String smParams, String gdiParams)
             throws Exception {
@@ -48,6 +48,18 @@ public class AzkabanOperator {
                 + "&flowOverride[cw_params]=" + cwParams
                 + "&flowOverride[sm_params]=" + smParams
                 + "&flowOverride[gdi_params]=" + gdiParams;
+        String executeUrl = url + "/executor";
+        result = AzkabanHttpsPost.post(executeUrl, executeStr);
+        return result;
+    }
+
+    public JSONObject executeGdiFlow(String sessionID, String dt, String hour)
+            throws Exception {
+        JSONObject result = null;
+        String executeStr = "session.id=" + sessionID
+                + "&ajax=executeFlow&project=" + GDI_Project + "&flow=" + GDI_Workflow
+                + "&flowOverride[ANALY_DATE]=" + dt
+                + "&flowOverride[ANALY_HOUR]=" + hour;
         String executeUrl = url + "/executor";
         result = AzkabanHttpsPost.post(executeUrl, executeStr);
         return result;
@@ -63,12 +75,28 @@ public class AzkabanOperator {
         return result;
     }
 
+    /**
+     *"https://172.30.4.222:8443",
+     * "azkaban",
+     * "azkaban",
+     * "Test",
+     * "JobComplete",
+     * "azkaban",
+     * "E:\\keystore",
+     * "E:\\keystore"
+     * ANALY_DATE
+     * ANALY_HOUR
+     */
     public static void main(String[] args) {
-        AzkabanOperator op = new AzkabanOperator();
+        AzkabanOperator op = new AzkabanOperator(args[0], args[1], args[2], args[3], args[4], args[5],args[6], args[7]);
         try {
-            System.out.println(JSONObject.fromObject(op.login()));
+            JSONObject json = op.login();
+            System.out.println(JSONObject.toJSONString(json));
+            System.out.println(json.getString("session.id"));
+            System.out.println(JSONObject.toJSONString(op.executeGdiFlow(json.getString("session.id"), args[8], args[9])));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+

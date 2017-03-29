@@ -1,3 +1,0 @@
-# GetNsspData.job
-type=command
-command=sh /dt/bin/nssp2hdfs.sh
