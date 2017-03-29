@@ -1,4 +1,4 @@
 # multest.job
 type=command
 dependencies=ImportDataComplete
-command=sh /dt/bin/multest.sh
+command=sh /dt/bin/multest.sh ${ANALY_DATE} ${ANALY_HOUR}

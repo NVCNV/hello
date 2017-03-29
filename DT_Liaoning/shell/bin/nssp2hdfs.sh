@@ -5,8 +5,8 @@ export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin
 mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
-ANALY_DATE=`date +%Y%m%d`
-ANALY_HOUR="`date -d ' -0 hour' +%H`"
+ANALY_DATE=$1
+ANALY_HOUR=$2
 HIVE_PATH="hdfs://dtcluster/liaoning"
 HIVE_TABLES="TB_XDR_IFC_X2 LTE_MRO_SOURCE TB_XDR_IFC_UU"
 LOCAL_PATH=/appfs/hadoopfile
