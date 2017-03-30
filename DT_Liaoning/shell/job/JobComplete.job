@@ -1,4 +1,4 @@
 # JobComplete.job
 type=command
-dependencies=ExceptionAanaly
+dependencies=ExceptionAanaly,importHbaseData
 command=echo "job complete!!!"
