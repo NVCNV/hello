@@ -10,6 +10,7 @@ ANALY_DATE=$1
 ANALY_HOUR=$2
 
 HADOOP=`which hadoop`
+JAR_FILE="/dt/bin/DT_mobile.jar"
 EXCEPTION_MAIN="cn.com.dtmobile.hadoop.biz.ExceptionCommonJob"
 
 SOURCE_SVR="hdfs://dtcluster/liaoning"
