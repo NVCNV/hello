@@ -29,7 +29,7 @@ ${ETYPE_OUT}/VOLTE_ORGN/* \
 ${ETYPE_OUT}/S1MME_ORGN/* \
 ${ETYPE_OUT}/TB_XDR_IFC_X2/* \
 ${ETYPE_OUT}/RX/* \
-/liaoning/volte_sv.txt \
+${SOURCE_SVR}/volte_sv.txt \
 ${EXCEPTION_OUT} \
 ${EXCEPTION_MAP} \
 ${cellMR} \
