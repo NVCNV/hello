@@ -3,8 +3,7 @@ export JAVA_HOME=/opt/app/java
 export HADOOP_HOME=/opt/app/hadoop
 export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin
-mypath="$(cd "$(dirname "$0")"; pwd)"
-cd $mypath
+
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
@@ -22,10 +21,10 @@ TB_XDR_IFC_UU=${SOURCE_SVR}/TB_XDR_IFC_UU/${ANALY_DATE}/${ANALY_HOUR}/*
 TB_XDR_IFC_X2=${SOURCE_SVR}/TB_XDR_IFC_X2/${ANALY_DATE}/${ANALY_HOUR}/*
 ETYPE_OUT=${SOURCE_SVR}/ETYPE_OUT
 
-HADOOP=`which hadoop`
 
-{HADOOP} fs -rm -R ${ETYPE_OUT}
 
-${HADOOP} jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
+hdfs dfs -rm -R ${ETYPE_OUT}
+
+hadoop jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
 
 
