@@ -29,7 +29,6 @@
                                 <addClasspath>true</addClasspath>
                                 <classpathPrefix>/dt/lib/</classpathPrefix>
                             </manifest>
-
                         </archive>
                         <classesDirectory>
                         </classesDirectory>
