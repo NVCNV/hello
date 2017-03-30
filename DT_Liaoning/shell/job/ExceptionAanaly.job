@@ -1,5 +1,4 @@
 # ExceptionAanaly
-
 type=command
 dependencies=EtypeFill
 command=sh /dt/bin/ExceptionAanaly.sh ${ANALY_DATE} ${ANALY_HOUR}
