@@ -10,8 +10,8 @@ ANALY_HOUR=$2
 #ANALY_DATE=`date +%Y%m%d`
 #ANALY_HOUR="`date -d ' -0 hour' +%H`"
 
-SOURCE_SVR="hdfs://dtcluster/liaoning"
-JAR_FILE="/dt/bin/DT_mobile.jar"
+SOURCE_SVR="hdfs://dtcluster/datang"
+JAR_FILE="/dt/lib/DT_mobile.jar"
 ETYPE_MAIN="cn.com.dtmobile.hadoop.biz.exception.job.ProcessJob"
 
 VOLTE_RX=${SOURCE_SVR}/volte_rx/${ANALY_DATE}/${ANALY_HOUR}/*
