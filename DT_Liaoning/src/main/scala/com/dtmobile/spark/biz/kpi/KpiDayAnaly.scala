@@ -20,6 +20,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
   def imsiCellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
+    sql(s"alter table volte_gt_user_ana_baseday drop partition partition(dt=$ANALY_DATE)")
     sql(s"alter table volte_gt_user_ana_baseday add if not exists partition(dt=$ANALY_DATE)")
 
     sql(s"use $DDB")

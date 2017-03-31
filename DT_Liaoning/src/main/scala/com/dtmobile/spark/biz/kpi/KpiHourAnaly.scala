@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * KpiHourAnaly
   *
   * @author heyongjin
-  * @create 2017/03/02 10:36
+  * create 2017/03/02 10:36
   *
   **/
 class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
