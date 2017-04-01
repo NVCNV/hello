@@ -3,6 +3,7 @@ package com.dtmobile.spark.job
 import com.dtmobile.spark.Analyse
 import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly}
 import com.dtmobile.spark.biz.nssp.NsspAnaly
+import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -14,7 +15,7 @@ import org.apache.spark.sql.SparkSession
   **/
 class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
-  override val master: String = args(args.length - 1)
+  override val master: String = args(4)
   override val sourceDir: String = args(2)
   override val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
 
@@ -23,8 +24,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
     val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
     nsspAnaly.analyse(sparkSession)
     kpiHourAnaly.analyse(sparkSession)
-    if("03".equals(args(0))){
-      val kpiDayAnALY = new KpiDayAnaly(args(0), args(2), args(3), warhouseDir)
+    if("00".equals(args(args.length-1))){
+      val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
     }
   }
