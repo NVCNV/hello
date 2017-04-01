@@ -11,7 +11,7 @@ import org.apache.spark.sql.SparkSession
   *
   * @author heyongjin
   * @create 2017/03/02 11:10
-  *
+  *  $ANALY_DATE $ANALY_HOUR liaoning lndcl $MASTER ifdayanaly
   **/
 class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
@@ -22,8 +22,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override def analyse(implicit sparkSession: SparkSession): Unit = {
     val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
     val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
-    nsspAnaly.analyse(sparkSession)
-    kpiHourAnaly.analyse(sparkSession)
+    nsspAnaly.analyse
+    kpiHourAnaly.analyse
     if("00".equals(args(args.length-1))){
       val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
