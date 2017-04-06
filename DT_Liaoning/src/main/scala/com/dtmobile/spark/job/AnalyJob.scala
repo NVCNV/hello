@@ -23,7 +23,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
     val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
     nsspAnaly.analyse
     kpiHourAnaly.analyse
-    if("00".equals(args(args.length-1))){
+    if("d".equals(args(args.length-1))){
       val kpiDayAnALY = new KpiDayAnaly(args(0), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
     }
