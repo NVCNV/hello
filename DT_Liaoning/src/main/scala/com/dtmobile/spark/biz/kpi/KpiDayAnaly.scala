@@ -7,7 +7,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   */
 class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: String) {
 
-  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)
+  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)+ " " +  "00:00:00"
 
 
   def analyse(implicit sparkSession: SparkSession): Unit = {

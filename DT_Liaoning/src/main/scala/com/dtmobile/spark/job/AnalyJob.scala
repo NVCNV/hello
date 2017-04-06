@@ -3,7 +3,6 @@ package com.dtmobile.spark.job
 import com.dtmobile.spark.Analyse
 import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly}
 import com.dtmobile.spark.biz.nssp.NsspAnaly
-import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -25,7 +24,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
     nsspAnaly.analyse
     kpiHourAnaly.analyse
     if("00".equals(args(args.length-1))){
-      val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
+      val kpiDayAnALY = new KpiDayAnaly(args(0), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
     }
   }
