@@ -10,7 +10,7 @@ ANALY_HOUR=$2
 #ANALY_DATE=`date +%Y%m%d`
 #ANALY_HOUR="`date -d ' -0 hour' +%H`"
 
-SOURCE_SVR="hdfs://dtcluster/datang"
+SOURCE_SVR="hdfs://dtcluster/liaoning"
 JAR_FILE="/dt/lib/DT_mobile.jar"
 ETYPE_MAIN="cn.com.dtmobile.hadoop.biz.exception.job.ProcessJob"
 
@@ -23,7 +23,7 @@ ETYPE_OUT=${SOURCE_SVR}/ETYPE_OUT
 
 
 
-hdfs dfs -rm -R ${ETYPE_OUT}
+hdfs dfs -rm -R -skipTrash ${ETYPE_OUT}
 
 hadoop jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
 
