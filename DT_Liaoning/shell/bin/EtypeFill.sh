@@ -3,16 +3,15 @@ export JAVA_HOME=/opt/app/java
 export HADOOP_HOME=/opt/app/hadoop
 export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin
-mypath="$(cd "$(dirname "$0")"; pwd)"
-cd $mypath
+
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
 #ANALY_DATE=`date +%Y%m%d`
 #ANALY_HOUR="`date -d ' -0 hour' +%H`"
 
-SOURCE_SVR="hdfs://dtcluster/liaoning"
-JAR_FILE="/dt/bin/DT_mobile.jar"
+SOURCE_SVR="hdfs://dtcluster/datang"
+JAR_FILE="/dt/lib/DT_mobile.jar"
 ETYPE_MAIN="cn.com.dtmobile.hadoop.biz.exception.job.ProcessJob"
 
 VOLTE_RX=${SOURCE_SVR}/volte_rx/${ANALY_DATE}/${ANALY_HOUR}/*
@@ -22,10 +21,10 @@ TB_XDR_IFC_UU=${SOURCE_SVR}/TB_XDR_IFC_UU/${ANALY_DATE}/${ANALY_HOUR}/*
 TB_XDR_IFC_X2=${SOURCE_SVR}/TB_XDR_IFC_X2/${ANALY_DATE}/${ANALY_HOUR}/*
 ETYPE_OUT=${SOURCE_SVR}/ETYPE_OUT
 
-HADOOP=`which hadoop`
 
-{HADOOP} fs -rm -R ${ETYPE_OUT}
 
-${HADOOP} jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
+hdfs dfs -rm -R ${ETYPE_OUT}
+
+hadoop jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
 
 

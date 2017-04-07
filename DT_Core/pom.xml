@@ -15,6 +15,22 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
@@ -25,7 +41,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.dtmobile.azkaban.AzkabanOperator</mainClass>
+                                <mainClass>com.dtmobile.job.Driver</mainClass>
                                 <addClasspath>true</addClasspath>
                                 <classpathPrefix>/dt/lib/</classpathPrefix>
                             </manifest>
