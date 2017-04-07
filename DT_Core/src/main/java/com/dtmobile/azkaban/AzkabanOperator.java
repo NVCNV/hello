@@ -13,7 +13,6 @@ public class AzkabanOperator {
     static String keystore;
     static String truststore;
 
-    @SuppressWarnings("static-access")
     public AzkabanOperator(String url, String azkabanUser, String azkabanPassword, String gdi_Project, String gdi_Workflow
             , String keystorePassword, String keystore, String truststore) {
         try {
