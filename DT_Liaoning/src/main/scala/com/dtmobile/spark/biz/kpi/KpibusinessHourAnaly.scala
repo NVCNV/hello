@@ -27,7 +27,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |'$cal_date',
          |substring(imei,1,8)tac,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -69,9 +69,9 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
       s"""
          |select
          |'$cal_date',
-         |(ecgi)cellid,
+         |ecgi,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -101,7 +101,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 5  then (procedureendtime - procedurestarttime) else 0 end)mediadowntime,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appstatus=0  then DLData/1024 else 0 end)ServiceIMSucc,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1  then (procedureendtime - procedurestarttime) else 0 end)ServiceIMReq
-         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by ecgi;
+         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by ecgi
 
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
@@ -117,7 +117,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |'$cal_date',
          |appserveripipv4,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -162,7 +162,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |imsi,
          |msisdn,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -206,7 +206,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |'$cal_date',
          |sgwipaddr,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -236,7 +236,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 5  then (procedureendtime - procedurestarttime) else 0 end)mediadowntime,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appstatus=0  then DLData/1024 else 0 end)ServiceIMSucc,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1  then (procedureendtime - procedurestarttime) else 0 end)ServiceIMReq
-         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by sgwipaddr;
+         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by sgwipaddr
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
@@ -250,9 +250,9 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |'$cal_date',
          |imsi,
          |msisdn,
-         |cellid,
+         |ecgi,
          |sum(case when interface=11 and apptypecode=103 and apptype=15 then 1 else 0 end)browsedownloadvisits,
-         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)browsedownloadvisits,
+         |sum(case when interface=11 and (apptypecode=103 or apptypecode=107) and apptype=5 then 1 else 0 end)videoservicevisits,
          |sum(case when interface=11 and apptypecode=108 and apptype=1 then 1 else 0 end)instantmessagevisits,
          |sum(case when interface=11 and apptypecode=103 and apptype=7 then 1 else 0 end)appvisits,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 then DLDATA+ULDATA end )browsedownloadbusiness,
@@ -282,7 +282,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 5  then (procedureendtime - procedurestarttime) else 0 end)mediadowntime,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appstatus=0  then DLData/1024 else 0 end)ServiceIMSucc,
          |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1  then (procedureendtime - procedurestarttime) else 0 end)ServiceIMReq
-         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn,cellid
+         |from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn,ecgi
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 

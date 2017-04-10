@@ -1,5 +1,8 @@
 package com.dtmobile.azkaban;
 
+import com.alibaba.fastjson.JSONObject;
+
+import javax.net.ssl.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,14 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
-import com.alibaba.fastjson.JSONObject;
 
 
 public class AzkabanHttpsPost {

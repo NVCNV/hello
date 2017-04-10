@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * KpiHourAnaly
   *
   * @author heyongjin
-  * create 2017/03/02 10:36
+  * @create 2017/03/02 10:36
   *
   **/
 class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
@@ -3039,7 +3039,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   def mrImsiHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table mro_kpi_mid_imsi_hour add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(s"alter table mr_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(
       s"""
          |SELECT
@@ -3469,7 +3469,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	imsi,
          |	msisdn
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mro_kpi_mid_imsi_hour/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def mrCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
