@@ -15,6 +15,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     ueHourAnalyse(sparkSession)
     sgwHourAnalyse(sparkSession)
     imsicellHourAnalyse(sparkSession)
+
   }
 
   def tacHourAnalyse(implicit sparkSession: SparkSession): Unit = {

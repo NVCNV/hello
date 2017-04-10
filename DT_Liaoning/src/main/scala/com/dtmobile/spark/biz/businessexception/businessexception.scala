@@ -13,6 +13,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
 
     def analyse(implicit sparkSession: SparkSession): Unit = {
       exceptionAnalyse(sparkSession)
+      
     }
    def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
      import sparkSession.sql
