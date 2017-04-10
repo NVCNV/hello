@@ -1,10 +1,11 @@
 package com.dtmobile.spark.job
 
 import com.dtmobile.spark.Analyse
-import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly}
+import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly,KpibusinessHourAnaly,KpibusinessDayAnaly}
 import com.dtmobile.spark.biz.nssp.NsspAnaly
 import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
+
 
 /**
   * AnalyJob
@@ -17,13 +18,19 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
   override val master: String = args(4)
   override val sourceDir: String = args(2)
-  override val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
+//  override val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
+  override val warhouseDir: String = "/httpkpi"
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
-    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
-    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
-    nsspAnaly.analyse
-    kpiHourAnaly.analyse
+//    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+//    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
+    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
+    val kpibusinessDayAnaly = new KpibusinessDayAnaly(args(0), args(1), args(2), args(3), warhouseDir)
+    kpibusinessHourAnaly.analyse
+    kpibusinessDayAnaly.analyse
+//    nsspAnaly.analyse
+//    kpiHourAnaly.analyse
+
     if("03".equals(args(1))){
       val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
