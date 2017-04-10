@@ -1,7 +1,7 @@
 package com.dtmobile.azkaban;
-import com.alibaba.fastjson.JSONObject;
 
-import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class AzkabanOperator {
     static String url;
@@ -52,17 +52,15 @@ public class AzkabanOperator {
         return result;
     }
 
-    public JSONObject executeGdiFlow(String sessionID, Map<String,String> paramMap)
+    public JSONObject executeGdiFlow(String sessionID, String dt, String hour)
             throws Exception {
         JSONObject result = null;
-        StringBuffer executeStr = new StringBuffer();
-        executeStr.append("session.id=").append(sessionID)
-                .append("&ajax=").append("executeFlow").append("&project=").append(GDI_Project).append("&flow=").append(GDI_Workflow);
-        for(Map.Entry<String, String> entry:paramMap.entrySet()){
-            executeStr.append("&").append("flowOverride[").append(entry.getKey()).append("]").append("=").append(entry.getValue());
-        }
+        String executeStr = "session.id=" + sessionID
+                + "&ajax=executeFlow&project=" + GDI_Project + "&flow=" + GDI_Workflow
+                + "&flowOverride[ANALY_DATE]=" + dt
+                + "&flowOverride[ANALY_HOUR]=" + hour;
         String executeUrl = url + "/executor";
-        result = AzkabanHttpsPost.post(executeUrl, executeStr.toString());
+        result = AzkabanHttpsPost.post(executeUrl, executeStr);
         return result;
     }
 
@@ -94,7 +92,7 @@ public class AzkabanOperator {
             JSONObject json = op.login();
             System.out.println(JSONObject.toJSONString(json));
             System.out.println(json.getString("session.id"));
-//            System.out.println(JSONObject.toJSONString(op.executeGdiFlow(json.getString("session.id"), args[8], args[9])));
+            System.out.println(JSONObject.toJSONString(op.executeGdiFlow(json.getString("session.id"), args[8], args[9])));
         } catch (Exception e) {
             e.printStackTrace();
         }

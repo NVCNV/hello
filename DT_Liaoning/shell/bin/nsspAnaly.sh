@@ -8,10 +8,10 @@ ANALY_DATE=$1
 ANALY_HOUR=$2
 MAIN_CLASS=com.dtmobile.spark.job.AnalyJob
 JAR=/dt/lib/DT_Liaoning-1.0-SNAPSHOT.jar
-MASTER=spark://172.30.4.189:7077
+MASTER=spark://192.168.3.2:7077
 
 /opt/app/spark/bin/spark-submit  \
  --class $MAIN_CLASS \
  --executor-memory 4G \
  --executor-cores 2 \
- $JAR $ANALY_DATE $ANALY_HOUR liaoning lndcl $MASTER
+ $JAR $ANALY_DATE $ANALY_HOUR datang dcl $MASTER

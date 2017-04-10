@@ -10,10 +10,10 @@ export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HBASE_HOME/bin
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
-#input_dir=hdfs://dtcluster/user/hive/warehouse/dcl.db
-input_dir=hdfs://dtcluster/user/hive/warehouse/lndcl.db
-#yingcai_input_dir=hdfs://dtcluster/datang/
-yingcai_input_dir=hdfs://dtcluster/liaoning/
+input_dir=hdfs://dtcluster/user/hive/warehouse/dcl.db
+#input_dir=hdfs://dtcluster/user/hive/warehouse/lndcl.db
+yingcai_input_dir=hdfs://dtcluster/datang/
+#yingcai_input_dir=hdfs://dtcluster/liaoning/
 s1mme=${yingcai_input_dir}/s1mme_orgn/${ANALY_DATE}/${ANALY_HOUR}
 x2=${input_dir}/tb_xdr_ifc_x2/dt=${ANALY_DATE}/h=${ANALY_HOUR}
 uu=${input_dir}/tb_xdr_ifc_uu/dt=${ANALY_DATE}/h=${ANALY_HOUR}

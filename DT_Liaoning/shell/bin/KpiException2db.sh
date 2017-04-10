@@ -2,7 +2,7 @@
 export HADOOP_CONF_DIR=/opt/app/hdconf
 ANALY_DATE=$1
 ANALY_HOUR=$2
-SOURCE_DB=lndcl.db
+SOURCE_DB=dcl.db
 #Kpi Day to Oracle
 echo "/dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/volte_gt_user_ana_baseday volte_gt_user_ana_baseday 1 4"
 /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/volte_gt_user_ana_baseday/dt=${ANALY_DATE} volte_gt_user_ana_baseday_t 1 4

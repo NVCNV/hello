@@ -8,11 +8,11 @@ export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
-DB=lndcl.db
+DB=dcl.db
 JAR_FILE="/dt/lib/DT_mobile.jar"
 EXCEPTION_MAIN="cn.com.dtmobile.hadoop.biz.exception.job.ExceptionCommonJob"
 
-SOURCE_SVR="hdfs://dtcluster/liaoning"
+SOURCE_SVR="hdfs://dtcluster/datang"
 LTE_MRO_SOURCE=${SOURCE_SVR}/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}/*
 SV_TABLE=${SOURCE_SVR}/volte_sv/${ANALY_DATE}/${ANALY_HOUR}/*
 EXCEPTION_MAP="${SOURCE_SVR}/exception_map/EXCEPTIONMAP.tsv"

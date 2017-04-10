@@ -8,7 +8,7 @@ cd $mypath
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
-HIVE_PATH="hdfs://dtcluster/liaoning"
+HIVE_PATH="hdfs://dtcluster/datang"
 HIVE_TABLES="s1mme_orgn volte_rx s1u_http_orgn volte_sv volte_orgn"
 LOCAL_PATH=/data1/taiyue/TEMP
 echo "`date '+/%y/%m/%d %H:%M:%S'` INFO begin ..."
