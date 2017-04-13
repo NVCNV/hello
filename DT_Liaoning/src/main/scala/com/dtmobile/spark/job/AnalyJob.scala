@@ -16,7 +16,7 @@ import org.apache.spark.sql.SparkSession
 class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
   override val master: String = args(4)
-  override val sourceDir: String = args(2)
+  override val sourceDir: String = "datang"
   override val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
