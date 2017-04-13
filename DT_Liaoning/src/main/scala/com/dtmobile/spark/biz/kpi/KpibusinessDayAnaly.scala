@@ -9,7 +9,6 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)
   def analyse(implicit sparkSession: SparkSession): Unit = {
     tacDayAnalyse(sparkSession)
-
     cellDayAnalyse(sparkSession)
     spDayAnalyse(sparkSession)
     ueDayAnalyse(sparkSession)
