@@ -15,23 +15,26 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
   val XDRthreshold01:Int=5000
   val XDRthreshold02:Int=100
   val XDRthreshold03:Int=5000
-  val XDRthreshold04:Int=100
+  val XDRthreshold04:Int=800
   val XDRthreshold05:Int=5000
-  val XDRthreshold06:Int=100
+  val XDRthreshold06:Int=25
   val XDRthreshold07:Int=400
 
   val threshold01:Int=5000
   val threshold02:Int=100
   val threshold03:Int=5000
-  val threshold04:Int=100
+  val threshold04:Int=800
   val threshold05:Int=5000
-  val threshold06:Int=100
+  val threshold06:Int=25
   val threshold07:Int=500
 
    def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
      import sparkSession.sql
      sql(s"use $DDB")
-     sql(s"alter table t_xdr_event_msg add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+     sql(
+       s"""alter table t_xdr_event_msg add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+          LOCATION 'hdfs://dtcluster/$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR'
+        """.stripMargin)
      sql(
        s"""
           |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
@@ -66,14 +69,15 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |)
           |else "7"
           |end)errorcode,
-          |(case when (apptype=15 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "7"
-          |      when (apptype=5 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold03} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold04}) then "8"
-          |      when (apptype=1 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06}) then "9"
-          |      when (apptype=15 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold01}) then "1"
+          |(case when httpstate>=400 then "10"
+          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "7"
+          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime)*1000)<${XDRthreshold04}) then "8"
+          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06}) then "9"
+          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) then "1"
           |      when (apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "2"
-          |      when (apptype=5 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold03}) then "3"
-          |      when (apptype=5 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold04}) then "4"
-          |      when (apptype=1 and appstatus=0 and (case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)>${XDRthreshold05}) then "5"
+          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) then "3"
+          |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)>${XDRthreshold04}) then "4"
+          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
           |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06}) then "6"
           |      end
           |)failtype
@@ -82,7 +86,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
           |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) or
           |(apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) or
-          |(apptype=5 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold04}) or
+          |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)>${XDRthreshold04}) or
           |(apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) or
           |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06})
           |)
