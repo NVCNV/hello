@@ -6,10 +6,9 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * Created by shenkaili on 17-3-31.
   */
 class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: String) {
-  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)
+  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)+ " " +"00:00:00"
   def analyse(implicit sparkSession: SparkSession): Unit = {
     tacDayAnalyse(sparkSession)
-
     cellDayAnalyse(sparkSession)
     spDayAnalyse(sparkSession)
     ueDayAnalyse(sparkSession)
