@@ -3,6 +3,8 @@ package com.dtmobile.azkaban;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.Map;
+
 public class AzkabanOperator {
     static String url;
     static String azkabanUser;
@@ -61,6 +63,20 @@ public class AzkabanOperator {
                 + "&flowOverride[ANALY_HOUR]=" + hour;
         String executeUrl = url + "/executor";
         result = AzkabanHttpsPost.post(executeUrl, executeStr);
+        return result;
+    }
+
+    public JSONObject executeGdiFlow(String sessionID, Map<String,String> paramMap)
+            throws Exception {
+        JSONObject result = null;
+        StringBuffer executeStr = new StringBuffer();
+        executeStr.append("session.id=").append(sessionID)
+                .append("&ajax=").append("executeFlow").append("&project=").append(GDI_Project).append("&flow=").append(GDI_Workflow);
+        for(Map.Entry<String, String> entry:paramMap.entrySet()){
+            executeStr.append("&").append("flowOverride[").append(entry.getKey()).append("]").append("=").append(entry.getValue());
+        }
+        String executeUrl = url + "/executor";
+        result = AzkabanHttpsPost.post(executeUrl, executeStr.toString());
         return result;
     }
 

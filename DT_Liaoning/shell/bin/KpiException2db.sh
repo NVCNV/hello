@@ -23,7 +23,7 @@ echo "/dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/mr_gt
 echo "/dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/mr_gt_cell_ana_base60 mr_gt_cell_ana_base60 4 4"
 /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_cell_ana_base60_t 4 4
 
-exception to Oracle
+#exception to Oracle
 echo "/dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/exception_analysis t_event_msg 5 4"
 /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/exception_analysis/dt=${ANALY_DATE}/h=${ANALY_HOUR} t_event_msg_t 5 4
 
