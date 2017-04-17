@@ -19,7 +19,6 @@ public class AzkabanOperator {
             , String keystorePassword, String keystore, String truststore) {
         try {
             this.url = url;
-            ;
             this.azkabanUser = azkabanUser;
             this.azkabanPassword = azkabanPassword;
             this.GDI_Project = gdi_Project;
