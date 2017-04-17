@@ -106,7 +106,10 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
   def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(
+      s"""alter table cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         LOCATION 'hdfs://dtcluster/$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+       """.stripMargin)
     sql(
       s"""
          |select
@@ -191,7 +194,10 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
   def spHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table sp_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(
+      s"""alter table sp_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         LOCATION 'hdfs://dtcluster/$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+       """.stripMargin)
     sql(
       s"""
          |select
@@ -274,7 +280,10 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
   def ueHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table ue_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(
+      s"""alter table ue_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         LOCATION 'hdfs://dtcluster/$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+       """.stripMargin)
     sql(
       s"""
          |select
@@ -358,7 +367,10 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
   def sgwHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table sgw_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(
+      s"""alter table sgw_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         LOCATION 'hdfs://dtcluster/$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+       """.stripMargin)
     sql(
       s"""
          |select
@@ -441,7 +453,10 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
   def imsicellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table imsi_cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(
+      s"""alter table imsi_cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         LOCATION 'hdfs://dtcluster/$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+       """.stripMargin)
     sql(
       s"""
          |select
