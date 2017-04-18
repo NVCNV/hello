@@ -1,16 +1,26 @@
 package com.dtmobile.spark.biz.businessexception
 
-import  org.apache.spark.sql.{SaveMode, SparkSession}
+
+
+import com.dtmobile.util.DBUtil
+import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by shenkaili on 17-4-1.
   */
-class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String){
+class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
 
 
     def analyse(implicit sparkSession: SparkSession): Unit = {
       exceptionAnalyse(sparkSession)
       
     }
+  val url="jdbc:oracle:thin:@"+s"""$ORCAL"""
+  val threshold=new DBUtil(url)
+  var map=new java.util.HashMap[String,String]()
+  map=threshold.excuteQuery("select field,value from data_threshold",null)
+
+    println(map.get("tiemdelay"))
+
 
   val XDRthreshold01:Int=5000
   val XDRthreshold02:Int=100
@@ -27,6 +37,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
   val threshold05:Int=5000
   val threshold06:Int=25
   val threshold07:Int=500
+
 
    def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
      import sparkSession.sql
