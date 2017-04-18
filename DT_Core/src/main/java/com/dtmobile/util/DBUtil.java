@@ -20,13 +20,17 @@ import java.util.Map;
 public class DBUtil {
 
     private static final String DRIVER = "oracle.jdbc.OracleDriver";
-    private static final String URLSTR = "jdbc:oracle:thin:@172.30.4.159:1521:umv602";
+    private String URLSTR ;
     private static final String USERNAME = "scott";
     private static final String USERPASSWORD = "tiger";
     private Connection connnection = null;
     private PreparedStatement preparedStatement = null;
     private CallableStatement callableStatement = null;
     private ResultSet resultSet = null;
+    DBUtil(String url)
+    {
+        this.URLSTR=url;
+    }
     static {
         try {
             // 加载数据库驱动程序
@@ -128,7 +132,7 @@ public class DBUtil {
      * @return List
      * 结果集
      */
-    public List<Object> excuteQuery(String sql, Object[] params) {
+    public HashMap<String,String> excuteQuery(String sql, Object[] params) {
         // 执行SQL获得结果集
         ResultSet rs = executeQueryRS(sql, params);
 
@@ -147,16 +151,16 @@ public class DBUtil {
         }
 
         // 创建List
-        List<Object> list = new ArrayList<Object>();
+        HashMap<String, String> map = new HashMap<String, String>();
 
         try {
             // 将ResultSet的结果保存到List中
             while (rs.next()) {
-                Map<String, Object> map = new HashMap<String, Object>();
+
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(rsmd.getColumnLabel(i), rs.getObject(i));
+                    map.put(rsmd.getColumnLabel(i), rs.getString(i));
                 }
-                list.add(map);
+
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -165,7 +169,7 @@ public class DBUtil {
             closeAll();
         }
 
-        return list;
+        return map;
     }
 
     /**
