@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class Driver {
     public static void main(String[] args) throws Exception {
-        if(args.length==5){
-            String exec = SSHHelper.exec(args[10], args[11], args[12], Integer.valueOf(args[13]),args[14]);
+        if(args.length<=6){
+            String exec = SSHHelper.exec(args[0], args[1], args[2], Integer.valueOf(args[3]),args[4]);
             System.out.println(exec);
         }else{
             AzkabanOperator op = new AzkabanOperator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args [7]);
@@ -25,9 +25,10 @@ public class Driver {
             System.out.println(JSONObject.toJSONString(json));
             System.out.println(json.getString("session.id"));
             Map<String, String> paramMap = new HashMap<String, String>();
-            for (int i = 9; i < args.length; i++){
-                paramMap.put(args[i], args[i++]);
-                i++;
+            System.out.println("args.length"+args.length);
+            for (int i = 8; i < args.length; i++){
+                paramMap.put(args[i], args[++i]);
+//                System.out.println(args[i]+"\t"+args[++i]);
             }
             System.out.println(JSONObject.toJSONString(op.executeGdiFlow(json.getString("session.id"),paramMap)));
         }

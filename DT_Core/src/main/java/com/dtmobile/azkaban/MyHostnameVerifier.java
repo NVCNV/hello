@@ -15,7 +15,7 @@ import javax.net.ssl.SSLSession;
  */
 public class MyHostnameVerifier implements HostnameVerifier {
     public boolean verify(String hostname, SSLSession session) {
-        if ("172.30.4.222".equals(hostname)) {
+        if ("fg03".equals(hostname) || "fg04".equals(hostname)) {
             return true;
         } else {
             return false;
