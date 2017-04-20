@@ -1,12 +1,6 @@
 package com.dtmobile.util;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +13,7 @@ import java.util.Map;
  */
 public class DBUtil {
 
-    private static final String DRIVER = "oracle.jdbc.OracleDriver";
+    private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
     private String URLSTR ;
     private static final String USERNAME = "scott";
     private static final String USERPASSWORD = "tiger";
@@ -27,7 +21,7 @@ public class DBUtil {
     private PreparedStatement preparedStatement = null;
     private CallableStatement callableStatement = null;
     private ResultSet resultSet = null;
-    DBUtil(String url)
+    public DBUtil(String url)
     {
         this.URLSTR=url;
     }
@@ -132,7 +126,7 @@ public class DBUtil {
      * @return List
      * 结果集
      */
-    public HashMap<String,String> excuteQuery(String sql, Object[] params) {
+    public HashMap<String,String> excuteQuery(String sql, String[] params) {
         // 执行SQL获得结果集
         ResultSet rs = executeQueryRS(sql, params);
 
@@ -254,4 +248,35 @@ public class DBUtil {
             }
         }
     }
+
+    public HashMap<String,Integer> select() throws SQLException{
+
+        connnection = this.getConnection() ;
+
+        HashMap<String,Integer> result = new HashMap<String,Integer>() ;
+
+        Statement sm = connnection.createStatement() ;
+        ResultSet rs = sm.executeQuery("select field,value from data_threshold") ;
+
+        while(rs.next()){
+    		/*System.out.println(rs.getString(1)+"-------"+rs.getString(2));*/
+            int value = 0 ;
+            if(rs.getString(2)!=null){
+                value = Integer.parseInt(rs.getString(2)) ;
+            }
+            result.put(rs.getString(1),value) ;
+        }
+        return result;
+    }
+    public  static void main(String ags[]) throws SQLException{
+
+        DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602") ;
+
+        HashMap<String,Integer> r = db.select() ;
+
+        System.out.println(r.get("tiemdelay"));
+
+    }
+
+
 }
