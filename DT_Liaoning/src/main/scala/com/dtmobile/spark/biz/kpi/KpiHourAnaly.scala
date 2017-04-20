@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * KpiHourAnaly
   *
   * @author heyongjin
-  * @create 2017/03/02 10:36
+  * create 2017/03/02 10:36
   *
   **/
 class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
@@ -3078,11 +3078,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) avgrsrqx,
          |	sum(
          |		CASE
-         |		WHEN MRNAME = 'MR.LteScRSRP'
-         |		AND VID = 1
+         |		WHEN MRNAME = 'MR.LteScRSRP' AND VID = 1
          |		AND KPI1 IS NOT NULL
          |		AND (KPI1 - 141) >- 110 THEN
-         |			1
+         |		1
          |		ELSE
          |			0
          |		END
@@ -3093,7 +3092,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND VID = 1
          |		AND KPI1 IS NOT NULL
          |		AND (KPI1 - 141) <=- 110 THEN
-         |			1
+         |		1
          |		ELSE
          |			0
          |		END
@@ -3514,8 +3513,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) avgrsrqx,
          |	sum(
          |		CASE
-         |		WHEN MRNAME = 'MR.LteScRSRP'
-         |		AND VID = 1
+         |		WHEN MRNAME = 'MR.LteScRSRP' AND VID = 1
          |		AND KPI1 IS NOT NULL
          |		AND (KPI1 - 141) >- 110 THEN
          |			1
