@@ -117,7 +117,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
      sql(
        s"""
           |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
-          |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,errorcode,failtype,
+          |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,failtype,errorcode,
           |(case when errorcode="1" then "11"
           |when errorcode="2" then "22"
           |when errorcode="3" or errorcode="4" then "33"
