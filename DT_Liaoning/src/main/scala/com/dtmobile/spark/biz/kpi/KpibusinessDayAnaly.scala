@@ -19,7 +19,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def tacDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table tac_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table tac_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/tac_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          |select
@@ -64,7 +66,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def cellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table cell_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table cell_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/cell_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          |select
@@ -109,7 +113,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def spDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table sp_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table sp_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/sp_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          select
@@ -153,7 +159,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def ueDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table ue_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table ue_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/ue_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          |select
@@ -198,7 +206,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def sgwDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table sgw_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table sgw_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/sgw_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          |select
@@ -242,7 +252,9 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
   def imsicellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
-    sql(s"alter table imsi_cell_day_http add if not exists partition(dt=$ANALY_DATE)")
+    sql(s"""alter table imsi_cell_day_http add if not exists partition(dt=$ANALY_DATE)
+           LOCATION 'hdfs://dtcluster/$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE'
+      """)
     sql(
       s"""
          |select

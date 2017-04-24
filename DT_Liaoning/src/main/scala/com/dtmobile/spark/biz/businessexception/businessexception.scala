@@ -12,34 +12,102 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
 
     def analyse(implicit sparkSession: SparkSession): Unit = {
       exceptionAnalyse(sparkSession)
-      
+
     }
-  val url="jdbc:oracle:thin:@"+s"""$ORCAL"""
-  val threshold=new DBUtil(url)
-  var map=new java.util.HashMap[String,String]()
-  map=threshold.excuteQuery("select field,value from data_threshold",null)
-
-    println(map.get("tiemdelay"))
-
-
-  val XDRthreshold01:Int=5000
-  val XDRthreshold02:Int=100
-  val XDRthreshold03:Int=5000
-  val XDRthreshold04:Int=800
-  val XDRthreshold05:Int=5000
-  val XDRthreshold06:Int=25
-  val XDRthreshold07:Int=400
-
-  val threshold01:Int=5000
-  val threshold02:Int=100
-  val threshold03:Int=5000
-  val threshold04:Int=800
-  val threshold05:Int=5000
-  val threshold06:Int=25
-  val threshold07:Int=500
-
 
    def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
+
+     val threshold= new DBUtil(s"jdbc:oracle:thin:@$ORCAL")
+     val map= threshold.select()
+
+     var XDRthreshold01:Int=5000
+     var XDRthreshold02:Int=100
+     var XDRthreshold03:Int=5000
+     var XDRthreshold04:Int=800
+     var XDRthreshold05:Int=5000
+     var XDRthreshold06:Int=25
+     var XDRthreshold07:Int=400
+
+     var SPSvBrowsedownv = 100
+     var SPSvBrowsedelay = 5000
+     var SPSvVideodownv = 800
+     var SPSvVideodelay = 5000
+     var SPSvInstantmessagedownv = 25
+     var SPSvlnstantmessagedelay = 5000
+
+     var cellSvBrowsedownv = 100
+     var cellSvBrowsedelay = 5000
+     var cellSvVideodownv = 800
+     var cellSvVideodelay = 5000
+     var cellSvInstantmessagedownv = 25
+     var cellSvlnstantmessagedelay = 5000
+
+     var tagendSvBrowsedownv = 100
+     var tagendSvBrowsedelay = 5000
+     var tagendSvVideodownv = 800
+     var tagendSvVideodelay = 5000
+     var tagendSvInstantmessagedownv = 25
+     var tagendSvlnstantmessagedelay = 5000
+
+     var UESvBrowsedownv = 100
+     var UESvBrowsedelay = 5000
+     var UESvVideodownv = 800
+     var UESvVideodelay = 5000
+     var UESvInstantmessagedownv = 25
+     var UESvlnstantmessagedelay = 5000
+
+     var SGWSvBrowsedownv = 100
+     var SGWSvBrowsedelay = 5000
+     var SGWSvVideodownv = 800
+     var SGWSvVideodelay = 5000
+     var SGWSvInstantmessagedownv = 25
+     var SGWSvlnstantmessagedelay = 5000
+
+     if(map.get("browseServicetimedelay")!=0 && map.get("browseServicetimedelay")!=null) {
+       XDRthreshold01 = map.get("browseServicetimedelay")
+       XDRthreshold02 = map.get("browseServicedownv")
+       XDRthreshold03 = map.get("videoServicetimedelay")
+       XDRthreshold04 = map.get("videoServicedownv")
+       XDRthreshold05 = map.get("instantmessageServicetimedelay")
+       XDRthreshold06 = map.get("instantmessageServicedownv")
+
+       SPSvBrowsedownv = map.get("SPSvBrowsedownv")
+       SPSvBrowsedelay = map.get("SPSvBrowsedelay")
+       SPSvVideodownv = map.get("SPSvVideodownv")
+       SPSvVideodelay = map.get("SPSvVideodelay")
+       SPSvInstantmessagedownv = map.get("SPSvInstantmessagedownv")
+       SPSvlnstantmessagedelay = map.get("SPSvlnstantmessagedelay")
+
+       cellSvBrowsedownv = map.get("cellSvBrowsedownv")
+       cellSvBrowsedelay = map.get("cellSvBrowsedelay")
+       cellSvVideodownv = map.get("cellSvVideodownv")
+       cellSvVideodelay = map.get("cellSvVideodelay")
+       cellSvInstantmessagedownv = map.get("cellSvInstantmessagedownv")
+       cellSvlnstantmessagedelay = map.get("cellSvlnstantmessagedelay")
+
+       tagendSvBrowsedownv = map.get("tagendSvBrowsedownv")
+       tagendSvBrowsedelay = map.get("tagendSvBrowsedelay")
+       tagendSvVideodownv = map.get("tagendSvVideodownv")
+       tagendSvVideodelay = map.get("tagendSvVideodelay")
+       tagendSvInstantmessagedownv = map.get("tagendSvInstantmessagedownv")
+       tagendSvlnstantmessagedelay = map.get("tagendSvlnstantmessagedelay")
+
+       UESvBrowsedownv = map.get("UESvBrowsedownv")
+       UESvBrowsedelay = map.get("UESvBrowsedelay")
+       UESvVideodownv = map.get("UESvVideodownv")
+       UESvVideodelay = map.get("UESvVideodelay")
+       UESvInstantmessagedownv = map.get("UESvInstantmessagedownv")
+       UESvlnstantmessagedelay = map.get("UESvlnstantmessagedelay")
+
+       SGWSvBrowsedownv = map.get("SGWSvBrowsedownv")
+       SGWSvBrowsedelay = map.get("SGWSvBrowsedelay")
+       SGWSvVideodownv = map.get("SGWSvVideodownv")
+       SGWSvVideodelay = map.get("SGWSvVideodelay")
+       SGWSvInstantmessagedownv = map.get("SGWSvInstantmessagedownv")
+       SGWSvlnstantmessagedelay = map.get("SGWSvlnstantmessagedelay")
+     }
+
+
      import sparkSession.sql
      sql(s"use $DDB")
      sql(
@@ -49,7 +117,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
      sql(
        s"""
           |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
-          |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,errorcode,failtype,
+          |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,etype,errorcode,
           |(case when errorcode="1" then "11"
           |when errorcode="2" then "22"
           |when errorcode="3" or errorcode="4" then "33"
@@ -57,23 +125,23 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |when errorcode="7" then "55" end) from
           |(select city,xdrid,procedurestarttime,procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
           |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,
-          |(case when httpstate>=${threshold07} then "1"
-          |when ((t2.pagedelay>${threshold01} or t2.pagespeed<${threshold02}) and APPTYPE=15) or ((t2.videodelay>${threshold03} or t2.videospeed<${threshold04}) and APPTYPE=5) or ((t2.videodelay>${threshold05} or t2.videospeed<${threshold06}) and APPTYPE=1) then "1"
-          |when ((t3.pagedelay>${threshold01} or t3.pagespeed<${threshold02}) and APPTYPE=15) or ((t3.videodelay>${threshold03} or t3.videospeed<${threshold04}) and APPTYPE=5) or ((t3.videodelay>${threshold05} or t3.videospeed<${threshold06}) and APPTYPE=1) then "2"
+          |(case when httpstate>=500 then "1"
+          |when ((t2.pagedelay>$SPSvBrowsedelay or t2.pagespeed<$SPSvBrowsedownv) and APPTYPE=15) or ((t2.videodelay>$SPSvVideodelay or t2.videospeed<$SPSvVideodownv) and APPTYPE=5) or ((t2.videodelay>$SPSvlnstantmessagedelay or t2.videospeed<$SPSvInstantmessagedownv) and APPTYPE=1) then "1"
+          |when ((t3.pagedelay>$SGWSvBrowsedelay or t3.pagespeed<$SGWSvBrowsedownv) and APPTYPE=15) or ((t3.videodelay>$SGWSvVideodelay or t3.videospeed<$SGWSvVideodownv) and APPTYPE=5) or ((t3.videodelay>$SGWSvlnstantmessagedelay or t3.videospeed<$SGWSvInstantmessagedownv) and APPTYPE=1) then "2"
           |
- |when(((t4.pagedelay>${threshold01} or t4.pagespeed<${threshold02}) and APPTYPE=15) or ((t4.videodelay>${threshold03} or t4.videospeed<${threshold04}) and APPTYPE=5) or ((t4.videodelay>${threshold05} or t4.videospeed<${threshold06}) and APPTYPE=1)) and t5.cnt>0 then "3"
-          |when (((t4.pagedelay>${threshold01} or t4.pagespeed<${threshold02}) and APPTYPE=15) or ((t4.videodelay>${threshold03} or t4.videospeed<${threshold04}) and APPTYPE=5) or ((t4.videodelay>${threshold05} or t4.videospeed<${threshold06}) and APPTYPE=1)) and t5.cnt<=0 and t6.cnt>0 then "4"
- |when t9.cnt<=0 and (((t4.pagedelay>${threshold01} or t4.pagespeed<${threshold02}) and APPTYPE=15) or ((t4.videodelay>${threshold03} or t4.videospeed<${threshold04}) and APPTYPE=5) or ((t4.videodelay>${threshold05} or t4.videospeed<${threshold06}) and APPTYPE=1)) then "4"
-          |when t9.cnt<=0 and !(((t4.pagedelay>${threshold01} or t4.pagespeed<${threshold02}) and APPTYPE=15) or ((t4.videodelay>${threshold03} or t4.videospeed<${threshold04}) and APPTYPE=5) or ((t4.videodelay>${threshold05} or t4.videospeed<${threshold06}) and APPTYPE=1))then
-          |(case when ((t8.pagedelay>${threshold01} or t8.pagespeed<${threshold02}) and APPTYPE=15) or ((t8.videodelay>${threshold03} or t8.videospeed<${threshold04}) and APPTYPE=5) or ((t8.videodelay>${threshold05} or t8.videospeed<${threshold06}) and APPTYPE=1) then "5"
-          |when ((t7.pagedelay>${threshold01} or t7.pagespeed<${threshold02}) and APPTYPE=15) or ((t7.videodelay>${threshold03} or t7.videospeed<${threshold04}) and APPTYPE=5) or ((t7.videodelay>${threshold05} or t7.videospeed<${threshold06}) and APPTYPE=1) then "6"
+          |when(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t5.cnt>0 then "3"
+          |when (((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t5.cnt<=0 and t6.cnt>0 then "4"
+          |when t9.cnt<=0 and (((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) then "4"
+          |when t9.cnt<=0 and !(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1))then
+          |(case when ((t8.pagedelay>$tagendSvBrowsedelay or t8.pagespeed<$tagendSvBrowsedownv) and APPTYPE=15) or ((t8.videodelay>$tagendSvVideodelay or t8.videospeed<$tagendSvVideodownv) and APPTYPE=5) or ((t8.videodelay>$tagendSvlnstantmessagedelay or t8.videospeed<$tagendSvInstantmessagedownv) and APPTYPE=1) then "5"
+          |when ((t7.pagedelay>$UESvBrowsedelay or t7.pagespeed<$UESvBrowsedownv) and APPTYPE=15) or ((t7.videodelay>$UESvVideodelay or t7.videospeed<$UESvVideodownv) and APPTYPE=5) or ((t7.videodelay>$UESvlnstantmessagedelay or t7.videospeed<$UESvInstantmessagedownv) and APPTYPE=1) then "6"
           |when t1.httpstate>400 then "6"
           |else "7"
           |end
           |)
           |when(t6.cnt<=0 and t9.cnt>0) then
-          |(case when ((t8.pagedelay>${threshold01} or t8.pagespeed<${threshold02}) and APPTYPE=15) or ((t8.videodelay>${threshold03} or t8.videospeed<${threshold04}) and APPTYPE=5) or ((t8.videodelay>${threshold05} or t8.videospeed<${threshold06}) and APPTYPE=1) then "5"
-          |when ((t7.pagedelay>${threshold01} or t7.pagespeed<${threshold02}) and APPTYPE=15) or ((t7.videodelay>${threshold03} or t7.videospeed<${threshold04}) and APPTYPE=5) or ((t7.videodelay>${threshold05} or t7.videospeed<${threshold06}) and APPTYPE=1) then "6"
+          |(case when ((t8.pagedelay>$tagendSvBrowsedelay or t8.pagespeed<$tagendSvBrowsedownv) and APPTYPE=15) or ((t8.videodelay>$tagendSvVideodelay or t8.videospeed<$tagendSvVideodownv) and APPTYPE=5) or ((t8.videodelay>$tagendSvlnstantmessagedelay or t8.videospeed<$tagendSvInstantmessagedownv) and APPTYPE=1) then "5"
+          |when ((t7.pagedelay>$UESvBrowsedelay or t7.pagespeed<$UESvBrowsedownv) and APPTYPE=15) or ((t7.videodelay>$UESvVideodelay or t7.videospeed<$UESvVideodownv) and APPTYPE=5) or ((t7.videodelay>$UESvlnstantmessagedelay or t7.videospeed<$UESvInstantmessagedownv) and APPTYPE=1) then "6"
           |when t1.httpstate>400 then "6"
           |else "7"
           |end
@@ -91,9 +159,9 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
           |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06}) then "6"
           |      end
-          |)failtype
-          |from (select * from http.tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
-          |(httpstate>=${XDRthreshold07} or
+          |)etype
+          |from (select * from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
+          |(httpstate>=400 or
           |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
           |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) or
           |(apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) or
