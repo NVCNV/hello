@@ -1431,7 +1431,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltemctime,
          |	0 AS voltemctimey,
          |  0 AS voltevdtime,
-         |  0 AS voltevdtimey,,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
