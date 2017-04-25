@@ -249,32 +249,95 @@ public class DBUtil {
         }
     }
 
-    public HashMap<String,Integer> select() throws SQLException{
+    public HashMap<String,Integer> select() {
 
         connnection = this.getConnection() ;
 
         HashMap<String,Integer> result = new HashMap<String,Integer>() ;
 
-        Statement sm = connnection.createStatement() ;
-        ResultSet rs = sm.executeQuery("select field,value from data_threshold") ;
+        Statement sm = null;
+        try {
+            sm = connnection.createStatement();
+            ResultSet rs = sm.executeQuery("select field,value from data_threshold") ;
 
-        while(rs.next()){
-    		/*System.out.println(rs.getString(1)+"-------"+rs.getString(2));*/
-            int value = 0 ;
-            if(rs.getString(2)!=null){
-                value = Integer.parseInt(rs.getString(2)) ;
+            while(rs.next()){
+                int value = 0 ;
+                if(rs.getString(2)!=null){
+                    value = Integer.parseInt(rs.getString(2)) ;
+                }
+                result.put(rs.getString(1),value) ;
             }
-            result.put(rs.getString(1),value) ;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 释放资源
+            closeAll();
         }
         return result;
     }
+
+
+    public String select(String table,String[] parm,String where) {
+
+        connnection = this.getConnection() ;
+        String result = "" ;
+        Statement sm = null;
+        try {
+            sm = connnection.createStatement();
+            String sql = "" ;
+            String tmp = "" ;
+            for(int i=0;i<parm.length;i++){
+                if(i!=0){
+                    tmp += ","+parm[i] ;
+                }else{
+                    tmp +=parm[i] ;
+                }
+
+            }
+
+            sql = "select "+tmp+" from " +table+" where "+where ;
+            ResultSet rs = sm.executeQuery(sql) ;
+
+            while(rs.next()){
+                int value = 0 ;
+                if(rs.getString(2)!=null){
+                    value = Integer.parseInt(rs.getString(2)) ;
+                }
+                result +=rs.getString(1)+value ;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 释放资源
+            closeAll();
+        }
+        return result;
+    }
+
+
+
+
+
+
+
+
+
     public  static void main(String ags[]) throws SQLException{
 
         DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602") ;
 
-        HashMap<String,Integer> r = db.select() ;
+//        HashMap<String,Integer> r = db.select() ;
+//
+//        System.out.println(r.get("tiemdelay"));
 
-        System.out.println(r.get("tiemdelay"));
+        String [] p= new String[2];
+        p[0] = "1" ;
+        p[1] = "2" ;
+        db.executeQueryRS("select * from  ltepci_degree_condition",p) ;
+
+
+
+
 
     }
 
