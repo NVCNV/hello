@@ -37,7 +37,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -205,7 +207,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -328,7 +332,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -429,7 +435,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -583,16 +591,37 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) voltemctime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctimey,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = 1 THEN
-         |			callduration
+         |		callduration
          |		ELSE
          |			0
          |		END
          |	) voltevdtime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtimey,
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
@@ -777,12 +806,33 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctimey,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
          |		AND ServiceType = 1 THEN
-         |			callduration
+         |		callduration
          |		ELSE
          |			0
          |		END
          |	) voltevdtime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtimey,
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
@@ -906,7 +956,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1153,7 +1205,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1375,7 +1429,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1488,7 +1544,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(voltevdatt),
          |	sum(voltetime),
          |	sum(voltemctime),
-         |	sum(voltevdtime),
+         |	sum(voltemctimey),
+         |  sum(voltevdtime),
+         |  sum(voltevdtimey),
          |	sum(voltemchandover),
          |	sum(volteanswer),
          |	sum(voltevdhandover),
@@ -1566,7 +1624,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1729,7 +1789,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1847,7 +1909,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -1943,7 +2007,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -2096,12 +2162,33 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctimey,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
          |		AND ServiceType = 1 THEN
-         |			callduration
+         |		callduration
          |		ELSE
          |			0
          |		END
          |	) voltevdtime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtimey,
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
@@ -2281,12 +2368,33 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctimey,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
          |		AND ServiceType = 1 THEN
-         |			callduration
+         |		callduration
          |		ELSE
          |			0
          |		END
          |	) voltevdtime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtimey,
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
@@ -2405,7 +2513,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -2647,7 +2757,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -2864,7 +2976,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdatt,
          |	0 AS voltetime,
          |	0 AS voltemctime,
-         |	0 AS voltevdtime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
          |	0 AS voltemchandover,
          |	0 AS volteanswer,
          |	0 AS voltevdhandover,
@@ -2972,7 +3086,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(voltevdatt),
          |	sum(voltetime),
          |	sum(voltemctime),
-         |	sum(voltevdtime),
+         |	sum(voltemctimey),
+         |  sum(voltevdtime),
+         |  sum(voltevdtimey),
          |	sum(voltemchandover),
          |	sum(volteanswer),
          |	sum(voltevdhandover),
