@@ -164,26 +164,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	 $DDB.TB_XDR_IFC_UU
          |WHERE
@@ -289,26 +270,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$DDB.TB_XDR_IFC_X2
          |WHERE
@@ -392,26 +354,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -491,26 +434,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -693,17 +617,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
@@ -712,15 +625,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	) voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -904,17 +809,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
@@ -923,15 +817,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	) voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_mw
          |WHERE
@@ -942,255 +828,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	imsi,
          |	msisdn,
          |	desteci
-       """.stripMargin)
-
-    val s1_u_http = sql(
-      s"""
-         |SELECT
-         |	imsi,
-         |	msisdn,
-         |	(ECGI) CELLID,
-         |	0 AS voltemcsucc,
-         |	0 AS voltemcatt,
-         |	0 AS voltevdsucc,
-         |	0 AS voltevdatt,
-         |	0 AS voltetime,
-         |	0 AS voltemctime,
-         |	0 AS voltemctimey,
-         |  0 AS voltevdtime,
-         |  0 AS voltevdtimey,
-         |	0 AS voltemchandover,
-         |	0 AS volteanswer,
-         |	0 AS voltevdhandover,
-         |	0 AS voltevdanswer,
-         |	0 AS srvccsucc,
-         |	0 AS srvccatt,
-         |	0 AS srvcctime,
-         |	0 AS lteswsucc,
-         |	0 AS lteswatt,
-         |	0 AS srqatt,
-         |	0 AS srqsucc,
-         |	0 AS tauatt,
-         |	0 AS tausucc,
-         |	0 AS rrcrebuild,
-         |	0 AS rrcsucc,
-         |	0 AS rrcreq,
-         |	0 AS imsiregatt,
-         |	0 AS imsiregsucc,
-         |	0 AS wirelessdrop,
-         |	0 AS wireless,
-         |	0 AS eabdrop,
-         |	0 AS eab,
-         |	0 AS eabs1swx,
-         |	0 AS eabs1swy,
-         |	0 AS s1tox2swx,
-         |	0 AS s1tox2swy,
-         |	0 AS enbx2swx,
-         |	0 AS enbx2swy,
-         |	0 AS uuenbswx,
-         |	0 AS uuenbswy,
-         |	0 AS uuenbinx,
-         |	0 AS uuenbiny,
-         |	0 AS swx,
-         |	0 AS swy,
-         |	0 AS attachx,
-         |	0 AS attachy,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pagereq,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPFIRSTREDE != 0
-         |		AND HTTPFIRSTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pageresp,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			CASE
-         |		WHEN TCPATTNUM > 0 THEN
-         |			HTTPLASTREDE + TCPESTABREDE + TCPESTABDECONF + TCPFIRSTREDE
-         |		WHEN TCPATTNUM = 0 THEN
-         |			HTTPLASTREDE
-         |		END
-         |		END
-         |	) pageshowtimeall,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPFIRSTREDE != 0
-         |		AND HTTPFIRSTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			CASE
-         |		WHEN TCPATTNUM > 0 THEN
-         |			HTTPFIRSTREDE + TCPESTABREDE + TCPESTABDECONF + TCPFIRSTREDE
-         |		WHEN TCPATTNUM = 0 THEN
-         |			HTTPFIRSTREDE
-         |		END
-         |		END
-         |	) pageresptimeall,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pageshowsucc,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103 THEN
-         |			DLData / 1024
-         |		END
-         |	) httpdownflow,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			HTTPLASTREDE - HTTPFIRSTREDE
-         |		END
-         |	) httpdowntime,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 107 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) mediareq,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 107
-         |		AND APPSTATUS = 0 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) mediasucc,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPE = 5 THEN
-         |			DLData / 1024
-         |		END
-         |	) mediadownflow,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPE = 5 THEN
-         |			PROCEDUREENDTIME - PROCEDURESTARTTIME
-         |		END
-         |	) mediadowntime,
-         |	0 AS voltesucc,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 15 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) browse_download_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND (
-         |			APPTYPECODE = 103
-         |			OR APPTYPECODE = 107
-         |		)
-         |		AND APPTYPE = 5 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) video_service_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 108
-         |		AND APPTYPE = 1 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) instant_message_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 7 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) app_visits,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 15 THEN
-         |			DLDATA
-         |		END
-         |	) browse_download_business,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND (
-         |			APPTYPECODE = 103
-         |			OR APPTYPECODE = 107
-         |		)
-         |		AND APPTYPE = 5 THEN
-         |			DLDATA
-         |		END
-         |	) video_service_business,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 108
-         |		AND APPTYPE = 1 THEN
-         |			DLDATA
-         |		END
-         |	) instant_message_business,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 7 THEN
-         |			DLDATA
-         |		END
-         |	) app_business
-         |FROM
-         |	$SDB.TB_XDR_IFC_HTTP
-         |WHERE
-         |	dt = $ANALY_DATE
-         |AND h = $ANALY_HOUR
-         |GROUP BY
-         |	imsi,
-         |	msisdn,
-         |	ECGI
        """.stripMargin)
 
     val s1mme = sql(
@@ -1386,26 +1023,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -1468,26 +1086,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	(
          |		SELECT DISTINCT
@@ -1529,7 +1128,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	CELLID
        """.stripMargin)
 
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1_u_http).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -1583,26 +1182,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(pagereq),
-         |	sum(pageresp),
-         |	sum(pageshowtimeall),
-         |	sum(pageresptimeall),
-         |	sum(pageshowsucc),
-         |	sum(httpdownflow),
-         |	sum(httpdowntime),
-         |	sum(mediareq),
-         |	sum(mediasucc),
-         |	sum(mediadownflow),
-         |	sum(mediadowntime),
-         |	sum(voltesucc),
-         |	sum(browse_download_visits),
-         |	sum(video_service_visits),
-         |	sum(instant_message_visits),
-         |	sum(app_visits),
-         |	sum(browse_download_business),
-         |	sum(video_service_business),
-         |	sum(instant_message_business),
-         |	sum(app_business)
+         |	sum(voltesucc)
          |from temp_kpi
          |group by imsi,
          |	msisdn,
@@ -1751,26 +1331,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_UU
          |WHERE
@@ -1871,26 +1432,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_X2
          |WHERE
@@ -1969,26 +1511,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -2063,26 +1586,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -2279,15 +1783,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	) voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -2466,17 +1962,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
@@ -2485,15 +1970,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	) voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -2502,250 +1979,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |AND h = $ANALY_HOUR
          |GROUP BY
          |	desteci
-       """.stripMargin)
-    val s1_u_http = sql(
-      s"""
-         |SELECT
-         |	(ECGI)  AS CELLID,
-         |	0 AS voltemcsucc,
-         |	0 AS voltemcatt,
-         |	0 AS voltevdsucc,
-         |	0 AS voltevdatt,
-         |	0 AS voltetime,
-         |	0 AS voltemctime,
-         |	0 AS voltemctimey,
-         |  0 AS voltevdtime,
-         |  0 AS voltevdtimey,
-         |	0 AS voltemchandover,
-         |	0 AS volteanswer,
-         |	0 AS voltevdhandover,
-         |	0 AS voltevdanswer,
-         |	0 AS srvccsucc,
-         |	0 AS srvccatt,
-         |	0 AS srvcctime,
-         |	0 AS lteswsucc,
-         |	0 AS lteswatt,
-         |	0 AS srqatt,
-         |	0 AS srqsucc,
-         |	0 AS tauatt,
-         |	0 AS tausucc,
-         |	0 AS rrcrebuild,
-         |	0 AS rrcsucc,
-         |	0 AS rrcreq,
-         |	0 AS imsiregatt,
-         |	0 AS imsiregsucc,
-         |	0 AS wirelessdrop,
-         |	0 AS wireless,
-         |	0 AS eabdrop,
-         |	0 AS eab,
-         |	0 AS eabs1swx,
-         |	0 AS eabs1swy,
-         |	0 AS s1tox2swx,
-         |	0 AS s1tox2swy,
-         |	0 AS enbx2swx,
-         |	0 AS enbx2swy,
-         |	0 AS uuenbswx,
-         |	0 AS uuenbswy,
-         |	0 AS uuenbinx,
-         |	0 AS uuenbiny,
-         |	0 AS swx,
-         |	0 AS swy,
-         |	0 AS attachx,
-         |	0 AS attachy,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pagereq,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPFIRSTREDE != 0
-         |		AND HTTPFIRSTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pageresp,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			CASE
-         |		WHEN TCPATTNUM > 0 THEN
-         |			HTTPLASTREDE + TCPESTABREDE + TCPESTABDECONF + TCPFIRSTREDE
-         |		WHEN TCPATTNUM = 0 THEN
-         |			HTTPLASTREDE
-         |		END
-         |		END
-         |	) pageshowtimeall,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPFIRSTREDE != 0
-         |		AND HTTPFIRSTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			CASE
-         |		WHEN TCPATTNUM > 0 THEN
-         |			HTTPFIRSTREDE + TCPESTABREDE + TCPESTABDECONF + TCPFIRSTREDE
-         |		WHEN TCPATTNUM = 0 THEN
-         |			HTTPFIRSTREDE
-         |		END
-         |		END
-         |	) pageresptimeall,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) pageshowsucc,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103 THEN
-         |			DLData / 1024
-         |		END
-         |	) httpdownflow,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND HTTPLASTREDE != 0
-         |		AND HTTPLASTREDE != 'FFFFFFFFFFFFFF1' THEN
-         |			HTTPLASTREDE - HTTPFIRSTREDE
-         |		END
-         |	) httpdowntime,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 107 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) mediareq,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 107
-         |		AND APPSTATUS = 0 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) mediasucc,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPE = 5 THEN
-         |			DLData / 1024
-         |		END
-         |	) mediadownflow,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPE = 5 THEN
-         |			PROCEDUREENDTIME - PROCEDURESTARTTIME
-         |		END
-         |	) mediadowntime,
-         |	0 AS voltesucc,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 15 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) browse_download_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND (
-         |			APPTYPECODE = 103
-         |			OR APPTYPECODE = 107
-         |		)
-         |		AND APPTYPE = 5 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) video_service_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 108
-         |		AND APPTYPE = 1 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) instant_message_visits,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 7 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) app_visits,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 15 THEN
-         |			DLDATA
-         |		END
-         |	) browse_download_business,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND (
-         |			APPTYPECODE = 103
-         |			OR APPTYPECODE = 107
-         |		)
-         |		AND APPTYPE = 5 THEN
-         |			DLDATA
-         |		END
-         |	) video_service_business,
-         |	sum(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 108
-         |		AND APPTYPE = 1 THEN
-         |			DLDATA
-         |		END
-         |	) instant_message_business,
-         |	count(
-         |		CASE
-         |		WHEN Interface = 11
-         |		AND APPTYPECODE = 103
-         |		AND APPTYPE = 7 THEN
-         |			DLDATA
-         |		END
-         |	) app_business
-         |FROM
-         |	$SDB.TB_XDR_IFC_HTTP
-         |WHERE
-         |	dt = $ANALY_DATE
-         |AND h = $ANALY_HOUR
-         |GROUP BY
-         |	ECGI
        """.stripMargin)
     val s1mme = sql(
       s"""
@@ -2938,26 +2171,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -3015,26 +2229,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
-         |	0 AS voltesucc,
-         |	0 AS browse_download_visits,
-         |	0 AS video_service_visits,
-         |	0 AS instant_message_visits,
-         |	0 AS app_visits,
-         |	0 AS browse_download_business,
-         |	0 AS video_service_business,
-         |	0 AS instant_message_business,
-         |	0 AS app_business
+         |	0 AS voltesucc
          |FROM
          |	(
          |		SELECT DISTINCT
@@ -3074,7 +2269,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	CELLID
        """.stripMargin)
 
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1_u_http).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -3125,26 +2320,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(pagereq),
-         |	sum(pageresp),
-         |	sum(pageshowtimeall),
-         |	sum(pageresptimeall),
-         |	sum(pageshowsucc),
-         |	sum(httpdownflow),
-         |	sum(httpdowntime),
-         |	sum(mediareq),
-         |	sum(mediasucc),
-         |	sum(mediadownflow),
-         |	sum(mediadowntime),
-         |	sum(voltesucc),
-         |	sum(browse_download_visits),
-         |	sum(video_service_visits),
-         |	sum(instant_message_visits),
-         |	sum(app_visits),
-         |	sum(browse_download_business),
-         |	sum(video_service_business),
-         |	sum(instant_message_business),
-         |	sum(app_business)
+         |	sum(voltesucc)
          |FROM
          |	temp_kpi
          |GROUP BY

@@ -74,17 +74,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(pagereq),
-         |	sum(pageresp),
-         |	sum(pageshowtimeall),
-         |	sum(pageresptimeall),
-         |	sum(pageshowsucc),
-         |	sum(httpdownflow),
-         |	sum(httpdowntime),
-         |	sum(mediareq),
-         |	sum(mediasucc),
-         |	sum(mediadownflow),
-         |	sum(mediadowntime)
+         |	sum(voltesucc)
          |from volte_gt_user_ana_base60
          |where dt=$ANALY_DATE
          |group by
@@ -149,17 +139,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(pagereq),
-         |	sum(pageresp),
-         |	sum(pageshowtimeall),
-         |	sum(pageresptimeall),
-         |	sum(pageshowsucc),
-         |	sum(httpdownflow),
-         |	sum(httpdowntime),
-         |	sum(mediareq),
-         |	sum(mediasucc),
-         |	sum(mediadownflow),
-         |	sum(mediadowntime)
+         |	sum(voltesucc)
          |FROM
          |volte_gt_cell_ana_base60
          |where dt=$ANALY_DATE
