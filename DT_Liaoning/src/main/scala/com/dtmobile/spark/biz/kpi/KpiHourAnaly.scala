@@ -1764,17 +1764,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS pagereq,
-         |	0 AS pageresp,
-         |	0 AS pageshowtimeall,
-         |	0 AS pageresptimeall,
-         |	0 AS pageshowsucc,
-         |	0 AS httpdownflow,
-         |	0 AS httpdowntime,
-         |	0 AS mediareq,
-         |	0 AS mediasucc,
-         |	0 AS mediadownflow,
-         |	0 AS mediadowntime,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
