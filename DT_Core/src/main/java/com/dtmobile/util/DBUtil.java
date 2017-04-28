@@ -277,33 +277,17 @@ public class DBUtil {
     }
 
 
-    public String select(String table,String[] parm,String where) {
-
+    public String select(String table,String where) {
         connnection = this.getConnection() ;
         String result = "" ;
         Statement sm = null;
         try {
             sm = connnection.createStatement();
             String sql = "" ;
-            String tmp = "" ;
-            for(int i=0;i<parm.length;i++){
-                if(i!=0){
-                    tmp += ","+parm[i] ;
-                }else{
-                    tmp +=parm[i] ;
-                }
-
-            }
-
-            sql = "select "+tmp+" from " +table+" where "+where ;
+            sql = "select operator,value from " +table+" where field="+where ;
             ResultSet rs = sm.executeQuery(sql) ;
-
             while(rs.next()){
-                int value = 0 ;
-                if(rs.getString(2)!=null){
-                    value = Integer.parseInt(rs.getString(2)) ;
-                }
-                result +=rs.getString(1)+value ;
+                result +=rs.getString(1)+rs.getString(2) ;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -313,6 +297,7 @@ public class DBUtil {
         }
         return result;
     }
+
 
 
 
