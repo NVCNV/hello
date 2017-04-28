@@ -29,12 +29,12 @@
         <repository>
             <id>nexus-releases</id>
             <name>Local Nexus Repository</name>
-            <url>http://172.30.4.120:8081/repository/maven-releases/</url>
+            <url>http://172.30.4.120:9081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Local Nexus Repository</name>
-            <url>http://172.30.4.120:8081/repository/maven-snapshots/</url>
+            <url>http://172.30.4.120:9081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <repositories>
