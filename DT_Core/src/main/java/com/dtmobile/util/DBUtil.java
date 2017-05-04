@@ -1,12 +1,6 @@
 package com.dtmobile.util;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +13,18 @@ import java.util.Map;
  */
 public class DBUtil {
 
-    private static final String DRIVER = "oracle.jdbc.OracleDriver";
-    private static final String URLSTR = "jdbc:oracle:thin:@172.30.4.159:1521:umv602";
+    private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
+    private String URLSTR ;
     private static final String USERNAME = "scott";
     private static final String USERPASSWORD = "tiger";
     private Connection connnection = null;
     private PreparedStatement preparedStatement = null;
     private CallableStatement callableStatement = null;
     private ResultSet resultSet = null;
+    public DBUtil(String url)
+    {
+        this.URLSTR=url;
+    }
     static {
         try {
             // 加载数据库驱动程序
@@ -128,7 +126,7 @@ public class DBUtil {
      * @return List
      * 结果集
      */
-    public List<Object> excuteQuery(String sql, Object[] params) {
+    public HashMap<String,String> excuteQuery(String sql, String[] params) {
         // 执行SQL获得结果集
         ResultSet rs = executeQueryRS(sql, params);
 
@@ -147,16 +145,16 @@ public class DBUtil {
         }
 
         // 创建List
-        List<Object> list = new ArrayList<Object>();
+        HashMap<String, String> map = new HashMap<String, String>();
 
         try {
             // 将ResultSet的结果保存到List中
             while (rs.next()) {
-                Map<String, Object> map = new HashMap<String, Object>();
+
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(rsmd.getColumnLabel(i), rs.getObject(i));
+                    map.put(rsmd.getColumnLabel(i), rs.getString(i));
                 }
-                list.add(map);
+
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -165,7 +163,7 @@ public class DBUtil {
             closeAll();
         }
 
-        return list;
+        return map;
     }
 
     /**
@@ -250,4 +248,83 @@ public class DBUtil {
             }
         }
     }
+
+    public HashMap<String,Integer> select() {
+
+        connnection = this.getConnection() ;
+
+        HashMap<String,Integer> result = new HashMap<String,Integer>() ;
+
+        Statement sm = null;
+        try {
+            sm = connnection.createStatement();
+            ResultSet rs = sm.executeQuery("select field,value from data_threshold") ;
+
+            while(rs.next()){
+                int value = 0 ;
+                if(rs.getString(2)!=null){
+                    value = Integer.parseInt(rs.getString(2)) ;
+                }
+                result.put(rs.getString(1),value) ;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 释放资源
+            closeAll();
+        }
+        return result;
+    }
+
+
+    public String select(String table,String where) {
+        connnection = this.getConnection() ;
+        String result = "" ;
+        Statement sm = null;
+        try {
+            sm = connnection.createStatement();
+            String sql = "" ;
+            sql = "select operator,value from " +table+" where field="+where ;
+            ResultSet rs = sm.executeQuery(sql) ;
+            while(rs.next()){
+                result +=rs.getString(1)+rs.getString(2) ;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 释放资源
+            closeAll();
+        }
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+    public  static void main(String ags[]) throws SQLException{
+
+        DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602") ;
+
+//        HashMap<String,Integer> r = db.select() ;
+//
+//        System.out.println(r.get("tiemdelay"));
+
+        String [] p= new String[2];
+        p[0] = "1" ;
+        p[1] = "2" ;
+        db.executeQueryRS("select * from  ltepci_degree_condition",p) ;
+
+
+
+
+
+    }
+
+
 }

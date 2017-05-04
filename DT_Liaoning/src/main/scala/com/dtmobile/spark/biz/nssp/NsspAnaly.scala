@@ -65,6 +65,12 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
 
     sql(
       s"""
+         |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+
+    sql(
+      s"""
          |SELECT
          | x2. LENGTH,
          | x2.CITY,
