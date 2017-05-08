@@ -1,9 +1,11 @@
-package com.damobile.morpho
+package com.dtmobile.spark.biz.gridanalyse
+
 import org.apache.spark.sql.{SaveMode, SparkSession}
+
 /**
   * Created by shenkaili on 17-5-2.
   */
-class Weakcover(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String) {
+class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
 
 //  field_name = 'PoorCoverageRSRPTh'
   var poorRSRPOp="<"

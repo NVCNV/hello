@@ -1,10 +1,11 @@
-package com.damobile.morpho
+package com.dtmobile.spark.biz.gridanalyse
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
+
 /**
   * Created by shenkaili on 17-5-2.
   */
-class Overcover(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String) {
+class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
 //  ltecover_degree_condition
 //  adjDisturbRSRP
   var adjDisturbRSRPOp = '='
