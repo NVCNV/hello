@@ -18,7 +18,8 @@ trait Analyse {
 
    def init() = {
     val conf = new SparkConf().setAppName(appName).setMaster(master)
-    val sparkSession = SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
+    //val sparkSession = SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
+    val sparkSession = SparkSessionSingleton.getInstance(conf)
     sparkSession
 }
 
