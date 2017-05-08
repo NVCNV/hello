@@ -2735,8 +2735,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
          |	) updiststrox,
          |	sum(
-         |		updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10
-         |	) updiststroy,
+         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
+         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
+         | ) updiststroy,
          |	MAX(upsigrateavgmax),
          |	sum(upsigrateavgx),
          |	sum(upsigrateavgy),
@@ -3161,8 +3162,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
          |	) updiststrox,
          |	sum(
-         |		updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10
-         |	) updiststroy,
+         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
+         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
+         | ) updiststroy,
          |	MAX(upsigrateavgmax),
          |	sum(upsigrateavgx),
          |	sum(upsigrateavgy),
