@@ -13,10 +13,8 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
 
   }
   def mrfilter(sparkSession: SparkSession): Unit ={
-    val conf=new SparkConf().setMaster("local").setAppName("wc").set("spark.testing.memory", "509522560").set("spark.driver.memory","109522560")
-    val sc=new SparkContext(conf)
-    val sd=SparkSessionSingleton.getInstance(conf)
-    val CellDF = SparkSessionSingleton.getInstance(conf).read
+
+    val CellDF = sparkSession.read
       .format("jdbc")
       .option("url", "jdbc:oracle:thin:@172.30.4.187:1521:morpho0307")
       .option("dbtable", "grid_view")
