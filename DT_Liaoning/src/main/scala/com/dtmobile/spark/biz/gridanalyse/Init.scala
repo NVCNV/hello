@@ -23,10 +23,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load()
-    val CellTable = CellDF.createOrReplaceTempView("ltecell_tmp")
-    val CellTableData = sd.sql("select m.shape from  ltecell_tmp m limit 10")
-    CellTableData.show()
+      .load().createOrReplaceTempView("grid_view")
     import sparkSession.sql
     sql(
       s"""
@@ -41,9 +38,9 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          | , t1.KPI27, t1.KPI28, t1.KPI29,t2.OBJECTID
          |FROM lte_mro_source t1 left join grid_view t2 WHERE t1.mrname = 'MR.LteScRSRP' and t1.GRIDCENTERLONGITUDE > t2.shapeminx and t1.GRIDCENTERLONGITUDE < t2.shapemaxx
          |            and t1.GRIDCENTERLATITUDE > t2.shapeminy
-         |            and t1.GRIDCENTERLATITUDE < t2.shapemaxy and (ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x
+         |            and t1.GRIDCENTERLATITUDE < t2.shapemaxy and ((ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x
          |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y)   or  (ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x1
-         |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y1)
+         |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y1)) and dt="$ANALY_DATE" and h="$ANALY_HOUR"
        """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
   }
   def lte2lteadj(sparkSession: SparkSession): Unit ={
