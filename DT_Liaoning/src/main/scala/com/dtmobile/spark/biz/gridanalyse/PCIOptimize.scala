@@ -41,11 +41,12 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
     DifSeqSql
   }
 
-    val genDisPreRsrpDifSeqValueSql = GenDisPreRsrpDifSeqValueSql("t.kpi1","t.kpi2")
+
 //    val genDisPreRsrpDifSeqSql=GenDisPreRsrpDifSeqSql
 
   def analyse(implicit sparkSession: SparkSession): Unit= {
     import sparkSession.sql
+    val genDisPreRsrpDifSeqValueSql = GenDisPreRsrpDifSeqValueSql("t.kpi1","t.kpi2")
     val t = sql("select operator,value from ltepci_degree_condition where field = 'cellrsrpcoverth'").collectAsList()
     val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getDecimal(1)
     val t2 = sql("select operator,value from ltepci_degree_condition where field = 'adjcellrsrpeffectiveth'").collectAsList()
