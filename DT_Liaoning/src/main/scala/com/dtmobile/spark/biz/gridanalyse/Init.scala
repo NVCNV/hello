@@ -64,7 +64,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          |WHERE a.cellId = c1.cellId
          | AND a.eNodeBId = c1.eNodeBId
          | AND a.adjCellId = c2.cellId
-         | AND a.adjENodeBId = c2.eNodeBId and dt="$ANALY_DATE" and h="$ANALY_HOUR" and dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         | AND a.adjENodeBId = c2.eNodeBId and dt="$ANALY_DATE" and h="$ANALY_HOUR"
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte2lteadj_pci/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
   def InDoorAna(sparkSession: SparkSession): Unit ={
@@ -156,8 +156,9 @@ def TableUtil(sc: SparkSession): Unit ={
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load()
+    .load().cache().createOrReplaceTempView("ltepci_degree_condition")
 
+  sc.sql(s"use $DDB")
   sc.sql(
     s"""
        |select cellid,freq1,pci,tcellid,tenbid,d from
