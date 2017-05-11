@@ -3,46 +3,130 @@
   */
 package com.dtmobile.spark.biz.gridanalyse
 
+import java.math.BigDecimal
+
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
 
   var PoorCoverageRSRPTh:String ="-110"
-  var sinrulth:String ="-3"
-  var poorUEpowerTh:String ="3"
-  var packetlossrateulth:String ="0.02"
-  var packetlossratedlth:String ="0.02"
-  var adjDisturbRSRP:String ="-10"
-  var recovercount:String ="3"
-  var adjstrongDisturb:String ="30"
-  var receivedip:String ="-110"
-
   var PoorCoverageRSRPThOp:String ="<"
+  var sinrulth:String ="-3"
   var sinrulthOp:String ="<"
+  var poorUEpowerTh:String ="3"
   var poorUEpowerThOp:String ="<"
+  var packetlossrateulth:String ="0.02"
   var packetlossrateulthOp:String =">"
+  var packetlossratedlth:String ="0.02"
   var packetlossratedlthOp:String =">"
+  var adjDisturbRSRP:String ="-10"
   var adjDisturbRSRPOp:String ="="
+  var recovercount:String ="3"
   var recovercountOp:String ="="
+  var adjstrongDisturb:String ="30"
   var adjstrongDisturbOp:String ="="
+  var receivedip:String ="-110"
   var receivedipOp:String =">"
-
-  var moduluservertoadjrsrpOp:String ="<"
   var moduluservertoadjrsrp:String ="6"
-  var adjcellnumOp:String =">="
+  var moduluservertoadjrsrpOp:String ="<"
   var adjcellnum:String ="3"
-  var servercelltoadjcellrsrplOp:String =">="
+  var adjcellnumOp:String =">="
   var servercelltoadjcellrsrpl:String ="0"
-  var GoodCoverageRSRPThOp:String =">="
+  var servercelltoadjcellrsrplOp:String =">="
   var GoodCoverageRSRPTh:String ="-80"
-  var undefinedadjcellrsrpOp:String =">"
+  var GoodCoverageRSRPThOp:String =">="
   var undefinedadjcellrsrp:String ="-110"
-  var adjcellrsrpOp:String ="<"
+  var undefinedadjcellrsrpOp:String =">"
   var adjcellrsrp:String ="-110"
-  var servercelltoadjcellrsrphOp:String ="<"
+  var adjcellrsrpOp:String ="<"
   var servercelltoadjcellrsrph:String ="5"
-  var undefinedrelationrsrpOp:String =">"
+  var servercelltoadjcellrsrphOp:String ="<"
   var undefinedrelationrsrp:String ="3"
+  var undefinedrelationrsrpOp:String =">"
+
+  def getCondition(implicit sparkSession: SparkSession) :Int = {
+    import sparkSession.sql
+
+    val rs:Int = 1
+    val t = sql("select FIELD,OPERATOR,VALUE from ltepci_degree_condition").collectAsList()
+    var i = 0
+    var field = ""
+    val size = t.size()-1
+    if ( !t.isEmpty ) {
+      for ( i <- 0 to size ) {
+        field = t.get(i).getString(0)
+        if (field.equals("PoorCoverageRSRPTh")) {
+          PoorCoverageRSRPTh = t.get(i).getDecimal(2).toString
+          PoorCoverageRSRPThOp = t.get(i).getString(1)
+        }
+        else if (field.equals("sinrulth")) {
+          sinrulth = t.get(i).getDecimal(2).toString
+          sinrulthOp = t.get(i).getString(1)
+        }
+        else if (field.equals("poorUEpowerTh")) {
+          poorUEpowerTh = t.get(i).getDecimal(2).toString
+          poorUEpowerThOp = t.get(i).getString(1)
+        }
+        else if (field.equals("packetlossrateulth")) {
+          packetlossrateulth = t.get(i).getDecimal(2).toString
+          packetlossrateulthOp = t.get(i).getString(1)
+        }
+        else if (field.equals("packetlossratedlth")) {
+          packetlossratedlth = t.get(i).getDecimal(2).toString
+          packetlossratedlthOp = t.get(i).getString(1)
+        }
+        else if (field.equals("adjDisturbRSRP")) {
+          adjDisturbRSRP = t.get(i).getDecimal(2).toString
+          adjDisturbRSRPOp = t.get(i).getString(1)
+        }
+        else if (field.equals("recovercount")) {
+          recovercount = t.get(i).getDecimal(2).toString
+          recovercountOp = t.get(i).getString(1)
+        }
+        else if (field.equals("adjstrongDisturb")) {
+          adjstrongDisturb = t.get(i).getDecimal(2).toString
+          adjstrongDisturbOp = t.get(i).getString(1)
+        }
+        else if (field.equals("receivedipowerth")) {
+          receivedip = t.get(i).getDecimal(2).toString
+          receivedipOp = t.get(i).getString(1)
+        }
+        else if (field.equals("moduluservertoadjrsrp")) {
+          moduluservertoadjrsrp = t.get(i).getDecimal(2).toString
+          moduluservertoadjrsrpOp = t.get(i).getString(1)
+        }
+        else if (field.equals("adjcellnum")) {
+          adjcellnum = t.get(i).getDecimal(2).toString
+          adjcellnumOp = t.get(i).getString(1)
+        }
+        else if (field.equals("servercelltoadjcellrsrpl")) {
+          servercelltoadjcellrsrpl = t.get(i).getDecimal(2).toString
+          servercelltoadjcellrsrplOp = t.get(i).getString(1)
+        }
+        else if (field.equals("GoodCoverageRSRPTh")) {
+          GoodCoverageRSRPTh = t.get(i).getDecimal(2).toString
+          GoodCoverageRSRPThOp = t.get(i).getString(1)
+        }
+        else if (field.equals("undefinedadjcellrsrp")) {
+          undefinedadjcellrsrp = t.get(i).getDecimal(2).toString
+          undefinedadjcellrsrpOp = t.get(i).getString(1)
+        }
+        else if (field.equals("adjcellrsrp")) {
+          adjcellrsrp = t.get(i).getDecimal(2).toString
+          adjcellrsrpOp = t.get(i).getString(1)
+        }
+        else if (field.equals("servercelltoadjcellrsrph")) {
+          servercelltoadjcellrsrph = t.get(i).getDecimal(2).toString
+          servercelltoadjcellrsrphOp = t.get(i).getString(1)
+        }
+        else if (field.equals("undefinedrelationrsrp")) {
+          undefinedrelationrsrp = t.get(i).getDecimal(2).toString
+          undefinedrelationrsrpOp = t.get(i).getString(1)
+        }
+      }
+    }
+    rs
+   }
 
   def getqciKpi(i : Int) : String ={
     s"""SUM (CASE WHEN t.kpi$i >= 0 AND t.kpi$i <= 27 AND t.MRNAME = 'MR.LteScRIP0' THEN 1 ELSE 0 END)
@@ -185,6 +269,8 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
 
   def analyse(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
+
+    getCondition(sparkSession)
 
     sql(s"use $DDB")
     //    |insert into lte_mrs_dlbestrow_grid_ana60(oid,starttime,endtime,timeseq,enodebid,cellid,gridcenterlongitude,gridcenterlatitude,
