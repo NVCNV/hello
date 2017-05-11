@@ -33,11 +33,12 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
   var AdjStrongDisturbRateThreshold = 0.05*100
 
-  def analyse(sparkSession: SparkSession): Unit =
+  def analyse(implicit sparkSession: SparkSession): Unit =
   {
 
 
     import sparkSession.sql
+    sql(s"use $DDB")
     sql(
       s"""alter table lte_mrs_dlbestrow_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
         """.stripMargin)
