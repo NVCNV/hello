@@ -73,5 +73,6 @@ class TableUtil(url:String, dataBase:String, conf:SparkConf) {
     .load().cache().createOrReplaceTempView("ltepci_degree_condition")
 
 //  sc.sql("select * from  ltepci_degree_condition").show()
+  //  sc.sql("select * from  ltepci_degree_condition").show()
 
 }
