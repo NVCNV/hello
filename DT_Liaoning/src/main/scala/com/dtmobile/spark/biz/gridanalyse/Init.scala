@@ -9,10 +9,11 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   */
 class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
+    InitLteCell(sparkSession)
     mrfilter(sparkSession)
     lte2lteadj(sparkSession)
     InDoorAna(sparkSession)
-    InitLteCell(sparkSession)
+
 
   }
   def mrfilter(sparkSession: SparkSession): Unit ={
