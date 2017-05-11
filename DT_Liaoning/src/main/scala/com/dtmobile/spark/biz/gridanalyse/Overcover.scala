@@ -38,8 +38,8 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
   def analyse(implicit sparkSession: SparkSession): Unit =
   {
-    val t = sparkSession.sql("select OPERATOR , VALUE from ltepci_degree_condition where id=1").collectAsList()
-    val r=  t.get(0).getString(0)+t.get(0).getDecimal(1)
+//    val t = sparkSessionsql("select OPERATOR , VALUE from ltepci_degree_condition where id=1").collectAsList()
+//    val r=  t.get(0).getString(0)+t.get(0).getDecimal(1)
 
     import sparkSession.sql
     sql(s"use $DDB")

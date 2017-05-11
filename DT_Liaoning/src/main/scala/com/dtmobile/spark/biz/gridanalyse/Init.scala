@@ -12,7 +12,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
     InitLteCell(sparkSession)
     TableUtil(sparkSession)
     mrfilter(sparkSession)
-    lte2lteadj(sparkSession)
+    lte2lteadj_f(sparkSession)
     InDoorAna(sparkSession)
 
 
@@ -48,28 +48,22 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y1)) and dt="$ANALY_DATE" and h="$ANALY_HOUR"
        """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
   }
-  def lte2lteadj(sparkSession: SparkSession): Unit ={
+  def lte2lteadj_f(sparkSession: SparkSession): Unit ={
     import sparkSession.sql
-    sql(s"use $DDB")
-    sql(
-      s"""
-         |alter table lte2lteadj_pci add  if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-       """.stripMargin)
     sql(
       s"""
          |SELECT a.mmeGroupId, a.mmeId, a.eNodeBId, a.cellId, a.cellName
          | , c1.pci, c1.freq1, a.adjMmeGroupId, a.adjMmeId, a.adjENodeBId
-         | , a.adjCellId, a.adjCellName, c2.pci as c2pci, c2.freq1 as c2freq1
+         | , a.adjCellId, a.adjCellName, c2.pci as adjpci, c2.freq1 as adjfreq1
          |FROM lte2lteadj a, ltecell c1, ltecell c2
          |WHERE a.cellId = c1.cellId
          | AND a.eNodeBId = c1.eNodeBId
          | AND a.adjCellId = c2.cellId
-         | AND a.adjENodeBId = c2.eNodeBId and dt="$ANALY_DATE" and h="$ANALY_HOUR"
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte2lteadj_pci/dt=$ANALY_DATE/h=$ANALY_HOUR")
+         | AND a.adjENodeBId = c2.eNodeBId
+       """.stripMargin).cache().createOrReplaceTempView("lte2lteadj_pci")
   }
   def InDoorAna(sparkSession: SparkSession): Unit ={
     import sparkSession.sql
-    sql(s"use $DDB")
     sql(
       s"""
          |SELECT MMEUES1APID, enbID, CELLID, MrCount, VARI_TA
@@ -96,18 +90,19 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load().createOrReplaceTempView("ltecell")
+    sparkSession.sql(s"select * from ltecell").show()
   }
 
 def TableUtil(sc: SparkSession): Unit ={
 
-  val Lte2lteadj = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","lte2lteadj")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("lte2lteadj")
 
-  val Ltecover_degree_condition = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltecover_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
@@ -115,35 +110,35 @@ def TableUtil(sc: SparkSession): Unit ={
     .load().cache().createOrReplaceTempView("ltecover_degree_condition")
 
 
-  val ltedisturb_degree_condition = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+   sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltedisturb_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("ltedisturb_degree_condition")
 
-  val ltemrsegment_config = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltemrsegment_config")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("ltemrsegment_config")
 
-  val ltemrsegment_type = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltemrsegment_type")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("ltemrsegment_type")
 
-  val lteadjcell_degree_condition = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","lteadjcell_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("lteadjcell_degree_condition")
 
-  val ltepci_degree_condition = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+   sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltepci_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
@@ -151,14 +146,13 @@ def TableUtil(sc: SparkSession): Unit ={
     .load().cache().createOrReplaceTempView("ltepci_degree_condition")
 
 
-  val fill_tenbid_tcellid = sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+  sc.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
     .option("dbtable","ltepci_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("ltepci_degree_condition")
 
-  sc.sql(s"use $DDB")
   sc.sql(
     s"""
        |select cellid,freq1,pci,tcellid,tenbid,d from
