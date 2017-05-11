@@ -72,6 +72,30 @@ class TableUtil(url:String, dataBase:String, conf:SparkConf) {
     .option("driver", "oracle.jdbc.driver.OracleDriver")
     .load().cache().createOrReplaceTempView("ltepci_degree_condition")
 
+
+  val fill_tenbid_tcellid = sc.read.format("jdbc").option("url", oracleUrl)
+    .option("dbtable","ltepci_degree_condition")
+    .option("user", "scott")
+    .option("password", "tiger")
+    .option("driver", "oracle.jdbc.driver.OracleDriver")
+    .load()
+
+  sc.sql(
+    s"""
+       |select cellid,freq1,pci,tcellid,tenbid,d from
+       |(select cellid,freq1,pci,tcellid,tenbid,d,rank() over(partition by cellid,freq1,pci order by d ) as rank from
+       |(
+       |select t.cellid as cellid,a.cellid as tcellid,a.enodebid as tenbid,a.freq1,a.pci,a.latitude as alatitude,
+       |(POWER(ABS(a.LATITUDE-t.latitude), 2) + POWER(ABS(a.LONGITUDE-t.longitude), 2)) as d,
+       |a.longitude as alongitude,t.latitude as tlatitude,t.longitude as tlongitude
+       |from LTECell t,ltecell a where t.cellid!=a.cellid and t.freq1=a.freq1 and t.pci=a.pci
+       |)
+       |) where rank = 1
+     """.stripMargin).cache().createOrReplaceTempView("fill_tenbid_tcellid")
+
+
+//  sc.sql("select * from  fill_tenbid_tcellid").show()
+
 //  sc.sql("select * from  ltepci_degree_condition").show()
   //  sc.sql("select * from  ltepci_degree_condition").show()
 
