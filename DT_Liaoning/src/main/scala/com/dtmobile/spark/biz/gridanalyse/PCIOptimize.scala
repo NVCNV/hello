@@ -69,8 +69,7 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
                       |        left join lte2lteadj_pci T2 on T.cellId = T2.cellid and T2.adjpci = T.kpi12 and T2.adjfreq1 = T.kpi11
                       |		left join fill_tenbid_tcellid  f where f.cellid=t.cellid
                       |        group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid, t2.cellname,t2.adjenodebid,
-                      |        t2.adjcellID, t2.adjcellname,t.kpi11, t.kpi12,t.kpi9, t.kpi10
-       """.stripMargin
+                      |        t2.adjcellID, t2.adjcellname,t.kpi11, t.kpi12,t.kpi9, t.kpi10""".stripMargin
 
     sql(selectSql).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_DISTURB_PRETREATE60/dt=$ANALY_DATE/h=ANALY_HOUR")
 
