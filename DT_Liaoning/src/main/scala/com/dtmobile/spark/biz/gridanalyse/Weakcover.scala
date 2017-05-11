@@ -6,7 +6,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * Created by shenkaili on 17-5-2.
   */
 class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
-
+//  ltecover_degree_condition
 //  field_name = 'PoorCoverageRSRPTh'
   var poorRSRPOp="<"
   var poorRSRPTh="-110"
