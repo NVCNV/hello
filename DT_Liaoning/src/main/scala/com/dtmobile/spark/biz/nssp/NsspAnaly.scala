@@ -188,7 +188,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(
       s"""
          |SELECT
-         | UU. LENGTH,
+         | UU.LENGTH,
          | UU.CITY,
          | UU.INTERFACE,
          | UU.XDRID,

@@ -39,8 +39,11 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   def analyse(implicit sparkSession: SparkSession): Unit =
   {
     import sparkSession.sql
-    sql(s"alter table $DDB.lte_mrs_dlbestrow_ana60 add if not exists partition(dt='$ANALY_DATE',h='$ANALY_HOUR')")
     sql(
+      s"""
+        |alter table ${DDB}.lte_mrs_overcover_ana60 add if not exists partition(dt=${ANALY_DATE},h=${ANALY_HOUR})
+      """.stripMargin)
+    sparkSession.sql(
       s"""select s1.STARTTIME, s1.ENDTIME, s1.TIMESEQ, s1.MMEID, s1.ENODEBID, s1.CELLID, s1.CELLPCI,s1.CELLFREQ,s1.CELLNAME,
          |s1.TMMEGROUPID,s1.TMMEID,s2.tenbid,s2.tcellid, s1.TCELLNAME,s1.TCELLPCI, s1.TCELLFREQ,
          |s1.RSRPDIFABS ,s1.RSRPDifCount, s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERENCEINTENS,
@@ -61,12 +64,12 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |sum(case when t.kpi1>=0 and t.kpi2 >=0 and t.kpi1 -141 > $AdjAvailableRsrpTh  and t.kpi2 -141 > $AdjAvailableRsrpTh then 1 else 0 end) as adjeffectRSRPCount,
          |SUM (case when kpi9 - kpi11 = 0 and kpi2 > $AdjAvailableRsrpThreshold and t.kpi2 - t.kpi1 > $AdjDisturbRsrpDiffThreshold then 1 else 0 end) AS disturbMrNum,
          |SUM (case when kpi9 - kpi11 = 0 and kpi2 > $AdjAvailableRsrpThreshold then 1 else 0 end) AS disturbAvalableNum
-         |from (select * from lte_mro_source_ana_tmp where startTime is not null and mrname='MR.LteScRSRP') t
+         |from (select * from lte_mro_source_ana_tmp where STARTTIME is not null and mrname='MR.LteScRSRP') t
          |left join lte2lteadj_pci T2 on t.cellId = T2.cellid and T2.adjpci = t.kpi12 and T2.adjfreq1 = t.kpi11
          |group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid,t.kpi10,
          |t.kpi9,t2.cellname,t2.ADJMMEGROUPID,t2.ADJMMEID,
          |t2.ADJENODEBID,t2.adjcellID, t2.adjcellname, t.kpi11, t.kpi12)s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
-
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+         sql("select * from lte_mro_source_ana_tmp where STARTTIME is not null and mrname='MR.LteScRSRP'").show()
   }
 }
