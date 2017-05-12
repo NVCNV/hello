@@ -38,11 +38,8 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
   def analyse(implicit sparkSession: SparkSession): Unit =
   {
-//    val t = sparkSessionsql("select OPERATOR , VALUE from ltepci_degree_condition where id=1").collectAsList()
-//    val r=  t.get(0).getString(0)+t.get(0).getDecimal(1)
-
     import sparkSession.sql
-    sql(s"alter table $DDB.lte_mrs_dlbestrow_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+    sql(s"alter table $DDB.lte_mrs_dlbestrow_ana60 add if not exists partition(dt='$ANALY_DATE',h='$ANALY_HOUR')")
     sql(
       s"""select s1.STARTTIME, s1.ENDTIME, s1.TIMESEQ, s1.MMEID, s1.ENODEBID, s1.CELLID, s1.CELLPCI,s1.CELLFREQ,s1.CELLNAME,
          |s1.TMMEGROUPID,s1.TMMEID,s2.tenbid,s2.tcellid, s1.TCELLNAME,s1.TCELLPCI, s1.TCELLFREQ,
