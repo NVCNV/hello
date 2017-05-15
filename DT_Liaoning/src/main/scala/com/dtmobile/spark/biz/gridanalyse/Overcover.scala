@@ -76,7 +76,7 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     sql(
       s"""
          |select t.startTime as STARTTIME, t.endTime as ENDTIME, t.timeseq as TIMESEQ,
-         |t.mmecode as MMEID, t.enbid as ENODEBID, t.cellid as CELLID, t.kpi10 as CELLPCI,t.kpi9 as CELLFREQ,t2.cellname as CELLNAME,t2.ADJMMEGROUPID as TMMEGROUPID,t2.ADJMMEID as TMMEID,
+         |t.mmecode as MMEID,t.MMEGROUPID as MMEGROUPID, t.enbid as ENODEBID, t.cellid as CELLID, t.kpi10 as CELLPCI,t.kpi9 as CELLFREQ,t2.cellname as CELLNAME,t2.ADJMMEGROUPID as TMMEGROUPID,t2.ADJMMEID as TMMEID,
          |t2.ADJENODEBID as TENODEBID,t2.adjcellID as TCELLID, t2.adjcellname as TCELLNAME,(case when t.kpi12!= -1 then t.kpi12 else null end) as TCELLPCI,
          |(case when t.kpi11!= -1 then t.kpi11 else null end) as TCELLFREQ,
          |sum(case when t.kpi1>=0 and t.kpi2 >=0 then t.kpi1 - t.kpi2 end)as RSRPDIFABS,
@@ -93,7 +93,7 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |SUM (case when kpi9 - kpi11 = 0 and kpi2 > $AdjAvailableRsrpThreshold then 1 else 0 end) AS disturbAvalableNum
          |from (select * from lte_mro_source_ana_tmp where STARTTIME is not null and mrname='MR.LteScRSRP') t
          |left join lte2lteadj_pci T2 on t.cellId = T2.cellid and T2.adjpci = t.kpi12 and T2.adjfreq1 = t.kpi11
-         |group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid,t.kpi10,
+         |group by t.startTime, t.endTime, t.timeseq,t.mmecode,t.MMEGROUPID, t.enbid, t.cellid,t.kpi10,
          |t.kpi9,t2.cellname,t2.ADJMMEGROUPID,t2.ADJMMEID,
          |t2.ADJENODEBID,t2.adjcellID, t2.adjcellname, t.kpi11, t.kpi12
        """.stripMargin).createOrReplaceTempView("LTE_MRS_OVERCOVER_TEMP")
