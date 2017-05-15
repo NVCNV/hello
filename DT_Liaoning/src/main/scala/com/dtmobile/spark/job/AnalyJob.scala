@@ -7,7 +7,7 @@ import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 import com.dtmobile.spark.biz.businessexception.businessexception
 import com.dtmobile.spark.biz.businesstypedetail.businesstypedetail
-import com.dtmobile.spark.biz.gridanalyse.{Init, PCIOptimize}
+import com.dtmobile.spark.biz.gridanalyse._
 
 
 /**
@@ -36,11 +36,26 @@ class AnalyJob(args: Array[String]) extends Analyse {
     kpiHourAnaly.analyse
     exception.analyse
     typedetail.analyse*/
-    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir," 172.30.4.159:1521/umv602")
-    init.analyse
-//    val pci = new PCIOptimize(args(0), args(1), args(2), args(3), warhouseDir)
-//    pci.analyse
+    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5))
+    val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
+    val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val disturbMixAna =new DisturbMixAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val disturbSecAna =new DisturbSecAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val lteMroAdjCoverAna =new LteMroAdjCoverAna(args(0), args(1),"1",args(2),args(3),warhouseDir)
+    val pCIOptimize = new PCIOptimize(args(0), args(1), args(2), args(3), warhouseDir)
+    val weakcover = new Weakcover(args(0), args(1), args(2), args(3), warhouseDir)
+    val gridCover = new GridCover(args(0), args(1), args(2), args(3), warhouseDir)
 
+
+     init.analyse
+     overcover.analyse
+     disturbAnalysis.analyse
+     disturbMixAna.analyse
+     disturbSecAna.analyse
+     lteMroAdjCoverAna.analyse
+    pCIOptimize.analyse
+    weakcover.analyse
+    gridCover.analyse
 
    /* if("03".equals(args(1))){
     val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
