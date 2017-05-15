@@ -24,7 +24,7 @@ class DisturbMixAna(ANALY_DATE: String, ANALY_HOUR: String, period: String, anah
 
     sql(s"""
            |SELECT
-           |'',
+           |'' as id ,
            '$cal_date' as starttime,
          '$cal_date2' as endtime,
          ${period} as period,
@@ -44,8 +44,8 @@ class DisturbMixAna(ANALY_DATE: String, ANALY_HOUR: String, period: String, anah
            |M.cellpci,
            |M.cellfreq,
            |M.disturbMrNum,
-           |'',
-           |'',
+           |'' as col1,
+           |'' as col2,
            |M.TCELLRSRPSum,
            |M.TCELLRSRPCount,
            |CASE
