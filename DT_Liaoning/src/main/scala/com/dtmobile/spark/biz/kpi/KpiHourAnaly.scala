@@ -530,7 +530,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		callduration
          |		ELSE
          |			0
@@ -540,7 +540,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -722,7 +722,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		callduration
          |		ELSE
          |			0
@@ -732,7 +732,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -1677,7 +1677,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		callduration
          |		ELSE
          |			0
@@ -1687,7 +1687,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -1864,7 +1864,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		callduration
          |		ELSE
          |			0
@@ -1874,7 +1874,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
