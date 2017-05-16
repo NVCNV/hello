@@ -353,9 +353,9 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
     //    | insert all into GRID_LTEMRKPI60(begintime,endtime,timeseq,
     //    | enodebid,cellid,gridcenterlongitude,gridcenterlatitude,oid,KPI1049,KPI1239,KPI1011,KPI1012,KPI1241,KPI1243,KPI1245,KPI1247)
     val PlrulandPlrdlSql:String = generatePlrulandPlrdlCount(packetlossrateulthOp,packetlossrateulth,packetlossratedlthOp,packetlossratedlth)
-    sql(s"""alter table GRID_LTEMRKPI60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
-    sql(s"""alter table GRID_LTEMRKPI60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-    LOCATION 'hdfs://dtcluster/$warhouseDir/GRID_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+    sql(s"""alter table grid_ltemrkpi60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
+    sql(s"""alter table grid_ltemrkpi60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+    LOCATION 'hdfs://dtcluster/$warhouseDir/grid_ltemrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
     sql(
       s"""
          | select t.startTime as begintime, t.endTime, t.timeseq,t.ENBID as enodebid,t.CELLID,t.GRIDCENTERLONGITUDE,t.GRIDCENTERLATITUDE,t.oid,
@@ -365,7 +365,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | sum(case when t.kpi6>=0 and t.kpi6-23 $poorUEpowerThOp $poorUEpowerTh and t.MRNAME='MR.LteScRSRP'then 1 else 0 end) as KPI1012,
          | $PlrulandPlrdlSql FROM lte_mro_source_ana_tmp t where  vid = 0 and t.oid >0 GROUP BY t.starttime,t.endtime,t.timeseq,
          | t.ENBID,t.oid,t.CELLID,t.GRIDCENTERLONGITUDE,t.GRIDCENTERLATITUDE
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/GRID_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/grid_ltemrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     //  |insert into CELL_LTEMRKPITEMP(begintime,endtime,timeseq,
     //  |        enodebid,cellid,KPI1001,KPI1002,KPI1003,KPI1004,KPI1005,KPI1006,KPI1011,KPI1012,KPI1009,KPI1010,KPI1049,
@@ -381,9 +381,9 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
     //  |  KPI1041,KPI1042,KPI1043,KPI1044,KPI1045,KPI1046,KPI1047,KPI1048,
     //  |  KPI1007,KPI1008,KPI1241,KPI1242,KPI1245,KPI1246,KPI1237,KPI1243,KPI1247)
     val MrRipKpiSql:String = generateMrRipKpi(packetlossrateulthOp,packetlossrateulth, packetlossratedlthOp,packetlossratedlth,receivedipOp,receivedip)
-    sql(s"""alter table CELL_LTEMRKPITEMP drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
-    sql(s"""alter table CELL_LTEMRKPITEMP add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-    LOCATION 'hdfs://dtcluster/$warhouseDir/CELL_LTEMRKPITEMP/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+    sql(s"""alter table cell_ltemrkpitemp drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
+    sql(s"""alter table cell_ltemrkpitemp add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+    LOCATION 'hdfs://dtcluster/$warhouseDir/cell_ltemrkpitemp/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
     sql(
       s"""
          | select t.startTime as begintime, t.endTime, t.timeseq,t.ENBID as enodebid,t.CELLID,
@@ -432,7 +432,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | SUM (CASE WHEN t.kpi17>=0 and t.MRNAME = 'MR.LteScRSRP' THEN t.kpi17 ELSE 0 END) AS KPI1190,$MrRipKpiSql
          | FROM lte_mro_source_ana_tmp t GROUP BY t.starttime,t.endtime,t.timeseq,t.ENBID
          | ,t.CELLID
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/CELL_LTEMRKPITEMP/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_ltemrkpitemp/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 //    insert all into CELL_LTEMRKPI60(begintime,endtime,timeseq,
 //      enodebid,cellid,KPI1001,KPI1002,KPI1003,KPI1004,KPI1005,KPI1006,KPI1011,KPI1012,KPI1009,KPI1010,KPI1049,
@@ -473,9 +473,9 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
     //    | insert  into LTE_MRO_OVERLAP_B_ANA60(STARTTIME, ENDTIME, TIMESEQ,ENODEBID, CELLID,
     //   | USERCOUNT, RSRPSUM, RSRPCOUNT, RSRPAVG, OVERLAPBESTROWCELLCOUNT,  ADJACENTAREAINTERFERENCEINTENS,
     //   | ADJACENTAREAINTERFERENCEINDEX, CELLOVERLAPBESTROWRATIO, CELLOVERLAPBESTROWMRCOUNT, RSRQSUM, RSRQCOUNT, RSRQAVG)
-    sql(s"""alter table LTE_MRO_OVERLAP_B_ANA60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
-    sql(s"""alter table LTE_MRO_OVERLAP_B_ANA60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-    LOCATION 'hdfs://dtcluster/$warhouseDir/LTE_MRO_OVERLAP_B_ANA60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+    sql(s"""alter table lte_mro_overlap_b_ana60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
+    sql(s"""alter table lte_mro_overlap_b_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+    LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_overlap_b_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
     sql(
       s"""
          | select T1.startTime,T1.endTime,T1.timeseq,T1.ENBID as ENODEBID,T1.CELLID,T1.COUNT as USERCOUNT,T1.rsrpsum,T1.rsrpcount,
@@ -511,12 +511,12 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | WHERE (T .distrubcount / POWER (10, $adjDisturbRSRP/10)) > $adjstrongDisturb AND (T.overcellcount + 1) > $recovercount
          | GROUP BY T .CELLID,T .ENBID) T3
          | on T1.CELLID = T3 .CELLID and T1.ENBID = T3.ENBID
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_OVERLAP_B_ANA60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_overlap_b_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 //    |INSERT INTO CELL_LTENEWMRKPI60 (STARTTIME,ENDTIME,TIMESEQ,MMEGROUPID,MMEID,ENODEBID,CELLID,MrOverlayCount,MrOverCoverCount,MrLoseNeibCount,MrEdgeWeakCoverCount)
-    sql(s"""alter table CELL_LTENEWMRKPI60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
-    sql(s"""alter table CELL_LTENEWMRKPI60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-    LOCATION 'hdfs://dtcluster/$warhouseDir/CELL_LTENEWMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+    sql(s"""alter table cell_ltenewmrkpi60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
+    sql(s"""alter table cell_ltenewmrkpi60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+    LOCATION 'hdfs://dtcluster/$warhouseDir/cell_ltenewmrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
     sql(
       s"""
          |	 SELECT T.startTime,T.endTime,T.timeseq, T.mmegroupid,T.mmecode as MMEID,T.enbid as ENODEBID,T.cellid,
@@ -537,6 +537,6 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | left join (select distinct cellid from lte2lteadj) T4
          | on T.cellid=T4.cellid left join lte2lteadj T5 on T.cellid=T5.cellid and T.tcellid=T5.adjcellid
          | GROUP BY T.startTime,T.endTime,T.timeseq,T.mmegroupid,T.mmecode,T.enbid,T.cellId
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/CELL_LTENEWMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_ltenewmrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
