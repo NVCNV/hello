@@ -9,26 +9,53 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 //  ltecover_degree_condition
 //  field_name = 'PoorCoverageRSRPTh'
   var poorRSRPOp="<"
-  var poorRSRPTh="-110"
+  var poorRSRPTh = -110
 
 //  GoodCoverageRSRPTh
   var goodRSRPOp=">="
-  var goodRSRP="-80"
+  var goodRSRP = -80
 
 //  poorUEpowerTh
   var poorUEPowerOp="<"
-  var poorUEPower="3"
+  var poorUEPower =3
 
 //  bigUEtxrxTh
   var bigUEtxrxOp=">="
-  var bigUEtxrx="100"
+  var bigUEtxrx= 100
 
 //  deviateAzimuthTh
   var azimuthOp=">"
-  var azimuthTh="35"
+  var azimuthTh= 35
 
   def analyse(implicit sparkSession: SparkSession): Unit={
+
     import sparkSession.sql
+    val t = sql("select operator,value from ltecover_degree_condition where field = 'PoorCoverageRSRPTh'").collectAsList()
+    if(t.get(0).getString(0).length()!=0) {
+      poorRSRPOp = t.get(0).getString(0)
+      poorRSRPTh = t.get(0).getInt(1)
+    }
+    val t1 = sql("select operator,value from ltecover_degree_condition where field = 'GoodCoverageRSRPTh'").collectAsList()
+    if(t1.get(0).getString(0).length()!=0) {
+      goodRSRPOp = t1.get(0).getString(0)
+      goodRSRP = t1.get(0).getInt(1)
+    }
+    val t2 = sql("select operator,value from ltecover_degree_condition where field = 'poorUEpowerTh'").collectAsList()
+    if(t2.get(0).getString(0).length()!=0) {
+      poorUEPowerOp = t2.get(0).getString(0)
+      poorUEPower = t2.get(0).getInt(1)
+    }
+    val t3 = sql("select operator,value from ltecover_degree_condition where field = 'bigUEtxrxTh'").collectAsList()
+    if(t3.get(0).getString(0).length()!=0) {
+      bigUEtxrxOp = t3.get(0).getString(0)
+      bigUEtxrx = t3.get(0).getInt(1)
+    }
+    val t4 = sql("select operator,value from ltecover_degree_condition where field = 'deviateAzimuthTh'").collectAsList()
+    if(t4.get(0).getString(0).length()!=0) {
+      azimuthOp = t4.get(0).getString(0)
+      azimuthTh = t4.get(0).getInt(1)
+    }
+
     sql(s"use $DDB")
     sql(
       s"""alter table lte_mrs_dlbestrow_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)

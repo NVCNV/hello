@@ -11,34 +11,64 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
   //  ltecover_degree_condition
 //  adjDisturbRSRP
-  var adjDisturbRSRPOp = '='
-  var adjDisturbRSRP = -10
+
+  var adjDisturbRSRPOp:String = "="
+  var adjDisturbRSRP :Int= -10
 
 //  overcoveradjcellrsrpdvalue
-  var overcoveradjcellrsrpOp = '<'
-  var overcoveradjcellrsrp = 6
-
-
-
+  var overcoveradjcellrsrpOp:String = "<"
+  var overcoveradjcellrsrp :Int= 6
 
 
 //  select AdjAvailableRsrpTh from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpThreshold';
-    var AdjAvailableRsrpTh = -110
+    var AdjAvailableRsrpTh :Int= -110
 
 //    ltedisturb_degree_condition
 
-   var AdjAvailableRsrpThreshold= -110 + 141
+   var AdjAvailableRsrpThreshold :Int= -110 + 141
 
-   var AdjDisturbRsrpDiffThreshold = -6
+   var AdjDisturbRsrpDiffThreshold:Int = -6
 
 //  AdjStrongDisturbAvailableMrNumThreshold
-   var AdjStrngDstrbAvailMrNumThresd = 100
+   var AdjStrngDstrbAvailMrNumThresd :Int= 100
 
-  var AdjStrongDisturbRateThreshold = 0.05*100
+  var AdjStrongDisturbRateThreshold :Double= 0.05*100
 
   def analyse(implicit sparkSession: SparkSession): Unit =
   {
     import sparkSession.sql
+
+    val t = sql("select operator,value from ltepci_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
+    if(t.get(0).getString(0).length()!=0) {
+      adjDisturbRSRPOp = t.get(0).getString(0)
+      adjDisturbRSRP = t.get(0).getInt(1)
+    }
+    val t1 = sql("select operator,value from ltepci_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
+    if(t1.get(0).getString(0).length()!=0) {
+      overcoveradjcellrsrpOp = t1.get(0).getString(0)
+      overcoveradjcellrsrp = t1.get(0).getInt(1)
+    }
+    val t2 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpThreshold'").collectAsList()
+    if(t2.get(0).getString(0).length()!=0) {
+      AdjAvailableRsrpTh = t2.get(0).getInt(0)
+    }
+    val t3 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpTh'").collectAsList()
+    if(t3.get(0).getString(0).length()!=0) {
+      AdjAvailableRsrpThreshold = t3.get(0).getInt(0)+141
+    }
+    val t4 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjDisturbRsrpDiffThreshold'").collectAsList()
+    if(t4.get(0).getString(0).length()!=0) {
+      AdjDisturbRsrpDiffThreshold = t4.get(0).getInt(0)
+    }
+    val t5 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjStrngDstrbAvailMrNumThresd'").collectAsList()
+    if(t5.get(0).getString(0).length()!=0) {
+      AdjStrngDstrbAvailMrNumThresd = t5.get(0).getInt(0)
+    }
+    val t6 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjStrongDisturbRateThreshold'").collectAsList()
+    if(t6.get(0).getString(0).length()!=0) {
+      AdjStrongDisturbRateThreshold = t6.get(0).getDouble(0)*100
+    }
+
     sql(
       s"""
         |alter table ${DDB}.lte_mrs_overcover_ana60 add if not exists partition(dt=${ANALY_DATE},h=${ANALY_HOUR})
@@ -46,7 +76,7 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     sql(
       s"""
          |select t.startTime as STARTTIME, t.endTime as ENDTIME, t.timeseq as TIMESEQ,
-         |t.mmecode as MMEID, t.enbid as ENODEBID, t.cellid as CELLID, t.kpi10 as CELLPCI,t.kpi9 as CELLFREQ,t2.cellname as CELLNAME,t2.ADJMMEGROUPID as TMMEGROUPID,t2.ADJMMEID as TMMEID,
+         |t.mmecode as MMEID,t.MMEGROUPID as MMEGROUPID, t.enbid as ENODEBID, t.cellid as CELLID, t.kpi10 as CELLPCI,t.kpi9 as CELLFREQ,t2.cellname as CELLNAME,t2.ADJMMEGROUPID as TMMEGROUPID,t2.ADJMMEID as TMMEID,
          |t2.ADJENODEBID as TENODEBID,t2.adjcellID as TCELLID, t2.adjcellname as TCELLNAME,(case when t.kpi12!= -1 then t.kpi12 else null end) as TCELLPCI,
          |(case when t.kpi11!= -1 then t.kpi11 else null end) as TCELLFREQ,
          |sum(case when t.kpi1>=0 and t.kpi2 >=0 then t.kpi1 - t.kpi2 end)as RSRPDIFABS,
@@ -63,7 +93,7 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |SUM (case when kpi9 - kpi11 = 0 and kpi2 > $AdjAvailableRsrpThreshold then 1 else 0 end) AS disturbAvalableNum
          |from (select * from lte_mro_source_ana_tmp where STARTTIME is not null and mrname='MR.LteScRSRP') t
          |left join lte2lteadj_pci T2 on t.cellId = T2.cellid and T2.adjpci = t.kpi12 and T2.adjfreq1 = t.kpi11
-         |group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid,t.kpi10,
+         |group by t.startTime, t.endTime, t.timeseq,t.mmecode,t.MMEGROUPID, t.enbid, t.cellid,t.kpi10,
          |t.kpi9,t2.cellname,t2.ADJMMEGROUPID,t2.ADJMMEID,
          |t2.ADJENODEBID,t2.adjcellID, t2.adjcellname, t.kpi11, t.kpi12
        """.stripMargin).createOrReplaceTempView("LTE_MRS_OVERCOVER_TEMP")
