@@ -322,7 +322,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND RESULT = 0 THEN
-         |			SVDELAY
+         |			SVDELAY/100
          |		END
          |	) srvcctime,
          |	0 AS lteswsucc,
@@ -499,7 +499,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime
+         |			alertingtime/100
          |		ELSE
          |			0
          |		END
@@ -510,7 +510,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND interface = 14
          |		AND ServiceType = 1
          |		AND callduration <> 4294967295 THEN
-         |			callduration
+         |			callduration/100
          |		ELSE
          |			0
          |		END
@@ -629,7 +629,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
-         |	callside = 0
+         |	callside = 1
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
@@ -691,7 +691,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime
+         |			alertingtime/100
          |		ELSE
          |			0
          |		END
@@ -821,7 +821,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_mw
          |WHERE
-         |	callside = 1
+         |	callside = 2
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
@@ -1479,7 +1479,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND RESULT = 0 THEN
-         |			SVDELAY
+         |			SVDELAY/100
          |		END
          |	) srvcctime,
          |	0 AS lteswsucc,
@@ -1646,7 +1646,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime
+         |			alertingtime/100
          |		ELSE
          |			0
          |		END
@@ -1657,7 +1657,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND interface = 14
          |		AND ServiceType = 1
          |		AND callduration <> 4294967295 THEN
-         |			callduration
+         |			callduration/100
          |		ELSE
          |			0
          |		END
@@ -1678,194 +1678,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = 1 and callduration<> 4294967295 THEN
-         |		callduration
-         |		ELSE
-         |			0
-         |		END
-         |	) voltevdtime,
-         | sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
-         |		1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltevdtimey,
-         |	0 AS voltemchandover,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND ServiceType = 1
-         |		AND Answertime <> 4294967295 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) volteanswer,
-         |	0 AS voltevdhandover,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND ServiceType = 2
-         |		AND Answertime <> 4294967295 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltevdanswer,
-         |	0 AS srvccsucc,
-         |	0 AS srvccatt,
-         |	0 AS srvcctime,
-         |	0 AS lteswsucc,
-         |	0 AS lteswatt,
-         |	0 AS srqatt,
-         |	0 AS srqsucc,
-         |	0 AS tauatt,
-         |	0 AS tausucc,
-         |	0 AS rrcrebuild,
-         |	0 AS rrcsucc,
-         |	0 AS rrcreq,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) imsiregatt,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 1
-         |		AND interface = 14
-         |		AND ProcedureStatus = 0 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) imsiregsucc,
-         |	0 AS wirelessdrop,
-         |	0 AS wireless,
-         |	0 AS eabdrop,
-         |	0 AS eab,
-         |	0 AS eabs1swx,
-         |	0 AS eabs1swy,
-         |	0 AS s1tox2swx,
-         |	0 AS s1tox2swy,
-         |	0 AS enbx2swx,
-         |	0 AS enbx2swy,
-         |	0 AS uuenbswx,
-         |	0 AS uuenbswy,
-         |	0 AS uuenbinx,
-         |	0 AS uuenbiny,
-         |	0 AS swx,
-         |	0 AS swy,
-         |	0 AS attachx,
-         |	0 AS attachy,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND alertingtime <> 4294967295 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltesucc
-         |FROM
-         |	$SDB.TB_XDR_IFC_MW
-         |WHERE
-         |	callside = 0
-         |AND dt = $ANALY_DATE
-         |AND h = $ANALY_HOUR
-         |GROUP BY
-         |	sourceeci
-       """.stripMargin)
-    val voltesip1 = sql(
-      s"""
-         |SELECT
-         |	(desteci)  AS CELLID,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1
-         |		AND alertingtime <> 4294967295 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltemcsucc,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltemcatt,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 2
-         |		AND alertingtime <> 4294967295 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltevdsucc,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 2 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltevdatt,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime
-         |		ELSE
-         |			0
-         |		END
-         |	) voltetime,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1
-         |		AND callduration <> 4294967295 THEN
-         |			callduration
-         |		ELSE
-         |			0
-         |		END
-         |	) voltemctime,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1
-         |		AND callduration <> 4294967295 THEN
-         |		1
-         |		ELSE
-         |			0
-         |		END
-         |	) voltemctimey,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
-         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
-         |		callduration
+         |		callduration/100
          |		ELSE
          |			0
          |		END
@@ -1964,6 +1777,193 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
          |	callside = 1
+         |AND dt = $ANALY_DATE
+         |AND h = $ANALY_HOUR
+         |GROUP BY
+         |	sourceeci
+       """.stripMargin)
+    val voltesip1 = sql(
+      s"""
+         |SELECT
+         |	(desteci)  AS CELLID,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND alertingtime <> 4294967295 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemcsucc,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemcatt,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 2
+         |		AND alertingtime <> 4294967295 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdsucc,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 2 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdatt,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND alertingtime <> 4294967295 THEN
+         |			alertingtime/100
+         |		ELSE
+         |			0
+         |		END
+         |	) voltetime,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |			callduration/100
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctime,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1
+         |		AND callduration <> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltemctimey,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
+         |		callduration/100
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtime,
+         | sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND interface = 14
+         |		AND ServiceType = 1 and callduration<> 4294967295 THEN
+         |		1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdtimey,
+         |	0 AS voltemchandover,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND ServiceType = 1
+         |		AND Answertime <> 4294967295 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) volteanswer,
+         |	0 AS voltevdhandover,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND ServiceType = 2
+         |		AND Answertime <> 4294967295 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltevdanswer,
+         |	0 AS srvccsucc,
+         |	0 AS srvccatt,
+         |	0 AS srvcctime,
+         |	0 AS lteswsucc,
+         |	0 AS lteswatt,
+         |	0 AS srqatt,
+         |	0 AS srqsucc,
+         |	0 AS tauatt,
+         |	0 AS tausucc,
+         |	0 AS rrcrebuild,
+         |	0 AS rrcsucc,
+         |	0 AS rrcreq,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |		AND interface = 14 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) imsiregatt,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |		AND interface = 14
+         |		AND ProcedureStatus = 0 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) imsiregsucc,
+         |	0 AS wirelessdrop,
+         |	0 AS wireless,
+         |	0 AS eabdrop,
+         |	0 AS eab,
+         |	0 AS eabs1swx,
+         |	0 AS eabs1swy,
+         |	0 AS s1tox2swx,
+         |	0 AS s1tox2swy,
+         |	0 AS enbx2swx,
+         |	0 AS enbx2swy,
+         |	0 AS uuenbswx,
+         |	0 AS uuenbswy,
+         |	0 AS uuenbinx,
+         |	0 AS uuenbiny,
+         |	0 AS swx,
+         |	0 AS swy,
+         |	0 AS attachx,
+         |	0 AS attachy,
+         |	sum(
+         |		CASE
+         |		WHEN ProcedureType = 5
+         |		AND alertingtime <> 4294967295 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	) voltesucc
+         |FROM
+         |	$SDB.TB_XDR_IFC_MW
+         |WHERE
+         |	callside = 2
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
