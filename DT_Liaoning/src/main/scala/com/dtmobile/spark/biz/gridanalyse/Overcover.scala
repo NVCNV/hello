@@ -13,60 +13,64 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 //  adjDisturbRSRP
 
   var adjDisturbRSRPOp:String = "="
-  var adjDisturbRSRP :Int= -10
+  var adjDisturbRSRP :BigDecimal= -10
 
 //  overcoveradjcellrsrpdvalue
   var overcoveradjcellrsrpOp:String = "<"
-  var overcoveradjcellrsrp :Int= 6
+  var overcoveradjcellrsrp :BigDecimal= 6
 
 
 //  select AdjAvailableRsrpTh from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpThreshold';
-    var AdjAvailableRsrpTh :Int= -110
+    var AdjAvailableRsrpTh:BigDecimal = -110
 
 //    ltedisturb_degree_condition
 
-   var AdjAvailableRsrpThreshold :Int= -110 + 141
+   var AdjAvailableRsrpThreshold:BigDecimal = -110 + 141
 
-   var AdjDisturbRsrpDiffThreshold:Int = -6
+   var AdjDisturbRsrpDiffThreshold:BigDecimal = -6
 
 //  AdjStrongDisturbAvailableMrNumThreshold
-   var AdjStrngDstrbAvailMrNumThresd :Int= 100
+   var AdjStrngDstrbAvailMrNumThresd:BigDecimal = 100
 
-  var AdjStrongDisturbRateThreshold :Double= 0.05*100
+  var AdjStrongDisturbRateThreshold :BigDecimal= 0.05*100
 
-  def analyse(implicit sparkSession: SparkSession): Unit =
-  {
+  def analyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
 
     val t = sql("select operator,value from ltepci_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
-    if(t.get(0).getString(0).length()!=0) {
+
+    if (t.size() > 0) {
       adjDisturbRSRPOp = t.get(0).getString(0)
-      adjDisturbRSRP = t.get(0).getInt(1)
-    }
+      adjDisturbRSRP = t.get(0).getDecimal(0)
+
+  }
+
+
     val t1 = sql("select operator,value from ltepci_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
-    if(t1.get(0).getString(0).length()!=0) {
+    if (t1.size() > 0) {
       overcoveradjcellrsrpOp = t1.get(0).getString(0)
-      overcoveradjcellrsrp = t1.get(0).getInt(1)
+      overcoveradjcellrsrp = t1.get(0).getDecimal(0)
     }
     val t2 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpThreshold'").collectAsList()
-    if(t2.get(0).getString(0).length()!=0) {
-      AdjAvailableRsrpTh = t2.get(0).getInt(0)
+    if (t2.size() > 0) {
+      AdjAvailableRsrpTh = t2.get(0).getDecimal(0)
     }
     val t3 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjAvailableRsrpTh'").collectAsList()
-    if(t3.get(0).getString(0).length()!=0) {
-      AdjAvailableRsrpThreshold = t3.get(0).getInt(0)+141
+     val bs : BigDecimal=141
+    if (t3.size() > 0) {
+      AdjAvailableRsrpThreshold = t3.get(0).getDecimal(0).doubleValue()+141
     }
     val t4 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjDisturbRsrpDiffThreshold'").collectAsList()
-    if(t4.get(0).getString(0).length()!=0) {
-      AdjDisturbRsrpDiffThreshold = t4.get(0).getInt(0)
+    if (t4.size() > 0) {
+      AdjDisturbRsrpDiffThreshold = t4.get(0).getDecimal(0)
     }
     val t5 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjStrngDstrbAvailMrNumThresd'").collectAsList()
-    if(t5.get(0).getString(0).length()!=0) {
-      AdjStrngDstrbAvailMrNumThresd = t5.get(0).getInt(0)
+    if (t5.size() > 0) {
+      AdjStrngDstrbAvailMrNumThresd = t5.get(0).getDecimal(0)
     }
     val t6 = sql("select value from LTEDISTURB_DEGREE_CONDITION where field = 'AdjStrongDisturbRateThreshold'").collectAsList()
-    if(t6.get(0).getString(0).length()!=0) {
-      AdjStrongDisturbRateThreshold = t6.get(0).getDouble(0)*100
+    if (t6.size() > 0) {
+      AdjStrongDisturbRateThreshold = t6.get(0).getDecimal(0).doubleValue()*100
     }
 
     sql(
