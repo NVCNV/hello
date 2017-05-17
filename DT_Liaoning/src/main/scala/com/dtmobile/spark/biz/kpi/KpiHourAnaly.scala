@@ -12,6 +12,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
+
     imsiCellHourAnalyse(sparkSession)
     cellHourAnalyse(sparkSession)
     mrImsiHourAnalyse(sparkSession)
@@ -164,7 +165,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         |  0 AS srvccsuccS1
          |FROM
          |	 $DDB.TB_XDR_IFC_UU
          |WHERE
@@ -270,7 +272,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$DDB.TB_XDR_IFC_X2
          |WHERE
@@ -354,7 +357,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         |  0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -434,7 +438,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -625,7 +630,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc
+         |	) voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -817,7 +823,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc
+         |	) voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_mw
          |WHERE
@@ -1023,7 +1030,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         |  sum(CASE
+         |		WHEN INTERFACE = 5
+         |		AND proceduretype = 16
+         |    AND keyword1=3 and PROCEDURESTATUS=0 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END)srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -1086,7 +1101,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	(
          |		SELECT DISTINCT
@@ -1182,7 +1198,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(voltesucc)
+         |	sum(voltesucc),
+         |  sum(srvccsuccS1)
          |from temp_kpi
          |group by imsi,
          |	msisdn,
@@ -1331,7 +1348,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_UU
          |WHERE
@@ -1432,7 +1450,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_X2
          |WHERE
@@ -1511,7 +1530,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -1586,7 +1606,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -1772,7 +1793,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc
+         |	) voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -1959,7 +1981,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) voltesucc
+         |	) voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -2160,7 +2183,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | sum(CASE
+         |		WHEN INTERFACE = 5
+         |		AND proceduretype = 16
+         |    AND keyword1=3 and PROCEDURESTATUS=0 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END)srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -2218,7 +2249,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS swy,
          |	0 AS attachx,
          |	0 AS attachy,
-         |	0 AS voltesucc
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1
          |FROM
          |	(
          |		SELECT DISTINCT
