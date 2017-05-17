@@ -85,7 +85,7 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
           left join Mr_InDoorAna_Temp t2 on t1.enbid = t2.enbid and t1.cellid = t2.cellid and t1.MMEUES1APID = t2.MMEUES1APID
           left join  ltecell t3 on t1.cellid=t3.cellid   and t1.mrname='MR.LteScRSRP' and t1.vid = 0
           group by t1.startTime, t1.endTime, t1.timeseq,t1.enbID, t1.cellid
-          """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_ana60/dt=$ANALY_DATE/h=ANALY_HOUR")
+          """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""alter table LTE_MRO_JOINUSER_ANA60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -111,7 +111,7 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
                      left join (SELECT startTime,endTime,timeseq,enbID,cellid,SUM (CASE WHEN kpi1>=0 THEN 1 ELSE  0  END) as CELLMRCOUNT
                      from lte_mro_source_ana_tmp where mrname='MR.LteScRSRP'and vid = 0 GROUP BY startTime,endTime,timeseq,enbID,cellid ) s3 ON s1.startTime = s3.startTime
                      AND s1.endTime = s3.endTime AND s1.timeseq = s3.timeseq AND s1.enodebid = s3.enbid AND s1.cellid = s3.cellid
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_JOINUSER_ANA60/dt=$ANALY_DATE/h=ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_JOINUSER_ANA60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }
