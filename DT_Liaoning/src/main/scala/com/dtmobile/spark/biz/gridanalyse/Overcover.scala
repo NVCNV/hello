@@ -44,8 +44,6 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
       adjDisturbRSRP = t.get(0).getDecimal(0)
 
   }
-
-
     val t1 = sql("select operator,value from ltepci_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
     if (t1.size() > 0) {
       overcoveradjcellrsrpOp = t1.get(0).getString(0)
