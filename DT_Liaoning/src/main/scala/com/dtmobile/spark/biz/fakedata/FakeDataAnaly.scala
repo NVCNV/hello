@@ -84,6 +84,13 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
   def analyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
 
+    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+      .option("dbtable", "ltecell")
+      .option("user", "scott")
+      .option("password", "tiger")
+      .option("driver", "oracle.jdbc.driver.OracleDriver")
+      .load().createOrReplaceTempView("ltecell")
+
     sql(s"use $DDB")
 
     sql(s"""alter table tb_fake_data_temp drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
