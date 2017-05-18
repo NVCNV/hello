@@ -26,7 +26,7 @@ KPI_IMSI_COLS="imsi,imei,msisdn,cellid,ttime,voltemcsucc,voltemcatt,voltevdsucc,
 
 KPI_CELL_COLS='ttime,cellid,voltemcsucc,voltemcatt,voltevdsucc,voltevdatt,voltetime,voltemctime,voltemctimey,voltevdtime,voltevdtimey,voltemchandover,volteanswer,voltevdhandover,voltevdanswer,srvccsucc,srvccatt,srvcctime,lteswsucc,lteswatt,srqatt,srqsucc,tauatt,tausucc,rrcrebuild,rrcsucc,rrcreq,imsiregatt,imsiregsucc,wirelessdrop,wireless,eabdrop,eab,eabs1swx,eabs1swy,s1tox2swx,s1tox2swy,enbx2swx,enbx2swy,uuenbswx,uuenbswy,uuenbinx,uuenbiny,swx,swy,attachx,attachy,voltesucc,srvccsuccS1'
 
-EVENT_MSG='event_name,procedurestarttime,imsi,proceduretype,etype,cellid,targetcellid,falurecause,celltype,cellregion,cellkey,interface,prointerface,rangetime,ELONG,ELAT,ELATEUPORDOWN'
+EVENT_MSG='event_name,procedurestarttime,imsi,proceduretype,etype,cellid,targetcellid,falurecause,celltype,cellregion,cellkey,interface,prointerface,rangetime,ELONG,ELAT,EUPORDOWN'
 
 KPI_MR_IMSI_COLS='imsi,imei,msisdn,cellid,rruid,gridid,ttime,dir_state,elong,elat,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
 
