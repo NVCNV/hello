@@ -8,7 +8,7 @@ import org.apache.spark.sql.SparkSession
 import com.dtmobile.spark.biz.businessexception.businessexception
 import com.dtmobile.spark.biz.businesstypedetail.businesstypedetail
 import com.dtmobile.spark.biz.gridanalyse._
-
+import com.dtmobile.spark.biz.fakedata._
 
 /**
   * AnalyJob
@@ -36,6 +36,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
     kpiHourAnaly.analyse
     exception.analyse
     typedetail.analyse*/
+
+
     val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5))
     val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
     val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
@@ -57,6 +59,19 @@ class AnalyJob(args: Array[String]) extends Analyse {
     weakcover.analyse
     gridCover.analyse
 
+
+////伪基站
+/*
+    val finit = new FakeDataInit(args(0), args(1), args(2), args(3),warhouseDir,args(5))
+    val fAnaly = new FakeDataAnaly(args(0),args(1), args(2), args(3), warhouseDir,args(5))
+
+    if ( "1".equals(args(7)) ){
+      finit.analyse
+    }
+    else if ( "0".equals(args(7)) ){
+      fAnaly.analyse
+    }
+*/
    /* if("03".equals(args(1))){
     val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       kpiDayAnALY.analyse
