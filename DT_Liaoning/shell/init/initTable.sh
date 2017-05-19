@@ -1099,10 +1099,10 @@ CREATE  TABLE volte_gt_cell_ana_base60(
 voltemcatt int,
 voltevdsucc int,
 voltevdatt int,
-voltetime int,
-voltemctime int,
+voltetime double,
+voltemctime double,
 voltemctimey int,
-voltevdtime int,
+voltevdtime double,
 voltevdtimey int,
 voltemchandover int,
 volteanswer int,
@@ -1156,10 +1156,10 @@ CREATE  TABLE volte_gt_cell_ana_baseday(
 voltemcatt int,
 voltevdsucc int,
 voltevdatt int,
-voltetime int,
-voltemctime int,
+voltetime double,
+voltemctime double,
 voltemctimey int,
-voltevdtime int,
+voltevdtime double,
 voltevdtimey int,
 voltemchandover int,
 volteanswer int,
@@ -1215,10 +1215,10 @@ CREATE  TABLE volte_gt_user_ana_base60(
 voltemcatt int,
 voltevdsucc int,
 voltevdatt int,
-voltetime int,
-voltemctime int,
+voltetime double,
+voltemctime double,
 voltemctimey int,
-voltevdtime int,
+voltevdtime double,
 voltevdtimey int,
 voltemchandover int,
 volteanswer int,
@@ -1275,10 +1275,10 @@ CREATE  TABLE volte_gt_user_ana_baseday(
 voltemcatt int,
 voltevdsucc int,
 voltevdatt int,
-voltetime int,
-voltemctime int,
+voltetime double,
+voltemctime double,
 voltemctimey int,
-voltevdtime int,
+voltevdtime double,
 voltevdtimey int,
 voltemchandover int,
 volteanswer int,
@@ -1322,7 +1322,4 @@ PARTITIONED BY (
   dt string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',';
-
 EOF
-
-exit 0
