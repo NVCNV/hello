@@ -2360,7 +2360,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(swy),
          |	sum(attachx),
          |	sum(attachy),
-         |	sum(voltesucc)
+         |	sum(voltesucc),
+         | sum(srvccsuccS1)
          |FROM
          |	temp_kpi
          |GROUP BY
