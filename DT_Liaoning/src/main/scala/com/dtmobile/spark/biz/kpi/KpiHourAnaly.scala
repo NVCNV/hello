@@ -729,7 +729,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = 2 and callduration<> 4294967295 THEN
-         |		callduration
+         |		callduration/100
          |		ELSE
          |			0
          |		END
