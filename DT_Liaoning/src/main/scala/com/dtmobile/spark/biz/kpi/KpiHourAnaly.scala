@@ -10,8 +10,19 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   **/
 class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
+  var onoff=0
+
+  var procedurestatussuccess=1
+  var procedurestatusfaile=2
+  var ServiceTypeaudio=1
+  var ServiceTypevideo=2
+  var callsidecalling=1
+  var callsedediacalled=2
+  var timetr=100
+
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
+
 
     imsiCellHourAnalyse(sparkSession)
     cellHourAnalyse(sparkSession)
@@ -20,6 +31,14 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   }
 
   def imsiCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
+    if(onoff==1){
+      procedurestatussuccess = 0
+      ServiceTypeaudio=0
+      ServiceTypevideo=1
+      callsidecalling=0
+      callsedediacalled=1
+    }
+
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
@@ -325,7 +344,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND RESULT = 0 THEN
-         |			SVDELAY/100
+         |			SVDELAY/$timetr
          |		END
          |	) srvcctime,
          |	0 AS lteswsucc,
@@ -414,7 +433,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 1 THEN
+         |		AND ProcedureStatus = $procedurestatussuccess THEN
          |			1
          |		ELSE
          |			0
@@ -461,7 +480,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -472,7 +491,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = $ServiceTypeaudio THEN
          |			1
          |		ELSE
          |			0
@@ -482,7 +501,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -493,7 +512,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 THEN
+         |		AND ServiceType = $ServiceTypevideo THEN
          |			1
          |		ELSE
          |			0
@@ -504,7 +523,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime/100
+         |			alertingtime/$timetr
          |		ELSE
          |			0
          |		END
@@ -513,9 +532,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND callduration <> 4294967295 THEN
-         |			callduration/100
+         |			callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -524,7 +543,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND callduration <> 4294967295 THEN
          |		1
          |		ELSE
@@ -535,8 +554,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
-         |		callduration
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
+         |		callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -545,7 +564,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -555,7 +574,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -566,7 +585,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -598,7 +617,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 0 THEN
+         |		AND ProcedureStatus = $procedurestatussuccess THEN
          |			1
          |		ELSE
          |			0
@@ -635,7 +654,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
-         |	callside = 1
+         |	callside = $callsidecalling
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
@@ -654,7 +673,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -665,7 +684,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = $ServiceTypeaudio THEN
          |			1
          |		ELSE
          |			0
@@ -675,7 +694,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -686,7 +705,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 THEN
+         |		AND ServiceType = $ServiceTypevideo THEN
          |			1
          |		ELSE
          |			0
@@ -697,7 +716,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime/100
+         |			alertingtime/$timetr
          |		ELSE
          |			0
          |		END
@@ -706,7 +725,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND callduration <> 4294967295 THEN
          |			callduration
          |		ELSE
@@ -717,7 +736,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND callduration <> 4294967295 THEN
          |		1
          |		ELSE
@@ -728,7 +747,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		callduration
          |		ELSE
          |			0
@@ -738,7 +757,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -748,7 +767,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 1
+         |		AND ServiceType = $ServiceTypeaudio
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -759,7 +778,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -791,7 +810,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 0 THEN
+         |		AND ProcedureStatus = $procedurestatussuccess THEN
          |			1
          |		ELSE
          |			0
@@ -828,7 +847,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_mw
          |WHERE
-         |	callside = 2
+         |	callside = $callsedediacalled
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
@@ -1498,7 +1517,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND RESULT = 0 THEN
-         |			SVDELAY/100
+         |			SVDELAY/$timetr
          |		END
          |	) srvcctime,
          |	0 AS lteswsucc,
@@ -1645,7 +1664,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -1656,7 +1675,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 THEN
+         |		AND ServiceType = $ServiceTypevideo THEN
          |			1
          |		ELSE
          |			0
@@ -1667,7 +1686,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime/100
+         |			alertingtime/$timetr
          |		ELSE
          |			0
          |		END
@@ -1678,7 +1697,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND interface = 14
          |		AND ServiceType = 1
          |		AND callduration <> 4294967295 THEN
-         |			callduration/100
+         |			callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -1698,8 +1717,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
-         |		callduration/100
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
+         |		callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -1708,7 +1727,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -1729,7 +1748,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -1798,7 +1817,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
-         |	callside = 1
+         |	callside = $callsidecalling
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
@@ -1833,7 +1852,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -1844,7 +1863,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 THEN
+         |		AND ServiceType = $ServiceTypevideo THEN
          |			1
          |		ELSE
          |			0
@@ -1855,7 +1874,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND alertingtime <> 4294967295 THEN
-         |			alertingtime/100
+         |			alertingtime/$timetr
          |		ELSE
          |			0
          |		END
@@ -1866,7 +1885,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND interface = 14
          |		AND ServiceType = 1
          |		AND callduration <> 4294967295 THEN
-         |			callduration/100
+         |			callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -1886,8 +1905,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
-         |		callduration/100
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
+         |		callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -1896,7 +1915,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 2 and callduration<> 4294967295 THEN
+         |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		1
          |		ELSE
          |			0
@@ -1917,7 +1936,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 5
-         |		AND ServiceType = 2
+         |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -1986,7 +2005,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
-         |	callside = 2
+         |	callside = $callsedediacalled
          |AND dt = $ANALY_DATE
          |AND h = $ANALY_HOUR
          |GROUP BY
