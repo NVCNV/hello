@@ -14,6 +14,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override def analyse(implicit sparkSession: SparkSession): Unit = {
 
 
+
+
   }
 
   object AnalyJob {
