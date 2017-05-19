@@ -20,8 +20,6 @@ class FakeDataInit(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: Stri
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
 
-    println(warhouseDir)
-
     sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
       .option("dbtable", "ltecell")
       .option("user", "scott")
@@ -42,9 +40,9 @@ class FakeDataInit(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: Stri
     //    sparkSession.udf.register("calcdis", calcdis(_:Float,_:Float,_:Float,_:Float))
         sparkSession.udf.register("calcdis", (fLon:Float,fLat:Float,tLon:Float,tLat:Float)=>(2 * scala.math.asin(scala.math.sqrt(scala.math.pow(scala.math.sin((fLat*3.14159265/180 - tLat*3.14159265/180)/2),2) + scala.math.cos(fLat*3.14159265/180)*scala.math.cos(tLat*3.14159265/180)*scala.math.pow(scala.math.sin((fLon*3.14159265/180 - tLon*3.14159265/180)/2),2))))*6378.137)
         sql(s"use $DDB")
-        sql(s"""alter table tb_cell_distance drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
-        sql(s"""alter table tb_cell_distance add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-        LOCATION 'hdfs://dtcluster/$warhouseDir/tb_cell_distance/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+//        sql(s"""alter table tb_cell_distance drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
+//        sql(s"""alter table tb_cell_distance add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+//        LOCATION 'hdfs://dtcluster/$warhouseDir/tb_cell_distance/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
         sql(
           s"""
              | select cellid, freq1,pci,min(dis) as dis  from
@@ -53,7 +51,7 @@ class FakeDataInit(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: Stri
              | from ltecell t,ltecell a where t.cellid!=a.cellid) b
              | left join lte2lteadj c on b.cellid=c.cellid and b.tcellid=c.adjcellid where c.adjcellid is null)
              | group by cellid,freq1,pci
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_cell_distance/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_cell_distance/") //dt=$ANALY_DATE/h=$ANALY_HOUR")
     //    """.stripMargin).createOrReplaceTempView("tb_cell_distance")
     /**/
   }
