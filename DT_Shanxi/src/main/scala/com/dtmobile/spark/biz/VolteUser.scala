@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhoudehu on 2017/5/19/0019.
   */
-class InitTable(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String) {
+class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
 
   val currentHour = ANALY_HOUR.toInt
@@ -57,7 +57,7 @@ class InitTable(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, 
         """.stripMargin).repartition(2).write.mode(SaveMode.Append).csv(s"""$warhouseDir/volte_user_data/dt=$ANALY_DATE/h=$lastHour""")
 
          //取出当前小时的数据，append
-      sql(
+    sql(
         s"""
            |select
            |'$cal_date',
