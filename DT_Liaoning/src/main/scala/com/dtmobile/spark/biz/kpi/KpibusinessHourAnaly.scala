@@ -7,7 +7,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   */
 class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-
+  val onoff=0
   def analyse(implicit sparkSession: SparkSession): Unit = {
     tacHourAnalyse(sparkSession)
     cellHourAnalyse(sparkSession)
