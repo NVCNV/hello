@@ -165,9 +165,9 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
           |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) or
           |(apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) or
-          |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)>${XDRthreshold04}) or
+          |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)<${XDRthreshold04}) or
           |(apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) or
-          |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06})
+          |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06})
           |)
           |)t1
           |left join (select appserveripipv4 as sp,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sp_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t2
