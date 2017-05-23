@@ -10,7 +10,7 @@ import org.apache.spark.storage.StorageLevel
   */
 class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String) {
 
-  var oracle = "jdbc:oracle:thin:@"+"172.30.4.187:1521/morpho0307"
+  var oracle = "jdbc:oracle:thin:@"+ORCAL
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
       InitLteCell(sparkSession)
