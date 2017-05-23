@@ -155,9 +155,9 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) then "1"
           |      when (apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "2"
           |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) then "3"
-          |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)>${XDRthreshold04}) then "4"
+          |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)<${XDRthreshold04}) then "4"
           |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
-          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06}) then "6"
+          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06}) then "6"
           |      end
           |)etype
           |from (select * from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
