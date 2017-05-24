@@ -26,15 +26,18 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   def init(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
 
+    sql(s"""alter table $DDB.volte_user_data drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
+
     sql(
       s"""alter table $DDB.VOLTE_USER_DATA add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/VOLTE_USER_DATA/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$warhouseDir/volte_user_data/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
 
     //取出正常的数据，override
     sql(
       s"""select
-         '$cal_date',
+         '$ANALY_DATE',
+         '$ANALY_HOUR',
           t.imsi,
           from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
           from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'mm') procedureendtime
