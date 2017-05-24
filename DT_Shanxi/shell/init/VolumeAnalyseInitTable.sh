@@ -3,6 +3,7 @@
 DDLDB=$1
 DB_PATH=$2
 
+#sh VolumeAnalyseInitTable.sh shanxi  'user/hive/warehouse/shanxi.db'
 
 hive<<EOF
 
@@ -12,7 +13,8 @@ USE ${DDLDB};
 --volte用户表
 drop table if exists volte_user_data;
 CREATE TABLE volte_user_data(
-  ttime string, 
+  ttime string,
+  hour int,
   imsi string, 
   volte_start int, 
   volte_end int)
@@ -26,6 +28,8 @@ ROW FORMAT DELIMITED
 drop table if exists gt_pulse_detail;
 create table gt_pulse_detail(
 ttime string,
+hour int,
+minute int,
 cellid bigint,
 imsi string,
 imei string,
@@ -42,6 +46,8 @@ ROW FORMAT DELIMITED
 drop table if exists  gt_pulse_cell_min;
 create table gt_pulse_cell_min(
 ttime string,
+hour int,
+minute int,
 cellid bigint,
 sub_pulse_mark int,
 sub_pulse_type int,
@@ -59,6 +65,7 @@ ROW FORMAT DELIMITED
 drop table if exists gt_pulse_cell_base60;
 create table gt_pulse_cell_base60(
      ttime string,
+     hour int,
      cellid bigint,
      pulse_mark bigint,
      pulse_type bigint,
@@ -80,6 +87,7 @@ ROW FORMAT DELIMITED
 drop table  if exists gt_pulse_detail_base60;
 create table gt_pulse_detail_base60(
 ttime string,
+hour int,
 cellid bigint,
 imsi string,
 pulse_mark bigint,
@@ -196,7 +204,7 @@ CREATE EXTERNAL  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
 dt STRING,
 h STRING)
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ',' ;
+FIELDS TERMINATED BY ','
 location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 DROP TABLE   IF EXISTS lte_mro_source;
@@ -312,7 +320,7 @@ create EXTERNAL table   IF NOT EXISTS lte_mro_source
 dt STRING,
 h STRING)
 ROW FORMAT DELIMITED    
-FIELDS TERMINATED BY ',' ;
+FIELDS TERMINATED BY ','
 location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 EOF
