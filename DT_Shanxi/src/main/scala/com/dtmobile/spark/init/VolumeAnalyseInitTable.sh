@@ -130,7 +130,6 @@ ROW FORMAT DELIMITED
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
 CREATE  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
-      PARENTXDRID                  STRING,
       LENGTH                       BIGINT,
       CITY                         STRING,
       INTERFACE                     INT,
@@ -199,7 +198,7 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' ;
 
 
-ROP TABLE   IF EXISTS lte_mro_source;  
+DROP TABLE   IF EXISTS lte_mro_source;
 create  table   IF NOT EXISTS lte_mro_source
 (
        objectID       STRING ,
