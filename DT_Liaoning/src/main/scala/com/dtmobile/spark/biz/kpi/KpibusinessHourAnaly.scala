@@ -5,9 +5,12 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by shenkaili on 17-3-31.
   */
-class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String,versiononoff:Int) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-  val onoff=0
+  var onoff=versiononoff
+  if(versiononoff!=0 && versiononoff!=1){
+    onoff=0
+  }
   val kpibusinesssum=
     s"""
        |sum(browsedownloadvisits),

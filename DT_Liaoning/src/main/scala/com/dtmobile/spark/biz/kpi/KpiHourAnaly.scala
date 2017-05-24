@@ -8,9 +8,12 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * create 2017/03/02 10:36
   *
   **/
-class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String,versiononoff:Int) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-  var onoff=0
+  var onoff=versiononoff
+  if(versiononoff!=0 && versiononoff!=1){
+    onoff=0
+  }
 
   var procedurestatussuccess=1
   var procedurestatusfaile=2
