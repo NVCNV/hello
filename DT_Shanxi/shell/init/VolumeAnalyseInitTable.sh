@@ -42,6 +42,8 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+
+
 --子脉冲统计表(分钟级)
 drop table if exists  gt_pulse_cell_min;
 create table gt_pulse_cell_min(
