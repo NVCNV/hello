@@ -26,7 +26,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   def init(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
 
-    sql(s"""alter table volte_user_data drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
+    sql(s"""alter table $DDB.volte_user_data drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
 
     sql(
       s"""alter table $DDB.VOLTE_USER_DATA add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
