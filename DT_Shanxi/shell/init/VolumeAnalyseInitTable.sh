@@ -154,12 +154,13 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
-CREATE EXTERNAL  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
+CREATE EXTERNAL TABLE   IF NOT EXISTS  TB_XDR_IFC_UU (
+      PARENTXDRID                  STRING,
       LENGTH                       BIGINT,
       CITY                         STRING,
       INTERFACE                     INT,
       XDRID                         STRING,
-      RAT                           BIGINT,      
+      RAT                           BIGINT,
       IMSI                          STRING,
       IMEI                          STRING,
       MSISDN                        STRING,
@@ -221,6 +222,7 @@ dt STRING,
 h STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
 location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 DROP TABLE   IF EXISTS lte_mro_source;
@@ -228,7 +230,7 @@ create EXTERNAL table   IF NOT EXISTS lte_mro_source
 (
        objectID       STRING ,
        VID             BIGINT  ,
-       fileFormatVersion STRING , 
+       fileFormatVersion STRING ,
        startTime       STRING  ,
        endTime         STRING ,
        period          BIGINT ,
@@ -320,7 +322,7 @@ create EXTERNAL table   IF NOT EXISTS lte_mro_source
        length          BIGINT ,
        City            STRING ,
        XDRType         BIGINT ,
-       Interface       BIGINT ,  
+       Interface       BIGINT ,
        XDRID          STRING ,
        RAT             BIGINT ,
        IMSI           STRING ,
@@ -335,9 +337,89 @@ create EXTERNAL table   IF NOT EXISTS lte_mro_source
 )PARTITIONED BY (
 dt STRING,
 h STRING)
-ROW FORMAT DELIMITED    
+ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-location '/${DB_PATH}/TB_XDR_IFC_UU';
+STORED AS  TEXTFILE
+location '/${DB_PATH}/LTE_MRO_SOURCE';
+
+
+DROP TABLE  IF EXISTS TB_XDR_IFC_GMMWMGMIMJISC;
+CREATE EXTERNAL TABLE   IF NOT EXISTS TB_XDR_IFC_GMMWMGMIMJISC (
+      LENGTH                        BIGINT,
+      CITY                         STRING,
+      INTERFACE                     BIGINT,
+      XDRID                        STRING,
+      RAT                           BIGINT,
+      IMSI                         STRING,
+      IMEI                         STRING,
+      MSISDN                       STRING,
+      PROCEDURETYPE                 BIGINT,
+      PROCEDURESTARTTIME           BIGINT,
+      PROCEDUREENDTIME             BIGINT,
+      SERVICETYPE                   BIGINT,
+      PROCEDURESTATUS               BIGINT,
+      CALLINGNUMBER                STRING,
+      CALLEDNUMBER                 STRING,
+      CALLINGPARTYURI              STRING,
+      REQUESTURI                   STRING,
+      USERIP                       STRING,
+      CALLID                       STRING,
+      ICID                         STRING,
+      SOURCENEIP                   STRING,
+      SOURCENEPORT                  BIGINT,
+      DESTNEIP                     STRING,
+      DESTNEPORT                    BIGINT,
+      CALLSIDE                      BIGINT,
+      SOURCEACCESSTYPE              BIGINT,
+      SOURCEECI                     BIGINT,
+      SOURCETAC                     BIGINT,
+      SOURCEIMSI                   STRING,
+      SOURCEIMEI                   STRING,
+      DESTACCESSTYPE                BIGINT,
+      DESTECI                       BIGINT,
+      DESTTAC                       BIGINT,
+      DESTIMSI                     STRING,
+      DESTIMEI                     STRING,
+      AUTHTYPE                      BIGINT,
+      EXPIRESTIMEREQ               BIGINT,
+      EXPIRESTIMERSP               BIGINT,
+      CALLINGSDPIPADDR             STRING,
+      CALLINGAUDIOSDPPORT           BIGINT,
+      CALLINGVIDEOSDPPORT           BIGINT,
+      CALLEDSDPIPADDR              STRING,
+      CALLEDAUDIOSDPPORT            BIGINT,
+      CALLEDVIDEOPORT               BIGINT,
+      AUDIOCODEC                    BIGINT,
+      VIDEOCODEC                    BIGINT,
+      REDIRECTINGPARTYADDRESS      STRING,
+      ORIGINALPARTYADDRESS         STRING,
+      REDIRECTREASON                BIGINT,
+      RESPONSECODE                  BIGINT,
+      FINISHWARNINGCODE             BIGINT,
+      FINISHREASONPROTOCOL          BIGINT,
+      FINISHREASONCAUSE             BIGINT,
+      FIRFAILTIME                  BIGINT,
+      FIRSTFAILNEIP                STRING,
+      ALERTINGTIME                 BIGINT,
+      ANSWERTIME                   BIGINT,
+      RELEASETIME                  BIGINT,
+      CALLDURATION                  BIGINT,
+      AUTHREQTIME                  BIGINT,
+      AUTHRSPTIME                  BIGINT,
+      STNSR                        STRING,
+      ATCFMGMT                     STRING,
+      ATUSTI                       STRING,
+      CMSISDN                      STRING,
+      SSI                          STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
+location '/${DB_PATH}/TB_XDR_IFC_GMMWMGMIMJISC';
+
 
 EOF
 exit 0
