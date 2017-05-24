@@ -149,25 +149,25 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |else "7"
           |end)errorcode,
           |(case when httpstate>=400 then "10"
-          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "7"
-          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime)*1000)<${XDRthreshold04}) then "8"
-          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06}) then "9"
+          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) then "7"
+          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "8"
+          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "9"
           |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) then "1"
-          |      when (apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) then "2"
+          |      when (apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) then "2"
           |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) then "3"
-          |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)>${XDRthreshold04}) then "4"
+          |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "4"
           |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
-          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end)*1000)>${XDRthreshold06}) then "6"
+          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "6"
           |      end
           |)etype
           |from (select * from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
           |(httpstate>=400 or
           |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
-          |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold02}) or
+          |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) or
           |(apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) or
-          |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime)*1000)<${XDRthreshold04}) or
+          |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) or
           |(apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) or
-          |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end)*1000)<${XDRthreshold06})
+          |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06})
           |)
           |)t1
           |left join (select appserveripipv4 as sp,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sp_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t2
