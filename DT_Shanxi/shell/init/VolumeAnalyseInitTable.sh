@@ -3,7 +3,7 @@
 DDLDB=$1
 DB_PATH=$2
 
-#sh VolumeAnalyseInitTable.sh shanxi  'user/hive/warehouse/shanxi.db'
+#sh VolumeAnalyseInitTable.sh shanxi  'datang'
 
 hive<<EOF
 
@@ -14,7 +14,7 @@ USE ${DDLDB};
 drop table if exists volte_user_data;
 CREATE TABLE volte_user_data(
   ttime string,
-  hour int,
+  hours int,
   imsi string, 
   volte_start int, 
   volte_end int)
@@ -27,9 +27,9 @@ ROW FORMAT DELIMITED
 --高铁用户识别表
 drop table volte_gtuser_data;
 create table volte_gtuser_data(
-ttime string,
-hour int,
-imsi string
+imsi string,
+hours string,
+ttime string
 )
 PARTITIONED BY (
   dt string,
@@ -42,8 +42,8 @@ ROW FORMAT DELIMITED
 drop table if exists gt_pulse_detail;
 create table gt_pulse_detail(
 ttime string,
-hour int,
-minute int,
+hours int,
+minutes int,
 cellid bigint,
 imsi string,
 imei string,
@@ -62,8 +62,8 @@ ROW FORMAT DELIMITED
 drop table if exists  gt_pulse_cell_min;
 create table gt_pulse_cell_min(
 ttime string,
-hour int,
-minute int,
+hours int,
+minutes int,
 cellid bigint,
 sub_pulse_mark int,
 sub_pulse_type int,
@@ -81,7 +81,7 @@ ROW FORMAT DELIMITED
 drop table if exists gt_pulse_cell_base60;
 create table gt_pulse_cell_base60(
      ttime string,
-     hour int,
+     hours int,
      cellid bigint,
      pulse_mark bigint,
      pulse_type bigint,
@@ -103,7 +103,7 @@ ROW FORMAT DELIMITED
 drop table  if exists gt_pulse_detail_base60;
 create table gt_pulse_detail_base60(
 ttime string,
-hour int,
+hours int,
 cellid bigint,
 imsi string,
 pulse_mark bigint,
