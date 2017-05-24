@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DDLDB=$1
+DB_PATH=$2
 
 
 hive<<EOF
@@ -129,7 +130,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
-CREATE  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
+CREATE EXTERNAL  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
       LENGTH                       BIGINT,
       CITY                         STRING,
       INTERFACE                     INT,
@@ -196,10 +197,10 @@ dt STRING,
 h STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',' ;
-
+location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 DROP TABLE   IF EXISTS lte_mro_source;
-create  table   IF NOT EXISTS lte_mro_source
+create EXTERNAL table   IF NOT EXISTS lte_mro_source
 (
        objectID       STRING ,
        VID             BIGINT  ,
@@ -312,7 +313,7 @@ dt STRING,
 h STRING)
 ROW FORMAT DELIMITED    
 FIELDS TERMINATED BY ',' ;
-
+location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 EOF
 exit 0
