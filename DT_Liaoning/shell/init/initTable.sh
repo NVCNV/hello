@@ -137,6 +137,76 @@ OUTPUTFORMAT
 LOCATION
   '/${DB_PATH}/s1u_http_orgn';
 
+drop table tb_xdr_ifc_dns;
+CREATE EXTERNAL TABLE `tb_xdr_ifc_dns`(
+  `length` int,
+  `city` int,
+  `interface` int,
+  `xdrid` string,
+  `rat` int,
+  `imsi` bigint,
+  `imei` bigint,
+  `msisdn` bigint,
+  `machineipaddtype` int,
+  `sgwipaddr` string,
+  `enbipaddr` string,
+  `sgwport` int,
+  `enbport` int,
+  `enbgtpteid` string,
+  `sgwgtpteid` bigint,
+  `tac` bigint,
+  `ecgi` bigint,
+  `apn` string,
+  `apptypecode` bigint,
+  `procedurestarttime` bigint,
+  `procedureendtime` bigint,
+  `protocoltype` bigint,
+  `apptype` bigint,
+  `appsubtype` bigint,
+  `appcontent` int,
+  `appstatus` int,
+  `useripv4` string,
+  `useripv6` string,
+  `userport` string,
+  `l4protocal` int,
+  `appserveripipv4` string,
+  `appserveripipv6` string,
+  `appserverport` string,
+  `uldata` bigint,
+  `dldata` bigint,
+  `ulippacket` bigint,
+  `dlippacket` bigint,
+  `ultcppacketor` bigint,
+  `dltcppacketor` bigint,
+  `ultcppacketre` bigint,
+  `dltcppacketre` bigint,
+  `tcpestabrede` bigint,
+  `tcpestabdeconf` bigint,
+  `ulipfragpackets` bigint,
+  `dlipfragpackets` bigint,
+  `tcpfirstrede` bigint,
+  `tcpfirstconf` bigint,
+  `winsize` bigint,
+  `msssize` bigint,
+  `tcpattnum` int,
+  `tcplinkstatus` int,
+  `sessionflag` int,
+  `reqdns` string,
+  `resultip` string,
+  `dnsrecode` bigint,
+  `dnsattnum` bigint,
+  `dnsrenum` bigint,
+  `licensedconnum` bigint,
+  `additionalconnum` bigint,
+  `parentxdrid` string)
+PARTITIONED BY (
+  `dt` string,
+  `h` string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '|'
+  LOCATION
+  '/${DB_PATH}/s1u_dns_orgn';
+
 DROP TABLE IF EXISTS tb_xdr_ifc_mw; 
 CREATE EXTERNAL TABLE tb_xdr_ifc_mw(
   length bigint, 
