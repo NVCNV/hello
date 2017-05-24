@@ -38,8 +38,6 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-
-
 --小区统计表（分钟级）
 drop table if exists gt_pulse_detail;
 create table gt_pulse_detail(
