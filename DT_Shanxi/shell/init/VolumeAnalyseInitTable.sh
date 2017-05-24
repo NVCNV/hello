@@ -24,6 +24,22 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+--高铁用户识别表
+drop table volte_gtuser_data;
+create table volte_gtuser_data(
+ttime string,
+hour int,
+imsi string
+)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ',' ;
+
+
+
+
 --小区统计表（分钟级）
 drop table if exists gt_pulse_detail;
 create table gt_pulse_detail(
