@@ -118,7 +118,8 @@ create table gt_pulse_cell_base60(
      gt_users bigint,
      volte_users bigint)
 PARTITIONED BY ( 
-  dt string)
+  dt string,
+  h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
@@ -155,8 +156,7 @@ gtusers bigint,
 commusers bigint,
 cellavguses bigint)
 PARTITIONED BY ( 
-  dt string, 
-  h string)
+  dt string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
