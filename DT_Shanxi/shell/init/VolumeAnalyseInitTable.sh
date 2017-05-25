@@ -111,6 +111,7 @@ create table gt_pulse_cell_base60(
      pulse_mark bigint,
      pulse_type bigint,
      pulse_timelen bigint,
+     first_pulse_mark bigint,
      sub_users_peak bigint,
      sub_gtusers_peak bigint,
      sub_volteusers_peak bigint,
