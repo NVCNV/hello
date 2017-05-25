@@ -7238,9 +7238,122 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
 
+--门限配置表
+ drop table if exists gt_capacity_config;
+ create table gt_capacity_config(
+        sub_pulse_limit int,
+        non_gtsubpulse_commusers int,
+        non_gtsubpuse_times int,
+        over_pulse_timelen int,
+        over_pulse_times int,
+        short_pulse_timelen int,
+        short_pulse_times int,
+        balence_userrate int,
+        balence_times int,
+        highattach_users int,
+        highattach_times int
+ )
+ PARTITIONED BY (
+    dt string,
+    h string
+ )
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+LOCATION
+    'hdfs://dtcluster/$WAREHOUSE/gt_capacity_config';
 
+--负载均衡效果差小区天级表
+drop table if exists gt_balence_baseday;
+create table gt_balence_baseday(
+        line_name  string,
+        city string,
+        ttime string,
+        cellid int,
+        cellname string,
+        f1_f2 string,
+        balenusesrateavg int,
+        balenusersavg int
+)
+ PARTITIONED BY (
+   dt string,
+   h string
+ )
+ ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+ LOCATION
+     'hdfs://dtcluster/$WAREHOUSE/gt_balence_baseday';
 
+--高铁用户脉冲时长超短小区表
+drop table if exists gt_shorttimelen_baseday;
+create table gt_shorttimelen_baseday(
+        line_name  string,
+        city string,
+        ttime string,
+        cellid int,
+        cellname string,
+        minpluse_timelen string,
+        maxpluse_timelen string
+)
+PARTITIONED BY (
+    dt string,
+    h string
+)
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+ LOCATION
+     'hdfs://dtcluster/$WAREHOUSE/gt_shorttimelen_baseday';
 
+--高铁用户脉冲时长超长小区表
+drop table if exists gt_overtimelen_baseday;
+create table gt_overtimelen_baseday(
+        line_name  varchar2(50),
+        city string,
+        ttime string,
+        cellid int,
+        cellname string,
+        minpluse_timelen int,
+        maxpluse_timelen int
+)
+PARTITIONED BY (
+    dt string,
+    h string
+)
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+ LOCATION
+     'hdfs://dtcluster/$WAREHOUSE/gt_overtimelen_baseday';
+
+--平时普通用户多小区天级表
+drop table if exists gt_commusermore_baseday;
+create table gt_commusermore_baseday(
+        line_name  string,
+        city string,
+        ttime string,
+        cellid int,
+        cellname string,
+        maxusers int
+)
+PARTITIONED BY (
+    dt string,
+    h string
+)
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+ LOCATION
+     'hdfs://dtcluster/$WAREHOUSE/gt_commusermore_baseday';
+
+--高冲击小区维度天级详细表
+drop table if exists gt_highattach_baseday;
+create table gt_highattach_baseday(
+        line_name  string,
+        city string,
+        ttime string,
+        cellid int,
+        cellname string,
+        maxusers int
+)
+PARTITIONED BY (
+    dt string,
+    h string
+)
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
+ LOCATION
+     'hdfs://dtcluster/$WAREHOUSE/gt_highattach_baseday';
 EOF
 exit 0
 
