@@ -143,39 +143,22 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-
---线路高铁用户占用频段表
-drop table  if exists gt_line_freq_baseday;
-create table gt_line_freq_baseday(
-line string,
-ttime string,
-cell_feq string,
-cell_num double,
-gtusers bigint,
-commusers bigint,
-cellavguses bigint)
-PARTITIONED BY ( 
-  dt string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ',' ;
-
-
 --城市高铁用户频段表
-drop table  if exists gt_city_freq_baseday;
-create table gt_city_freq_baseday(
+drop table gt_freq_baseday;
+create table gt_freq_baseday(
+     line_name  string,
      city string,
      ttime string,
      cell_feq string,
-     cell_num bigint,
-     gtusers bigint,
-     commusers bigint,
-     cellavguses bigint)
-PARTITIONED BY ( 
-  dt string, 
-  h string)
-ROW FORMAT DELIMITED 
+     cell_num int,
+     gtusers int,
+     commusers int,
+     cellavguses int
+)PARTITIONED BY (
+  dt string)
+ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
+
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
 CREATE EXTERNAL TABLE   IF NOT EXISTS  TB_XDR_IFC_UU (
