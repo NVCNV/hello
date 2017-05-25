@@ -1705,9 +1705,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
           s"""
              |select
              |'$cal_date',
+             |tac,
              |$kpibusinesssum
              |from
              |tactmp
+             |group by tac
            """.stripMargin
         ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
@@ -1741,9 +1743,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        s"""
           |select
           |'$cal_date',
+          |ecgi,
           |$kpibusinesssum
           |from
           |ecgitmp
+          |group by ecgi
         """.stripMargin
      ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
@@ -1776,9 +1780,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
       s"""
          |select
          |'$cal_date',
+         |appserveripipv4,
          |$kpibusinesssum
          |from
          |sptmp
+         |group by appserveripipv4
        """.stripMargin)
       .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
@@ -1813,9 +1819,14 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
         s"""
           |select
           |'$cal_date',
+          |imsi,
+          |msisdn,
           |$kpibusinesssum
           |from
           |uetmp
+          |group by
+          |imsi,
+          |msisdn
         """.stripMargin)
       .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
@@ -1848,9 +1859,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
       s"""
          |select
          |'$cal_date',
+         |sgwipaddr,
          |$kpibusinesssum
          |from
          |sgwtmp
+         |group by sgwipaddr
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
@@ -1887,9 +1900,15 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
       s"""
          |select
          |'$cal_date',
+         |imsi,
+         |msisdn,
+         |ecgi,
          |$kpibusinesssum
          |from
          |imsicelltmp
+         |group by imsi,
+         |msisdn,
+         |ecgi
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
