@@ -66,13 +66,13 @@ public class AzkabanOperator {
         return result;
     }
 
-    public JSONObject executeGdiFlow(String sessionID, Map<String,String> paramMap)
+    public JSONObject executeGdiFlow(String sessionID, Map<String, String> paramMap)
             throws Exception {
         JSONObject result = null;
         StringBuffer executeStr = new StringBuffer();
         executeStr.append("session.id=").append(sessionID)
                 .append("&ajax=").append("executeFlow").append("&project=").append(GDI_Project).append("&flow=").append(GDI_Workflow);
-        for(Map.Entry<String, String> entry:paramMap.entrySet()){
+        for (Map.Entry<String, String> entry : paramMap.entrySet()) {
             executeStr.append("&").append("flowOverride[").append(entry.getKey()).append("]").append("=").append(entry.getValue());
         }
         String executeUrl = url + "/executor";
@@ -91,7 +91,7 @@ public class AzkabanOperator {
     }
 
     /**
-     *"https://172.30.4.222:8443",
+     * "https://172.30.4.222:8443",
      * "azkaban",
      * "azkaban",
      * "Test",
@@ -103,7 +103,7 @@ public class AzkabanOperator {
      * ANALY_HOUR
      */
     public static void main(String[] args) {
-        AzkabanOperator op = new AzkabanOperator(args[0], args[1], args[2], args[3], args[4], args[5],args[6], args[7]);
+        AzkabanOperator op = new AzkabanOperator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
         try {
             JSONObject json = op.login();
             System.out.println(JSONObject.toJSONString(json));
