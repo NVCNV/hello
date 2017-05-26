@@ -15,9 +15,9 @@ PASSWD=tiger
 #export hdfs dir
 HDFS_DIR=$1
 #table cols
-COL_NUM=$3
+COL_NUM=$2
 #map num
-MAP_NUM=$4
+MAP_NUM=$3
 
 
 
