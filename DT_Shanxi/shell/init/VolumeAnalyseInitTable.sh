@@ -32,12 +32,9 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
 
-
-
-
 --volte用户表
 drop table if exists volte_user_data;
-CREATE TABLE volte_user_data(
+CREATE EXTERNAL IF NOT EXISTS TABLE volte_user_data(
   ttime string,
   hours int,
   imsi string, 
@@ -47,11 +44,13 @@ PARTITIONED BY (
   dt string, 
   h string)
 ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ',' ;
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/$WAREHOUSE/volte_user_data';
 
 --高铁用户识别表
-drop table volte_gtuser_data;
-create table volte_gtuser_data(
+drop table if exists volte_gtuser_data;
+create table if not exists volte_gtuser_data(
 imsi string,
 hours string,
 ttime string
@@ -65,7 +64,7 @@ ROW FORMAT DELIMITED
 
 --小区统计表（分钟级）
 drop table if exists gt_pulse_detail;
-create table gt_pulse_detail(
+create table if not exists gt_pulse_detail(
 ttime string,
 hours int,
 minutes int,
@@ -85,7 +84,7 @@ ROW FORMAT DELIMITED
 
 --子脉冲统计表(分钟级)
 drop table if exists  gt_pulse_cell_min;
-create table gt_pulse_cell_min(
+create table if not exists gt_pulse_cell_min(
 ttime string,
 hours int,
 minutes int,
@@ -104,7 +103,7 @@ ROW FORMAT DELIMITED
 
 --脉冲统计小时表
 drop table if exists gt_pulse_cell_base60;
-create table gt_pulse_cell_base60(
+create table if not exists gt_pulse_cell_base60(
      ttime string,
      hours int,
      cellid bigint,
@@ -127,7 +126,7 @@ ROW FORMAT DELIMITED
 
 --脉冲明细小时表
 drop table  if exists gt_pulse_detail_base60;
-create table gt_pulse_detail_base60(
+create table if not exists gt_pulse_detail_base60(
 ttime string,
 hours int,
 cellid bigint,
@@ -146,7 +145,7 @@ ROW FORMAT DELIMITED
 
 --城市高铁用户频段表
 drop table gt_freq_baseday;
-create table gt_freq_baseday(
+create table if not exists gt_freq_baseday(
      line_name  string,
      city string,
      ttime string,
@@ -352,7 +351,7 @@ location '/${DB_PATH}/LTE_MRO_SOURCE';
 
 
 DROP TABLE  IF EXISTS TB_XDR_IFC_GMMWMGMIMJISC;
-CREATE EXTERNAL TABLE   IF NOT EXISTS TB_XDR_IFC_GMMWMGMIMJISC (
+CREATE EXTERNAL TABLE  IF NOT EXISTS TB_XDR_IFC_GMMWMGMIMJISC (
       LENGTH                        BIGINT,
       CITY                         STRING,
       INTERFACE                     BIGINT,
@@ -7219,28 +7218,9 @@ create table LTECELL(
   )ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
-drop table business_type_detail;
-create EXTERNAL table business_type_detail(
-        TTIME              string,
-        city               string,
-        region             string,
-        CELLID             int,
-        app_type           string,
-        app_sub_type       string,
-        uldata             bigint,
-        dldata             bigint
-)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
-
 --门限配置表
  drop table if exists gt_capacity_config;
- create table gt_capacity_config(
+ create table if not exists gt_capacity_config(
         sub_pulse_limit int,
         non_gtsubpulse_commusers int,
         non_gtsubpuse_times int,
@@ -7257,13 +7237,11 @@ LOCATION
     dt string,
     h string
  )
-ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
-LOCATION
-    'hdfs://dtcluster/$WAREHOUSE/gt_capacity_config';
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 --负载均衡效果差小区天级表
 drop table if exists gt_balence_baseday;
-create table gt_balence_baseday(
+create table if not exists gt_balence_baseday(
         line_name  string,
         city string,
         ttime string,
@@ -7277,13 +7255,11 @@ create table gt_balence_baseday(
    dt string,
    h string
  )
- ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
- LOCATION
-     'hdfs://dtcluster/$WAREHOUSE/gt_balence_baseday';
+ ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 --高铁用户脉冲时长超短小区表
 drop table if exists gt_shorttimelen_baseday;
-create table gt_shorttimelen_baseday(
+create table if not exists gt_shorttimelen_baseday(
         line_name  string,
         city string,
         ttime string,
@@ -7296,13 +7272,11 @@ PARTITIONED BY (
     dt string,
     h string
 )
-ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
- LOCATION
-     'hdfs://dtcluster/$WAREHOUSE/gt_shorttimelen_baseday';
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 --高铁用户脉冲时长超长小区表
 drop table if exists gt_overtimelen_baseday;
-create table gt_overtimelen_baseday(
+create table if not exists gt_overtimelen_baseday(
         line_name  varchar2(50),
         city string,
         ttime string,
@@ -7315,13 +7289,11 @@ PARTITIONED BY (
     dt string,
     h string
 )
-ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
- LOCATION
-     'hdfs://dtcluster/$WAREHOUSE/gt_overtimelen_baseday';
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 --平时普通用户多小区天级表
 drop table if exists gt_commusermore_baseday;
-create table gt_commusermore_baseday(
+create table if not exists gt_commusermore_baseday(
         line_name  string,
         city string,
         ttime string,
@@ -7333,13 +7305,11 @@ PARTITIONED BY (
     dt string,
     h string
 )
-ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
- LOCATION
-     'hdfs://dtcluster/$WAREHOUSE/gt_commusermore_baseday';
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 --高冲击小区维度天级详细表
 drop table if exists gt_highattach_baseday;
-create table gt_highattach_baseday(
+create table if not exists gt_highattach_baseday(
         line_name  string,
         city string,
         ttime string,
@@ -7351,9 +7321,7 @@ PARTITIONED BY (
     dt string,
     h string
 )
-ROW FORMAT DELIMITED  FIELDS TERMINATED BY ','
- LOCATION
-     'hdfs://dtcluster/$WAREHOUSE/gt_highattach_baseday';
+ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 EOF
 exit 0
 
