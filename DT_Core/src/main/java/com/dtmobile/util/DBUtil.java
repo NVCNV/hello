@@ -21,6 +21,7 @@ public class DBUtil {
     private CallableStatement callableStatement = null;
     private ResultSet resultSet = null;
 
+
     public DBUtil(String url) {
         this.URLSTR = url;
     }
