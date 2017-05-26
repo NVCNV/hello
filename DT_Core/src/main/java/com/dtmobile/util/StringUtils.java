@@ -16,6 +16,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils {
     public static final char NEXT = 'n';
     public static final char PRE = 'p';
 
+
     private StringUtils() {
     }
 }
