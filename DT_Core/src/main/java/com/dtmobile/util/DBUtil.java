@@ -9,22 +9,23 @@ import java.util.Map;
 /**
  * 数据库连接类
  * 说明:封装了 无参，有参，存储过程的调用
- *
  */
 public class DBUtil {
 
     private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
-    private String URLSTR ;
+    private String URLSTR;
     private static final String USERNAME = "scott";
     private static final String USERPASSWORD = "tiger";
     private Connection connnection = null;
     private PreparedStatement preparedStatement = null;
     private CallableStatement callableStatement = null;
     private ResultSet resultSet = null;
-    public DBUtil(String url)
-    {
-        this.URLSTR=url;
+
+
+    public DBUtil(String url) {
+        this.URLSTR = url;
     }
+
     static {
         try {
             // 加载数据库驱动程序
@@ -126,7 +127,7 @@ public class DBUtil {
      * @return List
      * 结果集
      */
-    public HashMap<String,String> excuteQuery(String sql, String[] params) {
+    public HashMap<String, String> excuteQuery(String sql, String[] params) {
         // 执行SQL获得结果集
         ResultSet rs = executeQueryRS(sql, params);
 
@@ -249,23 +250,23 @@ public class DBUtil {
         }
     }
 
-    public HashMap<String,Integer> select() {
+    public HashMap<String, Integer> select() {
 
-        connnection = this.getConnection() ;
+        connnection = this.getConnection();
 
-        HashMap<String,Integer> result = new HashMap<String,Integer>() ;
+        HashMap<String, Integer> result = new HashMap<String, Integer>();
 
         Statement sm = null;
         try {
             sm = connnection.createStatement();
-            ResultSet rs = sm.executeQuery("select field,value from data_threshold") ;
+            ResultSet rs = sm.executeQuery("select field,value from data_threshold");
 
-            while(rs.next()){
-                int value = 0 ;
-                if(rs.getString(2)!=null){
-                    value = Integer.parseInt(rs.getString(2)) ;
+            while (rs.next()) {
+                int value = 0;
+                if (rs.getString(2) != null) {
+                    value = Integer.parseInt(rs.getString(2));
                 }
-                result.put(rs.getString(1),value) ;
+                result.put(rs.getString(1), value);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -277,17 +278,17 @@ public class DBUtil {
     }
 
 
-    public String select(String table,String where) {
-        connnection = this.getConnection() ;
-        String result = "" ;
+    public String select(String table, String where) {
+        connnection = this.getConnection();
+        String result = "";
         Statement sm = null;
         try {
             sm = connnection.createStatement();
-            String sql = "" ;
-            sql = "select operator,value from " +table+" where field="+where ;
-            ResultSet rs = sm.executeQuery(sql) ;
-            while(rs.next()){
-                result +=rs.getString(1)+rs.getString(2) ;
+            String sql = "";
+            sql = "select operator,value from " + table + " where field=" + where;
+            ResultSet rs = sm.executeQuery(sql);
+            while (rs.next()) {
+                result += rs.getString(1) + rs.getString(2);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -299,29 +300,18 @@ public class DBUtil {
     }
 
 
+    public static void main(String ags[]) throws SQLException {
 
-
-
-
-
-
-
-
-    public  static void main(String ags[]) throws SQLException{
-
-        DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602") ;
+        DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602");
 
 //        HashMap<String,Integer> r = db.select() ;
 //
 //        System.out.println(r.get("tiemdelay"));
 
-        String [] p= new String[2];
-        p[0] = "1" ;
-        p[1] = "2" ;
-        db.executeQueryRS("select * from  ltepci_degree_condition",p) ;
-
-
-
+        String[] p = new String[2];
+        p[0] = "1";
+        p[1] = "2";
+        db.executeQueryRS("select * from  ltepci_degree_condition", p);
 
 
     }

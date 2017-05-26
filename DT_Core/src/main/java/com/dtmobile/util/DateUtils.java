@@ -11,14 +11,14 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 日期工具类
- * 
+ *
  * @author luoyue@cn.ibm.com
- * 
+ *
  */
 public class DateUtils {
 
     private static final Log logger = LogFactory.getLog(DateUtils.class);
-    
+
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
     public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -86,7 +86,7 @@ public class DateUtils {
 
     /**
      * 返回该天从00:00:00开始的日期
-     * 
+     *
      * @param date
      * @return
      */
@@ -98,7 +98,7 @@ public class DateUtils {
 
     /**
      * 返回n天后从00:00:00开始的日期
-     * 
+     *
      * @param date
      * @return
      */
@@ -107,10 +107,10 @@ public class DateUtils {
         String thisdate = df.format(date.getTime() + diffDays * 24 * 60 * 60 * 1000l);
         return convert(thisdate + " " + DAYTIME_START);
     }
-    
+
     /**
      * 返回该天到23:59:59结束的日期
-     * 
+     *
      * @param date
      * @return
      */
@@ -122,7 +122,7 @@ public class DateUtils {
 
     /**
      * 返回n天到23:59:59结束的日期
-     * 
+     *
      * @param date
      * @return
      */
@@ -132,32 +132,32 @@ public class DateUtils {
         return convert(thisdate + " " + DAYTIME_END);
 
     }
-    
-	/**
-	 * 返回该日期的最后一刻，精确到纳秒
-	 * 
-	 * @param date
-	 * @return
-	 */
-	public static Timestamp getLastEndDatetime(Date endTime) {
-		Timestamp ts = new Timestamp(endTime.getTime());
-		ts.setNanos(999999999);
-		return ts;
-	}
-	/**
-	 * 返回该日期加1秒
-	 * 
-	 * @param date
-	 * @return
-	 */
+
+    /**
+     * 返回该日期的最后一刻，精确到纳秒
+     *
+     * @param date
+     * @return
+     */
+    public static Timestamp getLastEndDatetime(Date endTime) {
+        Timestamp ts = new Timestamp(endTime.getTime());
+        ts.setNanos(999999999);
+        return ts;
+    }
+    /**
+     * 返回该日期加1秒
+     *
+     * @param date
+     * @return
+     */
     @SuppressWarnings("static-access")
-	public static Timestamp getEndTimeAdd(Date endTime){
-    	Timestamp ts = new Timestamp(endTime.getTime());
-    	Calendar c = Calendar.getInstance();
-		c.setTime(ts);
-		c.add(Calendar.MILLISECOND, 1000);
-		c.set(c.MILLISECOND, 0);
-    	return new Timestamp(c.getTimeInMillis());
+    public static Timestamp getEndTimeAdd(Date endTime){
+        Timestamp ts = new Timestamp(endTime.getTime());
+        Calendar c = Calendar.getInstance();
+        c.setTime(ts);
+        c.add(Calendar.MILLISECOND, 1000);
+        c.set(c.MILLISECOND, 0);
+        return new Timestamp(c.getTimeInMillis());
     }
     /**
      * 相对当前日期，增加或减少天数
@@ -169,8 +169,8 @@ public class DateUtils {
         SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         return df.format(new Date(date.getTime() + day * 24 * 60 * 60 * 1000));
     }
-    
-    
+
+
     /**
      * 相对当前日期，增加或减少天数
      * @param date
@@ -181,64 +181,64 @@ public class DateUtils {
         SimpleDateFormat df = new SimpleDateFormat(format);
         return df.format(new Date(DateUtils.convert(date,format).getTime() + day * 24 * 60 * 60 * 1000));
     }
-    
-    
+
+
     /**
      * 返回两个时间的相差天数
      * @param startTime 对比的开始时间
      * @param endTime 对比的结束时间
      * @return 相差天数
      */
-    
+
     public static Long getTimeDiff(String startTime, String endTime) {
-		Long days = null;
-		Date startDate=null;
-		Date endDate=null;
-		try {
-			if(startTime.length()==10 && endTime.length()==10){
-				 startDate = new SimpleDateFormat(DATE_FORMAT).parse(startTime);
-				 endDate = new SimpleDateFormat(DATE_FORMAT).parse(endTime);
-			}else{
-				 startDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(startTime);
-				 endDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(endTime);
-			}
-			
-			Calendar c = Calendar.getInstance();
-			c.setTime(startDate);
-			long l_s = c.getTimeInMillis();
-			c.setTime(endDate);
-			long l_e = c.getTimeInMillis();
-			days = (l_e - l_s) / 86400000;
-		} catch (ParseException e) {
-			 if (logger.isWarnEnabled()) {
-                 logger.warn(e.getMessage());
-             }
-			 days = null;
-		}
-		return days;
-	}
+        Long days = null;
+        Date startDate=null;
+        Date endDate=null;
+        try {
+            if(startTime.length()==10 && endTime.length()==10){
+                startDate = new SimpleDateFormat(DATE_FORMAT).parse(startTime);
+                endDate = new SimpleDateFormat(DATE_FORMAT).parse(endTime);
+            }else{
+                startDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(startTime);
+                endDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(endTime);
+            }
 
-	public static String getPidFromDate(Date date) {
-		if (date == null)
-			return "";
-		
-		String m = convert(date, "yyyyMM");
-		String d = convert(date, "dd");
+            Calendar c = Calendar.getInstance();
+            c.setTime(startDate);
+            long l_s = c.getTimeInMillis();
+            c.setTime(endDate);
+            long l_e = c.getTimeInMillis();
+            days = (l_e - l_s) / 86400000;
+        } catch (ParseException e) {
+            if (logger.isWarnEnabled()) {
+                logger.warn(e.getMessage());
+            }
+            days = null;
+        }
+        return days;
+    }
 
-		if (Integer.valueOf(d) <= 10)
-			d = "01";
-		else if (Integer.valueOf(d) <= 20)
-			d = "02";
-		else
-			d = "03";
-		
-		return m.concat(d);
-	}
-	
-	
+    public static String getPidFromDate(Date date) {
+        if (date == null)
+            return "";
+
+        String m = convert(date, "yyyyMM");
+        String d = convert(date, "dd");
+
+        if (Integer.valueOf(d) <= 10)
+            d = "01";
+        else if (Integer.valueOf(d) <= 20)
+            d = "02";
+        else
+            d = "03";
+
+        return m.concat(d);
+    }
+
+
     public static void main(String[] args) throws Exception {
 //    	Date date = convert("2014-10-14 12:13:23.542000", "yyyy-MM-dd HH:mm:ss.SSSSSS");
-    	Date date = convert("2014-10-14 12:13:23.432", "yyyy-MM-dd HH:mm:ss.SSS");
+        Date date = convert("2014-10-14 12:13:23.432", "yyyy-MM-dd HH:mm:ss.SSS");
 /*    	long a = date.getTime();
     	String str = convert(new Date(a), "yyyy-MM-dd HH:mm:ss.SSS");
 //    	System.out.println(date);
@@ -247,7 +247,7 @@ public class DateUtils {
     	System.out.println(b.substring(0,23));
     	System.out.println("a,b,c".split(",").length);*/
 
-    	System.out.println(DateUtils.addDay("20170401",-1,"yyyyMMdd"));
+        System.out.println(DateUtils.addDay("20170401",-1,"yyyyMMdd"));
 //    	
 //        Date date = new Date();
 //        System.out.println(getEndDatetime(date));
