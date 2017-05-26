@@ -1,17 +1,19 @@
 package com.dtmobile.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * 日期工具类
  *
  * @author luoyue@cn.ibm.com
+ *
  */
 public class DateUtils {
 
@@ -28,8 +30,8 @@ public class DateUtils {
     private DateUtils() {
     }
 
-    private static final String[] FORMATS = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm",
-            "yyyy-MM-dd HH:mm:ss", "HH:mm", "HH:mm:ss", "yyyy-MM", "yyyy-MM-dd HH:mm:ss.S"};
+    private static final String[] FORMATS = { "yyyy-MM-dd", "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd HH:mm:ss", "HH:mm", "HH:mm:ss", "yyyy-MM" ,"yyyy-MM-dd HH:mm:ss.S"};
 
     public static Date convert(String str) {
         if (str != null && str.length() > 0) {
@@ -68,7 +70,7 @@ public class DateUtils {
         return null;
     }
 
-    public static java.lang.String convert(java.lang.String date) {
+    public static String convert(Date date) {
         return convert(date, DATE_TIME_FORMAT);
     }
 
@@ -101,7 +103,7 @@ public class DateUtils {
      * @return
      */
     public static Date getStartDatetime(Date date, Integer diffDays) {
-        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat df=new SimpleDateFormat(DATE_FORMAT);
         String thisdate = df.format(date.getTime() + diffDays * 24 * 60 * 60 * 1000l);
         return convert(thisdate + " " + DAYTIME_START);
     }
@@ -125,7 +127,7 @@ public class DateUtils {
      * @return
      */
     public static Date getEndDatetime(Date date, Integer diffDays) {
-        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat df=new SimpleDateFormat(DATE_FORMAT);
         String thisdate = df.format(date.getTime() + diffDays * 24 * 60 * 60 * 1000l);
         return convert(thisdate + " " + DAYTIME_END);
 
@@ -142,7 +144,6 @@ public class DateUtils {
         ts.setNanos(999999999);
         return ts;
     }
-
     /**
      * 返回该日期加1秒
      *
@@ -150,7 +151,7 @@ public class DateUtils {
      * @return
      */
     @SuppressWarnings("static-access")
-    public static Timestamp getEndTimeAdd(Date endTime) {
+    public static Timestamp getEndTimeAdd(Date endTime){
         Timestamp ts = new Timestamp(endTime.getTime());
         Calendar c = Calendar.getInstance();
         c.setTime(ts);
@@ -158,15 +159,13 @@ public class DateUtils {
         c.set(c.MILLISECOND, 0);
         return new Timestamp(c.getTimeInMillis());
     }
-
     /**
      * 相对当前日期，增加或减少天数
-     *
      * @param date
      * @param day
      * @return
      */
-    public static String addDay(Date date, int day) {
+    public static String addDay(Date date, int day){
         SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         return df.format(new Date(date.getTime() + day * 24 * 60 * 60 * 1000));
     }
@@ -174,34 +173,32 @@ public class DateUtils {
 
     /**
      * 相对当前日期，增加或减少天数
-     *
      * @param date
      * @param day
      * @return
      */
-    public static String addDay(String date, int day, String format) {
+    public static String addDay(String date, int day,String format){
         SimpleDateFormat df = new SimpleDateFormat(format);
-        return df.format(new Date(DateUtils.convert(date, format).getTime() + day * 24 * 60 * 60 * 1000));
+        return df.format(new Date(DateUtils.convert(date,format).getTime() + day * 24 * 60 * 60 * 1000));
     }
 
 
     /**
      * 返回两个时间的相差天数
-     *
      * @param startTime 对比的开始时间
-     * @param endTime   对比的结束时间
+     * @param endTime 对比的结束时间
      * @return 相差天数
      */
 
     public static Long getTimeDiff(String startTime, String endTime) {
         Long days = null;
-        Date startDate = null;
-        Date endDate = null;
+        Date startDate=null;
+        Date endDate=null;
         try {
-            if (startTime.length() == 10 && endTime.length() == 10) {
+            if(startTime.length()==10 && endTime.length()==10){
                 startDate = new SimpleDateFormat(DATE_FORMAT).parse(startTime);
                 endDate = new SimpleDateFormat(DATE_FORMAT).parse(endTime);
-            } else {
+            }else{
                 startDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(startTime);
                 endDate = new SimpleDateFormat(DATE_TIME_FORMAT).parse(endTime);
             }
@@ -243,14 +240,14 @@ public class DateUtils {
 //    	Date date = convert("2014-10-14 12:13:23.542000", "yyyy-MM-dd HH:mm:ss.SSSSSS");
         Date date = convert("2014-10-14 12:13:23.432", "yyyy-MM-dd HH:mm:ss.SSS");
 /*    	long a = date.getTime();
-        String str = convert(new Date(a), "yyyy-MM-dd HH:mm:ss.SSS");
+    	String str = convert(new Date(a), "yyyy-MM-dd HH:mm:ss.SSS");
 //    	System.out.println(date);
     	System.out.println(str);
     	String b = "2014-10-14 12:13:23.431000";
     	System.out.println(b.substring(0,23));
     	System.out.println("a,b,c".split(",").length);*/
 
-        System.out.println(DateUtils.addDay("20170401", -1, "yyyyMMdd"));
+        System.out.println(DateUtils.addDay("20170401",-1,"yyyyMMdd"));
 //    	
 //        Date date = new Date();
 //        System.out.println(getEndDatetime(date));
