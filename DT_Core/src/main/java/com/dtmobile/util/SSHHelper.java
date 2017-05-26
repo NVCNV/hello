@@ -46,10 +46,11 @@ public class SSHHelper {
             openChannel.connect();
             InputStream in = openChannel.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String buf = null;
             while ((buf = reader.readLine()) != null) {
                 result += new String(buf.getBytes("gbk"), "UTF-8") + "    <br>\r\n";
             }
-            String buf = null;
+
         } catch (JSchException e) {
             result += e.getMessage();
         } catch (IOException e) {
