@@ -5,6 +5,7 @@ export HADOOP_HOME=/opt/app/hadoop
 export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/opt/app/sqoop/bin
 
+
 #oracle jdbc url
 URL=jdbc:oracle:thin:@10.204.215.99:1521/umorpho
 #oracle username
@@ -19,6 +20,8 @@ TABLE=$2
 COL_NUM=$3
 #map num
 MAP_NUM=$4
+
+
 
 #columns
 business_type_detail='ttime,city,region,CELLIDint,app_type,app_sub_type,uldata,dldata,counts,timespan'
