@@ -14,6 +14,7 @@
         <module>DT_Spark</module>
         <module>DT_Shell</module>
         <module>DT_Liaoning</module>
+        <module>DT_Shanxi</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
@@ -25,18 +26,18 @@
         <hive.version>1.2.1</hive.version>
         <maven-antrun.version>1.8</maven-antrun.version>
     </properties>
-    <distributionManagement>
+<!--    <distributionManagement>
         <repository>
-            <id>nexus-releases</id>
+            <id>nexus-releases</id>mvn
             <name>Local Nexus Repository</name>
-            <url>http://172.30.4.120:9081/repository/maven-releases/</url>
+            <url>http://172.30.4.162:8081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Local Nexus Repository</name>
-            <url>http://172.30.4.120:9081/repository/maven-snapshots/</url>
+            <url>http://172.30.4.162:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
     <repositories>
         <repository>
             <id>scala-tools.org</id>
