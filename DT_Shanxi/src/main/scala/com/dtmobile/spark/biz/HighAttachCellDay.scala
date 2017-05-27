@@ -16,6 +16,9 @@ class HighAttachCellDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL
   def highAttachCellDay(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
 
+    var highattach_users = 300
+    var highattach_times = 4
+
     sparkSession.read.format("jdbc").option("url", s"$oracle")
       .option("dbtable","(SELECT distinct CELL_ID, LINE_NAME,CELL_NAME,CITY FROM t_profess_net_cell) T")
       .option("user", "scott")
@@ -28,9 +31,11 @@ class HighAttachCellDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL
 
 
     val t= sql("""select highattach_users,highattach_times from gt_capacity_config""").collectAsList()
-    val  highattach_users =  t.get(0).get(0)
-    val highattach_times = t.get(0).get(1)
 
+    if(t.size()>0){
+     highattach_users =  t.get(0).getAs("highattach_users")
+     highattach_times = t.get(0).getAs("highattach_times")
+    }
 
 sql(
   s"""
@@ -45,7 +50,7 @@ sql(
      |  (
      |select cellid,hours,max(users) users1
      |  from $DDB.gt_pulse_cell_base60
-     |  where dt="20170227" group by cellid,hours
+     |  where dt="$ANALY_DATE" group by cellid,hours
      |  ) t
      |  where t.users1>$highattach_users
      | group by cellid

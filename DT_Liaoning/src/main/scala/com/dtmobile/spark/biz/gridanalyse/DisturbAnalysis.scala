@@ -21,7 +21,7 @@ class DisturbAnalysis(ANALY_DATE: String, ANALY_HOUR: String,  period: String, a
     val adjStrongDisturbRateThreshold :Integer = 5
     sql(s"use $DDB")
     sql(s"""alter table lte_mro_disturb_ana add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/tac_day_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+           LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_ana/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
     sql(s"""
            |  SELECT

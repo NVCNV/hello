@@ -8,7 +8,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + "00:00:00"
 
-  var oracle = "jdbc:oracle:thin:@"+ORCAL
+//  var oracle = "jdbc:oracle:thin:@"+ORCAL
 
   def analyse(implicit sparkSession: SparkSession): Unit ={
     gtUserFreqDay(sparkSession)
@@ -18,15 +18,6 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
 
   def gtUserFreqDay(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
-
-    sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","(select region,city, mcc,cellid from ltecell) t")
-      .option("user", "scott")
-      .option("password", "tiger")
-      .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().createOrReplaceTempView("ltecell")
-
-
   sql(
     s"""
        |select
@@ -57,7 +48,7 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
          |b.region line_name,
          |b.city,
          |'$cal_date' ttime,
-         |b.mcc cell_feq,
+         |b.freq1 cell_feq,
          |sum(a.cellid) cell_num,
          |sum(c.gt_users) gtusers,
          |sum(c.volte_users) commusers,
@@ -67,7 +58,7 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
          |on a.cellid=b.cellid
          |inner join gt_pulse_cell_base60 c
          |on a.cellid=c.cellid
-         |group by b.cellid,b.mcc,b.region,b.city
+         |group by b.cellid,b.freq1,b.region,b.city
          |
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_freq_baseday/dt=$ANALY_DATE""")
 
