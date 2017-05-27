@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhangchao15 on 2017/5/26.
   */
-class PulseUserDetail(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class PulseUserDetail(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warhouseDir: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     pulseUserDetail(sparkSession)
   }
@@ -44,8 +44,8 @@ class PulseUserDetail(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: 
          |         row_number over(parition by gpd.cellid,gpd.pulse_mark,gcb.imsi) num
          |    from gt_pulse_detail gcb
          |    , gt_pulse_cell_base60 gpd
-         |   where dt="$ANALY_DATE" and h="$ANALY_HOUR"
-         |     and gcb.cellid = gpd.cellid and gcb.hours = gpd.hours
+         |   where gcb.dt="$ANALY_DATE" and gcb.h="$ANALY_HOUR"
+         |     and gcb.cellid = gpd.cellid and gcb.dt = gpd.dt and gcb.hours = gpd.hours
          |     and gcb.sub_pulse_mark >= gpd.first_pulse_mark
          |     and gcb.sub_pulse_mark < gpd.first_pulse_mark + gpd.pulse_timelen
          |     ) t where t.num=1

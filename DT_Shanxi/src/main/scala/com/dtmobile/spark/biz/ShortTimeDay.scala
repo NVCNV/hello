@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhangchao15 on 2017/5/27.
   */
-class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     shortTimeDay(sparkSession)
   }
@@ -23,10 +23,10 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
     if (t1.size() > 0) {
       shortPlseTimes = t1.get(0).getInt(0)
     }
-    var shortPulseTimelen = 4
+    var shortPulseTimeLen = 4
     val t2 = sql("select short_pulse_timelen from gt_capacity_config ").collectAsList()
     if (t2.size() > 0) {
-      shortPulseTimelen = t2.get(0).getInt(0)
+      shortPulseTimeLen = t2.get(0).getInt(0)
     }
     val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0, 2) + "-" + ANALY_DATE.substring(6) + " " + "00:00:00"
     sql(
@@ -56,13 +56,13 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
          |                                       HOURS,
          |                                       max(pulse_timelen) pulse_timelen,
          |                                       sum(CASE
-         |                                             WHEN pulse_timelen <= ${shortPulseTimelen} THEN
+         |                                             WHEN pulse_timelen <= ${shortPulseTimeLen} THEN
          |                                              1
          |                                             ELSE
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
-         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         |                                  where dt="$ANALY_DATE"
          |                                 GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a
@@ -81,13 +81,13 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
          |                                       HOURS,
          |                                        min(pulse_timelen) pulse_timelen,
          |                                       sum(CASE
-         |                                             WHEN pulse_timelen <= ${shortPulseTimelen} THEN
+         |                                             WHEN pulse_timelen <= ${shortPulseTimeLen} THEN
          |                                              1
          |                                             ELSE
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
-         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         |                                  where dt="$ANALY_DATE"
          |                                GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a

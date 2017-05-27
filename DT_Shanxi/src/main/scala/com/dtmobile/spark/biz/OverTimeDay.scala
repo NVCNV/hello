@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhangchao15 on 2017/5/27.
   */
-class OverTimeDay(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     overTimeDay(sparkSession)
     }
@@ -62,7 +62,7 @@ class OverTimeDay(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
            |                                              0
            |                                           END) times
            |                                  FROM gt_pulse_cell_base60
-           |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+           |                                  where dt="$ANALY_DATE"
            |                                 GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
@@ -87,7 +87,7 @@ class OverTimeDay(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
            |                                              0
            |                                           END) times
            |                                  FROM gt_pulse_cell_base60
-           |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+           |                                  where dt="$ANALY_DATE"
            |                                GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a

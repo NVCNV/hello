@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhangchao15 on 2017/5/25.
   */
-class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
+class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warhouseDir: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     subPulseStatis(sparkSession)
   }
