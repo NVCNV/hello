@@ -19,7 +19,7 @@ COL_NUM=$2
 MAP_NUM=$3
 
 #columns
-business_type_detail='ttime,city,region,CELLID,app_type,app_sub_type,uldata,dldata,counts,timespan'
+business_type_detail='ttime,city,region,app_type,app_sub_type,uldata,dldata,counts,timespan'
 
 volte_user_data='ttime,hours,imsi,volte_start,volte_end'
 
