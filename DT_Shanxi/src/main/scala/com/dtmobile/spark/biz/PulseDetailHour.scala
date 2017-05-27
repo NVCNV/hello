@@ -62,7 +62,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       count(gpc.sub_pulse_mark) as pulse_timelen ,
          |       min(pct.first_pulse_mark) as first_pulse_mark,
          |       max(pct.users)  as sub_users_peak,
-         |       max(pct.gt_users) as sub_gtusers_pea k,
+         |       max(pct.gt_users) as sub_gtusers_peak,
          |       max(pct.volte_users) as sub_volteusers_peak,
          |       count(distinct gpd.imsi) as sub_commusers_peak,
          |       count(distinct case when gpd.gtuser_flag = 1 then 1 else 0 end) as sub_gtusers_peak,
