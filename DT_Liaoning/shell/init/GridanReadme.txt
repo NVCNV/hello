@@ -69,7 +69,7 @@
 创建 grid_view 视图：
 
 CREATE VIEW grid_view
-AS SELECT OBJECTID_1,OBJECTID,m.shape.entity as shapeentity,m.shape.numpts as shapenumpts,m.shape.minx as shapeminx,m.shape.miny as shapeminy,m.shape.maxx as shapemaxx,
+AS SELECT OBJECTID,m.shape.entity as shapeentity,m.shape.numpts as shapenumpts,m.shape.minx as shapeminx,m.shape.miny as shapeminy,m.shape.maxx as shapemaxx,
 m.shape.maxy as shapemaxy,m.shape.minz as shapeminz,m.shape.maxz as shapemaxz,m.shape.minm as shapeminm,m.shape.maxm as shapemaxm,m.shape.area as shapearea,m.shape.len as shapelen,m.shape.srid as shapesrid,m.shape.points as shapepoints,x,y,x1,y1
 FROM grid m;
 
