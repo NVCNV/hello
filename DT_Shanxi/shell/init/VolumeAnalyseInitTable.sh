@@ -10,6 +10,7 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+
 --业务占比表
 drop table business_type_detail;
 create EXTERNAL table business_type_detail(
