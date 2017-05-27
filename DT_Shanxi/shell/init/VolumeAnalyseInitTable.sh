@@ -7318,6 +7318,42 @@ PARTITIONED BY (
     dt string
 )
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
+
+drop table if exists gt_pulse_load_balence60;
+create table if no exists gt_pulse_load_balence60(
+    ttime    string,
+    hours    bigint,
+    line    string,
+    city    string,
+    pulse_mark    bigint,
+    cellprop    string,
+    cellname    string,
+    cellid    bigint,
+    first_pulse_mark    bigint,
+    pulse_timelen    bigint,
+    pairname    string,
+    f1users    bigint,
+    f2users    bigint,
+    balusers    bigint,
+    balratio    double
+)PARTITIONED BY (
+       dt string,
+       h string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ;
+
+drop table if exists gt_balence_pair;
+create table if not exists gt_balence_pair(
+        line    string,
+        city    string,
+        scellname    string,
+        scellid    bigint,
+        sfreq    string,
+        dcellname    string,
+        dcellid    bigint,
+        pairname    string,
+        dfreq    string
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ;
+
 EOF
 exit 0
 

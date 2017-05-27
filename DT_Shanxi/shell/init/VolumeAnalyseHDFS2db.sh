@@ -87,6 +87,11 @@ gt_commusermore_baseday='line_name,city,ttime,cellid,cellname,maxusers'
 
 gt_highattach_baseday='line_name,city,ttime,cellid,cellname,maxusers'
 
+gt_pulse_load_balence60='ttime,hours,line,city,pulse_mark,cellprop,cellname,cellid,first_pulse_mark,pulse_timelen,pairname,f1users,f2users,balusers,balratio'
+
+gt_balence_pair='line,city,scellname,scellid,sfreq,dcellname,dcellid,pairname,dfreq'
+
+
 if [$COL_NUM=1]
 then
     COLS=$business_type_detail
@@ -181,9 +186,12 @@ elif [$CLO_NUM=30];then
 elif [$CLO_NUM=31];then
     COLS=$gt_commusermore_baseday
     TABLE=gt_commusermore_baseday
+elif [$CLO_NUM=32];then
+    COLS=$gt_pulse_load_balence60
+    TABLE=gt_pulse_load_balence60
 else
-    COLS=$gt_highattach_baseday
-    TABLE=gt_highattach_baseday
+    COLS=$gt_balence_pair
+    TABLE=gt_balence_pair
 fi
 
 sqoop export --connect $URL \
