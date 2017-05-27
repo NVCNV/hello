@@ -40,7 +40,7 @@ class PulseUserDetail(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |               gpd.first_pulse_mark,
          |               gcb.gtuser_flag,
          |               gcb.volteuser_flag,
-         |               row_number() over(partition by gpd.cellid, gpd.pulse_mark, gcb.imsi) as num
+         |               row_number() over(partition by gpd.cellid, gpd.pulse_mark, gcb.imsi order by gpd.pulse_mark) as num
          |          from gt_pulse_detail gcb, gt_pulse_cell_base60 gpd
          |         where gcb.dt = "$ANALY_DATE"
          |           and gcb.h = "$ANALY_HOUR"
