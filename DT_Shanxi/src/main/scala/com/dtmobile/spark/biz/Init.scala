@@ -15,16 +15,28 @@ class Init(ORCAL: String ){
 
   def initTable(implicit sparkSession: SparkSession): Unit ={
 
-    //todo 修改表名
+    //todo 修改表名 gtUser 修改mcc字段
+
+    //小区表
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","(select region,city, mcc,cellid from ltecell) t")
+      .option("dbtable","(select region,city,freq1,cellid,cellname from ltecell) t")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load().createOrReplaceTempView("ltecell")
 
+
+    //公网和专网视图
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","gt_capacity_config")
+      .option("dbtable","gt_publicandprofess_new_cell")
+      .option("user", "scott")
+      .option("password", "tiger")
+      .option("driver", "oracle.jdbc.driver.OracleDriver")
+      .load().createOrReplaceTempView("gt_publicandprofess_new_cell")
+
+    //配置表
+    sparkSession.read.format("jdbc").option("url", s"$oracle")
+      .option("dbtable","(select a.*, CAST( to_char(balence_userrate,'S999.999') AS float ) balence_userrate_f from gt_capacity_config a ) T")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")

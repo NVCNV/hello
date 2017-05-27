@@ -123,7 +123,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |when errorcode="3" or errorcode="4" then "33"
           |when errorcode="5" or errorcode="6" then "44"
           |when errorcode="7" then "55" end) from
-          |(select city,xdrid,procedurestarttime,procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
+          |(select t10.city as city,xdrid,procedurestarttime,procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
           |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,
           |(case when httpstate>=500 then "1"
           |when ((t2.pagedelay>$SPSvBrowsedelay or t2.pagespeed<$SPSvBrowsedownv) and APPTYPE=15) or ((t2.videodelay>$SPSvVideodelay or t2.videospeed<$SPSvVideodownv) and APPTYPE=5) or ((t2.videodelay>$SPSvlnstantmessagedelay or t2.videospeed<$SPSvInstantmessagedownv) and APPTYPE=1) then "1"
@@ -186,6 +186,8 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |on substring(t1.tac,1,8)=t8.tac
           |left join (select imsi as im,count(1) cnt from lte_mro_source where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi) t9
           |on t1.imsi=t9.im
+          |left join ltecell t10
+          |on t1.ecgi=t10.cellid
           |) t100
 
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")

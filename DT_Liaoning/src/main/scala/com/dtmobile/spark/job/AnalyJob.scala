@@ -23,11 +23,12 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override val sourceDir: String = args(6)
   val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
 //  override val warhouseDir: String = "/"+args(2)
+  val onoff=args(7).toInt
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
     val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
-    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
-    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
+    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
+    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
     val kpibusinessDayAnaly = new KpibusinessDayAnaly(args(0), args(2), args(3), warhouseDir)
     val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
     val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)

@@ -11,7 +11,6 @@ CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
 
-
 --业务占比表
 drop table business_type_detail;
 create EXTERNAL table business_type_detail(
@@ -234,8 +233,8 @@ FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${DB_PATH}/TB_XDR_IFC_UU';
 
-DROP TABLE   IF EXISTS lte_mro_source;
-create EXTERNAL table   IF NOT EXISTS lte_mro_source
+DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
+create EXTERNAL table   IF NOT EXISTS LTE_MRO_SOURCE
 (
        objectID       STRING ,
        VID             BIGINT  ,
@@ -7254,8 +7253,7 @@ create table if not exists gt_balence_baseday(
         balenusersavg int
 )
  PARTITIONED BY (
-   dt string,
-   h string
+   dt string
  )
  ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
@@ -7271,8 +7269,7 @@ create table if not exists gt_shorttimelen_baseday(
         maxpluse_timelen string
 )
 PARTITIONED BY (
-    dt string,
-    h string
+    dt string
 )
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
@@ -7288,8 +7285,7 @@ create table if not exists gt_overtimelen_baseday(
         maxpluse_timelen int
 )
 PARTITIONED BY (
-    dt string,
-    h string
+    dt string
 )
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
@@ -7304,8 +7300,7 @@ create table if not exists gt_commusermore_baseday(
         maxusers int
 )
 PARTITIONED BY (
-    dt string,
-    h string
+    dt string
 )
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
@@ -7320,8 +7315,7 @@ create table if not exists gt_highattach_baseday(
         maxusers int
 )
 PARTITIONED BY (
-    dt string,
-    h string
+    dt string
 )
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 EOF
