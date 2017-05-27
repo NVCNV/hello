@@ -61,12 +61,12 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |                                             ELSE
            |                                              0
            |                                           END) times
-           |                                  FROM gt_pulse_cell_base60
+           |                                  FROM ${DDB}.gt_pulse_cell_base60
            |                                  where dt="$ANALY_DATE"
            |                                 GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
-           |                 INNER JOIN gt_pulse_cell_base60 b
+           |                 INNER JOIN ${DDB}.gt_pulse_cell_base60 b
            |                    ON a.pluse_timelen_max = b.pulse_timelen
            |                   AND a.cellid = b.cellid
            |                 GROUP BY a.cellid
@@ -86,12 +86,12 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |                                             ELSE
            |                                              0
            |                                           END) times
-           |                                  FROM gt_pulse_cell_base60
+           |                                  FROM ${DDB}.gt_pulse_cell_base60
            |                                  where dt="$ANALY_DATE"
            |                                GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
-           |                 INNER JOIN gt_pulse_cell_base60 b
+           |                 INNER JOIN ${DDB}.gt_pulse_cell_base60 b
            |                    ON a.pluse_timelen_min = b.pulse_timelen
            |                   AND a.cellid = b.cellid
            |                 GROUP BY a.cellid) tt
