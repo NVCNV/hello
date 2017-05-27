@@ -15,7 +15,7 @@ class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
     sql(s"use $DDB")
     sql(
       s"""alter table gt_shorttimelen_baseday add if not exists partition(dt=$ANALY_DATE)
-                LOCATION 'hdfs://dtcluster/$warhouseDir/gt_shorttimelen_baseday/dt=$ANALY_DATE
+                LOCATION 'hdfs://dtcluster/$warhouseDir/gt_shorttimelen_baseday/dt=$ANALY_DATE'
         """)
 
     val t1 = sql("select short_pulse_times from gt_capacity_config ").collectAsList()
@@ -34,7 +34,7 @@ class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
          |select
          |       ltcel.line_name,
          |       ltcel.city,
-         |       ${cal_date},
+         |       '${cal_date}' as ttime,
          |       ttt.cellid,
          |       ltcel.cellname,
          |       ttt.min_hour,
