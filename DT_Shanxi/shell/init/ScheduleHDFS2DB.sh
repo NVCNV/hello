@@ -47,3 +47,4 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_
 
 
 
+
