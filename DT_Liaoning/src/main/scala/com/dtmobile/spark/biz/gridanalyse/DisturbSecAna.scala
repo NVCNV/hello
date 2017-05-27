@@ -53,7 +53,7 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
     sql(s"""
         ${sqlSecAdj}
-      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
   }
 
