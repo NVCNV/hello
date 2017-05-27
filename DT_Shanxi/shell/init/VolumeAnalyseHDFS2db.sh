@@ -41,7 +41,7 @@ gt_freq_baseday='line_name,city,ttime,cell_feq,cell_num,gtusers,commusers,cellav
 
 TB_XDR_IFC_UU='PARENTXDRID,LENGTH,CITY,ERFACE,XDRID,RAT,IMSI,IMEI,MSISDN,PROCEDURETYPE,PROCEDURESTARTTIME,PROCEDUREENDTIME,KEYWORD1,KEYWORD2,PROCEDURESTATUS,PLMNID,ENBID,CELLID,CRNTI,TARGETENBID,TARGETCELLID,TARGETCRNTI,MMEUES1APID,MMEGROUPID,MMECODE,MTMSI,CSFBINDICATION,REDIRECTEDNETWORK,EPSBEARERNUMBER,BEARER0ID,BEARER0STATUS,BEARER1ID,BEARER1STATUS,BEARER2ID,BEARER2STATUS,BEARER3ID,BEARER3STATUS,BEARER4ID,BEARER4STATUS,BEARER5ID,BEARER5STATUS,BEARER6ID,BEARER6STATUS,BEARER7ID,BEARER7STATUS,BEARER8ID,BEARER8STATUS,BEARER9ID,BEARER9STATUS,BEARER10ID,BEARER10STATUS,BEARER11ID,BEARER11STATUS,BEARER12ID,BEARER12STATUS,BEARER13ID,BEARER13STATUS,BEARER14ID,BEARER14STATUS,BEARER15ID,BEARER15STATUS,RANGETIME'
 
-lte_mro_source='objectID,VID,fileFormatVersion,startTime,endTime,period,enbID,userLabel,mrName,cellID,Earfcn,SubFrameNbr,PRBNbr,MmeUeS1apId,MmeGroupId,MmeCode,meaTime,EventType,gridcenterLongitude,gridcenterLatitude,kpi1,kpi2,kpi3,kpi4,kpi5,kpi6,kpi7,kpi8,kpi9,kpi10,kpi11,kpi12,kpi13,kpi14,kpi15,kpi16,kpi17,kpi18,kpi19,kpi20,kpi21,kpi22,kpi23,kpi24,kpi25,kpi26,kpi27,kpi28,kpi29,kpi30,kpi31,kpi32,kpi33,kpi34,kpi35,kpi36,kpi37,kpi38,kpi39,kpi40,kpi41,kpi42,kpi43,kpi44,kpi45,kpi46,kpi47,kpi48,kpi49,kpi50,kpi51,kpi52,kpi53,kpi54,kpi55,kpi56,kpi57,kpi58,kpi59,kpi60,kpi61，kpi62,kpi63,kpi64,kpi65,kpi66,kpi67,kpi68,kpi69,kpi70,kpi71,length,City,XDRType,Interface,XDRID,RAT,IMSI,IMEI,MSISDN,MRType,NeighborCellNumber,gsmNeighborCellNumber,tdsNeighborCellNumber,v_enb,mrtime'
+LTE_MRO_SOURCE='objectID,VID,fileFormatVersion,startTime,endTime,period,enbID,userLabel,mrName,cellID,Earfcn,SubFrameNbr,PRBNbr,MmeUeS1apId,MmeGroupId,MmeCode,meaTime,EventType,gridcenterLongitude,gridcenterLatitude,kpi1,kpi2,kpi3,kpi4,kpi5,kpi6,kpi7,kpi8,kpi9,kpi10,kpi11,kpi12,kpi13,kpi14,kpi15,kpi16,kpi17,kpi18,kpi19,kpi20,kpi21,kpi22,kpi23,kpi24,kpi25,kpi26,kpi27,kpi28,kpi29,kpi30,kpi31,kpi32,kpi33,kpi34,kpi35,kpi36,kpi37,kpi38,kpi39,kpi40,kpi41,kpi42,kpi43,kpi44,kpi45,kpi46,kpi47,kpi48,kpi49,kpi50,kpi51,kpi52,kpi53,kpi54,kpi55,kpi56,kpi57,kpi58,kpi59,kpi60,kpi61，kpi62,kpi63,kpi64,kpi65,kpi66,kpi67,kpi68,kpi69,kpi70,kpi71,length,City,XDRType,Interface,XDRID,RAT,IMSI,IMEI,MSISDN,MRType,NeighborCellNumber,gsmNeighborCellNumber,tdsNeighborCellNumber,v_enb,mrtime'
 
 TB_XDR_IFC_GMMWMGMIMJISC='LENGTH,CITY,INTERFACE,XDRID,RAT,IMSI,IMEI,MSISDN,PROCEDURETYPE,PROCEDURESTARTTIME,PROCEDUREENDTIME,SERVICETYPE,PROCEDURESTATUS,CALLINGNUMBER,CALLEDNUMBER,CALLINGPARTYURI,REQUESTURI,USERIP,CALLID,ICID,SOURCENEIP,SOURCENEPORT,DESTNEIP,DESTNEPORT,CALLSIDE,SOURCEACCESSTYPE,SOURCEECI,SOURCETAC,SOURCEIMSI,SOURCEIMEI,DESTACCESSTYPE,DESTECI,DESTTAC,DESTIMSI,DESTIMEI,AUTHTYPE,EXPIRESTIMEREQ,EXPIRESTIMERSP,CALLINGSDPIPADDR,CALLINGAUDIOSDPPORT,CALLINGVIDEOSDPPORT,CALLEDSDPIPADDR,CALLEDAUDIOSDPPORT,CALLEDVIDEOPORT,AUDIOCODEC,VIDEOCODEC,REDIRECTINGPARTYADDRESS,ORIGINALPARTYADDRESS,REDIRECTREASON,RESPONSECODE,FINISHWARNINGCODE,FINISHREASONPROTOCOL,FINISHREASONCAUSE,FIRFAILTIME,FIRSTFAILNEIP,ALERTINGTIME,ANSWERTIME,RELEASETIME,CALLDURATION,AUTHREQTIME,AUTHRSPTIME,STNSR,ATCFMGMT,ATUSTI,CMSISDN,SSI,RANGETIME'
 
@@ -86,6 +86,11 @@ gt_overtimelen_baseday='line_name,city,ttime,cellid,cellname,minpluse_timelen,ma
 gt_commusermore_baseday='line_name,city,ttime,cellid,cellname,maxusers'
 
 gt_highattach_baseday='line_name,city,ttime,cellid,cellname,maxusers'
+
+gt_pulse_load_balence60='ttime,hours,line,city,pulse_mark,cellprop,cellname,cellid,first_pulse_mark,pulse_timelen,pairname,f1users,f2users,balusers,balratio'
+
+gt_balence_pair='line,city,scellname,scellid,sfreq,dcellname,dcellid,pairname,dfreq'
+
 
 if [$COL_NUM=1]
 then
@@ -181,9 +186,12 @@ elif [$CLO_NUM=30];then
 elif [$CLO_NUM=31];then
     COLS=$gt_commusermore_baseday
     TABLE=gt_commusermore_baseday
+elif [$CLO_NUM=32];then
+    COLS=$gt_pulse_load_balence60
+    TABLE=gt_pulse_load_balence60
 else
-    COLS=$gt_highattach_baseday
-    TABLE=gt_highattach_baseday
+    COLS=$gt_balence_pair
+    TABLE=gt_balence_pair
 fi
 
 sqoop export --connect $URL \

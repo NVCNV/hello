@@ -898,6 +898,7 @@ create table CELL_LTEMRKPI60(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+drop table if exists LTE_MRO_DISTURB_SEC;
  create table LTE_MRO_DISTURB_SEC
 (
   ID         int ,
@@ -991,7 +992,7 @@ ROW FORMAT DELIMITED
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
 
-
+drop table if exists lte_mro_disturb_ana;
 CREATE TABLE lte_mro_disturb_ana(
   id int, 
   starttime string, 
@@ -1020,7 +1021,8 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
-  
+
+  drop table if exists lte_mro_disturb_mix;
   CREATE TABLE lte_mro_disturb_mix(
   id int, 
   starttime string, 
@@ -1052,7 +1054,8 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
-  
+
+drop table if exists lte_mro_adjcover_ana60;
 CREATE TABLE lte_mro_adjcover_ana60(
   id int, 
   starttime string, 
@@ -1072,6 +1075,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+drop table if exists LTE_MRO_SOURCE_TMP;
 create table LTE_MRO_SOURCE_TMP
 (
   OBJECTID               int ,
@@ -1125,7 +1129,8 @@ create table LTE_MRO_SOURCE_TMP
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
-  
+
+  drop table if exists LTE_MRO_DISTURB_SEC;
     create table LTE_MRO_DISTURB_SEC
 (
   ID         int ,
@@ -1220,7 +1225,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-
+drop table if exists lte_mro_disturb_mix;
   CREATE TABLE lte_mro_disturb_mix(
   id int, 
   starttime string, 
