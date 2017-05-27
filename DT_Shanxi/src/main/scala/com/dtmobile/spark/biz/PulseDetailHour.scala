@@ -20,16 +20,16 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
         """)
     sql(
       s"""
-         |select ttime,
-         |       hours,
-         |       cellid,
-         |       row_number() over(partition by cellid order by pluem),
-         |       1,
-         |       c1,
-         |       m1,
-         |       musers,
-         |       mgtusers,
-         |       mvlusers
+         |select ttime as ttime,
+         |       hours as hours,
+         |       cellid as cellid,
+         |       row_number() over(partition by cellid order by pluem) as pulse_mark,
+         |       1 as pulse_type,
+         |       c1 as pulse_timelen,
+         |       m1 as first_pulse_mark,
+         |       musers as users,
+         |       mgtusers as gt_users,
+         |       mvlusers as volte_users
          |  from (select ttime,
          |               hours,
          |               cellid,
