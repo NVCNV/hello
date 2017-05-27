@@ -24,6 +24,8 @@ wait
 echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2"
 sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2
 
+sh VolumeAnalyseHDFS2db.sh ${DIR}/t_xdr_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2
+
 sh VolumeAnalyseHDFS2db.sh ${DIR}/business_type_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} 1 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/tac_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 12 2
