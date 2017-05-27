@@ -33,5 +33,4 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 32 2
 
-sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_balence_pair/ 33 2
 
