@@ -62,6 +62,7 @@ class OverTimeDay(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
            |                                              0
            |                                           END) times
            |                                  FROM gt_pulse_cell_base60
+           |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
            |                                 GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
@@ -86,6 +87,7 @@ class OverTimeDay(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
            |                                              0
            |                                           END) times
            |                                  FROM gt_pulse_cell_base60
+           |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
            |                                GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a

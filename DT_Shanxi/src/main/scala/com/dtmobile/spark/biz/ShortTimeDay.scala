@@ -5,7 +5,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by zhangchao15 on 2017/5/27.
   */
-class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String){
+class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     shortTimeDay(sparkSession)
   }
@@ -28,7 +28,7 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
     if (t2.size() > 0) {
       shortPulseTimelen = t2.get(0).getInt(0)
     }
-    val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + "00:00:00"
+    val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0, 2) + "-" + ANALY_DATE.substring(6) + " " + "00:00:00"
     sql(
       s"""
          |select
@@ -62,6 +62,7 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
+         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          |                                 GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a
@@ -86,6 +87,7 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
+         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          |                                GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a
@@ -98,4 +100,5 @@ class ShortTimeDay (ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: St
          |    on ttt.cellid = ltcel.cellid
 
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_shorttimelen_baseday/dt=$ANALY_DATE")
+  }
 }
