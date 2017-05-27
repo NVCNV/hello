@@ -59,14 +59,14 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       pct.cellid,
          |       pct.pulse_mark,
          |       1,
-         |       count(gpc.sub_pulse_mark) as c1 ,
-         |       min(pct.first_pulse_mark) as m1,
-         |       max(pct.users)  as m2,
-         |       max(pct.gt_users) as m3,
-         |       max(pct.volte_users) as m4,
-         |       count(distinct gpd.imsi) as c2,
-         |       count(distinct case when gpd.gtuser_flag = 1 then 1 else 0 end) as c3,
-         |       count(distinct case when gpd.volteuser_flag =1 then 1 else 0 end) as c4
+         |       count(gpc.sub_pulse_mark) as pulse_timelen ,
+         |       min(pct.first_pulse_mark) as first_pulse_mark,
+         |       max(pct.users)  as sub_users_peak,
+         |       max(pct.gt_users) as sub_gtusers_peak,
+         |       max(pct.volte_users) as sub_volteusers_peak,
+         |       count(distinct gpd.imsi) as sub_commusers_peak,
+         |       count(distinct case when gpd.gtuser_flag = 1 then 1 else 0 end) as sub_gtusers_peak,
+         |       count(distinct case when gpd.volteuser_flag =1 then 1 else 0 end) as sub_commusers_peak
          |  from gt_pulse_cell_base60_tmp pct
          | inner join gt_pulse_detail gpd
          |    on pct.cellid =gpd.cellid
