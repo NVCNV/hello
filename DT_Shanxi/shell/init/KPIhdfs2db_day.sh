@@ -1,7 +1,8 @@
 #!/bin/bash
 export HADOOP_CONF_DIR=/opt/app/hdconf
 ANALY_DATE=$1
-DIR=hdfs://dtcluster/user/hive/warehouse/dcl.db
+TableName=$2
+DIR=hdfs://dtcluster/user/hive/warehouse/${TableName}.db
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/tac_day_http/dt=${ANALY_DATE} 13 2
 

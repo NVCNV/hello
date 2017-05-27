@@ -2,7 +2,8 @@
 export HADOOP_CONF_DIR=/opt/app/hdconf
 ANALY_DATE=$1
 ANALY_HOUR=$2
-DIR=hdfs://dtcluster/user/hive/warehouse/dcl.db
+TableName=$3
+DIR=hdfs://dtcluster/user/hive/warehouse/${TableName}.db
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_user_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} 2 2
 
@@ -32,5 +33,4 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 32 2
 
-sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_balence_pair/ 33 2
 

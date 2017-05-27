@@ -2,7 +2,8 @@
 export HADOOP_CONF_DIR=/opt/app/hdconf
 ANALY_DATE=$1
 ANALY_HOUR=$2
-DIR=hdfs://dtcluster/user/hive/warehouse/dcl.db
+TableName=$3
+DIR=hdfs://dtcluster/user/hive/warehouse/${TableName}.db
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/business_type_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} 1 2
 

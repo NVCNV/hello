@@ -7320,7 +7320,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 
 drop table if exists gt_pulse_load_balence60;
-create table if no exists gt_pulse_load_balence60(
+create table if not exists gt_pulse_load_balence60(
     ttime    string,
     hours    bigint,
     line    string,
