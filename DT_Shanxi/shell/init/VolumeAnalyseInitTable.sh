@@ -10,6 +10,27 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+--业务占比表
+drop table business_type_detail;
+create EXTERNAL table business_type_detail(
+        TTIME              string,
+        city               string,
+        region             string,
+        app_type           string,
+        app_sub_type       string,
+        uldata             bigint,
+        dldata             bigint,
+        counts             bigint,
+        timespan           bigint
+)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
+
 --volte用户表
 drop table if exists volte_user_data;
 CREATE  TABLE IF NOT EXISTS volte_user_data(
