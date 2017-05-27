@@ -10,32 +10,9 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
-
---业务占比表
-drop table business_type_detail;
-create EXTERNAL table business_type_detail(
-        TTIME              string,
-        city               string,
-        region             string,
-        CELLID             int,
-        app_type           string,
-        app_sub_type       string,
-        uldata             bigint,
-        dldata             bigint,
-        counts             bigint,
-        timespan           bigint
-)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
-
 --volte用户表
 drop table if exists volte_user_data;
-CREATE EXTERNAL IF NOT EXISTS TABLE volte_user_data(
+CREATE  TABLE IF NOT EXISTS volte_user_data(
   ttime string,
   hours int,
   imsi string, 
@@ -45,13 +22,11 @@ PARTITIONED BY (
   dt string, 
   h string)
 ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/volte_user_data';
+  FIELDS TERMINATED BY ',';
 
 --高铁用户识别表
 drop table if exists volte_gtuser_data;
-create table if not exists volte_gtuser_data(
+create EXTERNAL table if not exists volte_gtuser_data(
 imsi string,
 hours string,
 ttime string
@@ -60,10 +35,11 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',' ;
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster//datang2/output/xdrnew/mw/20170508/12';
 
-
---小区统计表（分钟级）
+-- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
 create table if not exists gt_pulse_detail(
 ttime string,
@@ -162,7 +138,7 @@ ROW FORMAT DELIMITED
 
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
-CREATE EXTERNAL TABLE   IF NOT EXISTS  TB_XDR_IFC_UU (
+CREATE EXTERNAL TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
       PARENTXDRID                  STRING,
       LENGTH                       BIGINT,
       CITY                         STRING,
@@ -7276,7 +7252,7 @@ ROW FORMAT DELIMITED  FIELDS TERMINATED BY ',';
 --高铁用户脉冲时长超长小区表
 drop table if exists gt_overtimelen_baseday;
 create table if not exists gt_overtimelen_baseday(
-        line_name  varchar2(50),
+        line_name  string,
         city string,
         ttime string,
         cellid int,
