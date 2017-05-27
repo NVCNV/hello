@@ -39,7 +39,7 @@
    1、小区表 ltecell
    2、视图：gt_publicandprofess_new_cell（山西环境已经有了）
    3、门限配置表 gt_capacity_config （山西环境还没有）
-   4、专网小区表 t_profess_net_cell （山西环境已经有了）
+   4、专网小区表 t_profess_net_cell
 五、结果输出表
 
 	gt_balence_baseday
