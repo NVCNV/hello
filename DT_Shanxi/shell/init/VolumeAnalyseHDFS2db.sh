@@ -91,6 +91,16 @@ gt_pulse_load_balence60='ttime,hours,line,city,pulse_mark,cellprop,cellname,cell
 
 gt_balence_pair='line,city,scellname,scellid,sfreq,dcellname,dcellid,pairname,dfreq'
 
+#kpi
+KPI_IMSI_COLS="imsi,imei,msisdn,cellid,ttime,voltemcsucc,voltemcatt,voltevdsucc,voltevdatt,voltetime,voltemctime,voltemctimey,voltevdtime,voltevdtimey,voltemchandover,volteanswer,voltevdhandover,voltevdanswer,srvccsucc,srvccatt,srvcctime,lteswsucc,lteswatt,srqatt,srqsucc,tauatt,tausucc,rrcrebuild,rrcsucc,rrcreq,imsiregatt,imsiregsucc,wirelessdrop,wireless,eabdrop,eab,eabs1swx,eabs1swy,s1tox2swx,s1tox2swy,enbx2swx,enbx2swy,uuenbswx,uuenbswy,uuenbinx,uuenbiny,swx,swy,attachx,attachy,voltesucc,srvccsuccS1"
+
+KPI_CELL_COLS='ttime,cellid,voltemcsucc,voltemcatt,voltevdsucc,voltevdatt,voltetime,voltemctime,voltemctimey,voltevdtime,voltevdtimey,voltemchandover,volteanswer,voltevdhandover,voltevdanswer,srvccsucc,srvccatt,srvcctime,lteswsucc,lteswatt,srqatt,srqsucc,tauatt,tausucc,rrcrebuild,rrcsucc,rrcreq,imsiregatt,imsiregsucc,wirelessdrop,wireless,eabdrop,eab,eabs1swx,eabs1swy,s1tox2swx,s1tox2swy,enbx2swx,enbx2swy,uuenbswx,uuenbswy,uuenbinx,uuenbiny,swx,swy,attachx,attachy,voltesucc,srvccsuccS1'
+
+EVENT_MSG='event_name,procedurestarttime,imsi,proceduretype,etype,cellid,targetcellid,falurecause,celltype,cellregion,cellkey,interface,prointerface,rangetime,ELONG,ELAT,EUPORDOWN'
+
+KPI_MR_IMSI_COLS='imsi,imei,msisdn,cellid,rruid,gridid,ttime,dir_state,elong,elat,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
+
+KPI_MR_CELL_COLS='cellid,ttime,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
 
 if [$COL_NUM=1]
 then
@@ -187,11 +197,29 @@ elif [$CLO_NUM=31];then
     COLS=$gt_commusermore_baseday
     TABLE=gt_commusermore_baseday
 elif [$CLO_NUM=32];then
+    COLS=$gt_highattach_baseday
+    TABLE=gt_highattach_baseday
+elif [$CLO_NUM=33];then
     COLS=$gt_pulse_load_balence60
     TABLE=gt_pulse_load_balence60
-else
+elif [$CLO_NUM=34];then
     COLS=$gt_balence_pair
     TABLE=gt_balence_pair
+elif [$CLO_NUM=35];then
+    COLS=$KPI_IMSI_COLS
+    TABLE=KPI_IMSI_COLS
+elif [$CLO_NUM=36];then
+    COLS=$KPI_CELL_COLS
+    TABLE=KPI_CELL_COLS
+elif [$CLO_NUM=37];then
+    COLS=$EVENT_MSG
+    TABLE=EVENT_MSG
+elif [$CLO_NUM=38];then
+    COLS=$KPI_MR_IMSI_COLS
+    TABLE=KPI_MR_IMSI_COLS
+else
+    COLS=$KPI_MR_CELL_COLS
+    ABLE=KPI_MR_CELL_COLS
 fi
 
 sqoop export --connect $URL \
