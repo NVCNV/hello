@@ -20,36 +20,36 @@ class PulseUserDetail(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
 
     sql(
       s"""
-         |   select gpd.ttime,
-         |         gpd.hours,
-         |         gpd.cellid,
-         |         gcb.imsi,
-         |         gpd.pulse_mark,
-         |         gpd.pulse_type,
-         |         gpd.pulse_timelen,
-         |         gpd.first_pulse_mark,
-         |         gcb.gtuser_flag,
-         |         gcb.volteuser_flag
-         |  from(
-         |  select gpd.ttime,
-         |         gpd.hours,
-         |         gpd.cellid,
-         |          gcb.imsi,
-         |         gpd.pulse_mark,
-         |         gpd.pulse_type,
-         |         gpd.pulse_timelen,
-         |         gpd.first_pulse_mark,
-         |         gcb.gtuser_flag,
-         |         gcb.volteuser_flag
-         |         row_number over(parition by gpd.cellid,gpd.pulse_mark,gcb.imsi) num
-         |    from gt_pulse_detail gcb
-         |    , gt_pulse_cell_base60 gpd
-         |   where gcb.dt="$ANALY_DATE" and gcb.h="$ANALY_HOUR"
-         |     and gcb.cellid = gpd.cellid and gcb.dt = gpd.dt and gcb.hours = gpd.hours
-         |     and gcb.sub_pulse_mark >= gpd.first_pulse_mark
-         |     and gcb.sub_pulse_mark < gpd.first_pulse_mark + gpd.pulse_timelen
-         |     ) t where t.num=1
-         |
+         |   select t.ttime,
+         |       t.hours,
+         |       t.cellid,
+         |       t.imsi,
+         |       t.pulse_mark,
+         |       t.pulse_type,
+         |       t.pulse_timelen,
+         |       t.first_pulse_mark,
+         |       t.gtuser_flag,
+         |       t.volteuser_flag
+         |  from (select gpd.ttime,
+         |               gpd.hours,
+         |               gpd.cellid,
+         |               gcb.imsi,
+         |               gpd.pulse_mark,
+         |               gpd.pulse_type,
+         |               gpd.pulse_timelen,
+         |               gpd.first_pulse_mark,
+         |               gcb.gtuser_flag,
+         |               gcb.volteuser_flag,
+         |               row_number() over(partition by gpd.cellid, gpd.pulse_mark, gcb.imsi order by gpd.pulse_mark) as num
+         |          from gt_pulse_detail gcb, gt_pulse_cell_base60 gpd
+         |         where gcb.dt = "$ANALY_DATE"
+         |           and gcb.h = "$ANALY_HOUR"
+         |           and gcb.cellid = gpd.cellid
+         |           and gcb.dt = gpd.dt
+         |           and gcb.hours = gpd.hours
+         |           and gcb.sub_pulse_mark >= gpd.first_pulse_mark
+         |           and gcb.sub_pulse_mark < gpd.first_pulse_mark + gpd.pulse_timelen) t
+         | where t.num= 1
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_pulse_detail_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }

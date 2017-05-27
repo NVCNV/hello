@@ -15,7 +15,7 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
       sql(s"use $DDB")
       sql(
         s"""alter table gt_overtimelen_baseday add if not exists partition(dt=$ANALY_DATE)
-                LOCATION 'hdfs://dtcluster/$warhouseDir/gt_overtimelen_baseday/dt=$ANALY_DATE
+                LOCATION 'hdfs://dtcluster/$warhouseDir/gt_overtimelen_baseday/dt=$ANALY_DATE'
         """)
 
       val t1 = sql("select over_pulse_times from gt_capacity_config ").collectAsList()
@@ -34,13 +34,13 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |select
            |       ltcel.line_name,
            |       ltcel.city,
-           |       ${cal_date},
+           |       '${cal_date}' as ttime,
            |       ttt.cellid,
-           |       ltcel.cellname,
-           |       ttt.min_hour,
-           |       ttt.min_pluse_timelen,
-           |       ttt.max_hour,
-           |       ttt.max_pluse_timelen
+           |       ltcel.cell_name as cellname,
+           |       ttt.min_pluse_timelen as minpluse_timelen,
+           |       ttt.min_hour as minhour,
+           |       ttt.max_pluse_timelen as maxpluse_timelen,
+           |       ttt.max_hour as maxhour
            |  from (SELECT cellid,
            |               max(min_hour) min_hour,
            |               max(min_pluse_timelen) min_pluse_timelen,
@@ -61,12 +61,12 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |                                             ELSE
            |                                              0
            |                                           END) times
-           |                                  FROM gt_pulse_cell_base60
+           |                                  FROM ${DDB}.gt_pulse_cell_base60
            |                                  where dt="$ANALY_DATE"
            |                                 GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
-           |                 INNER JOIN gt_pulse_cell_base60 b
+           |                 INNER JOIN ${DDB}.gt_pulse_cell_base60 b
            |                    ON a.pluse_timelen_max = b.pulse_timelen
            |                   AND a.cellid = b.cellid
            |                 GROUP BY a.cellid
@@ -86,18 +86,18 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |                                             ELSE
            |                                              0
            |                                           END) times
-           |                                  FROM gt_pulse_cell_base60
+           |                                  FROM ${DDB}.gt_pulse_cell_base60
            |                                  where dt="$ANALY_DATE"
            |                                GROUP BY cellid, HOURS) t1
            |                         WHERE t1.times > ${overPlseTimes}
            |                         GROUP BY cellid) a
-           |                 INNER JOIN gt_pulse_cell_base60 b
+           |                 INNER JOIN ${DDB}.gt_pulse_cell_base60 b
            |                    ON a.pluse_timelen_min = b.pulse_timelen
            |                   AND a.cellid = b.cellid
            |                 GROUP BY a.cellid) tt
            |         GROUP BY tt.cellid) ttt
            |  left join gt_publicandprofess_new_cell ltcel
-           |    on ttt.cellid = ltcel.cellid
+           |    on ttt.cellid = ltcel.cell_id
 
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_overtimelen_baseday/dt=$ANALY_DATE")
   }
