@@ -48,9 +48,9 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
     import sparkSession.sql
     val genDisPreRsrpDifSeqValueSql = GenDisPreRsrpDifSeqValueSql("t.kpi1","t.kpi2")
     val t = sql("select operator,value from ltepci_degree_condition where field = 'cellrsrpcoverth'").collectAsList()
-    val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getDecimal(1)
+    val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getAs("value")
     val t2 = sql("select operator,value from ltepci_degree_condition where field = 'adjcellrsrpeffectiveth'").collectAsList()
-    val adjRsrpthresh = t.get(0).getString(0)+" "+t.get(0).getDecimal(1)
+    val adjRsrpthresh = t2.get(0).getString(0)+" "+t2.get(0).getAs("value")
     sql(s"use $DDB")
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 drop if  exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 add  partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
