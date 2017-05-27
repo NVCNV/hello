@@ -2,8 +2,27 @@
 export HADOOP_CONF_DIR=/opt/app/hdconf
 ANALY_DATE=$1
 ANALY_HOUR=$2
-TableName=$3
-DIR=hdfs://dtcluster/user/hive/warehouse/${TableName}.db
+DATABASE=$3
+DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
+
+#Kpi Hour To Oracle
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2 &
+
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2 &
+
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2 &
+
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2 &
+
+wait
+
+#exception to Oracle
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/business_type_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} 1 2
 
