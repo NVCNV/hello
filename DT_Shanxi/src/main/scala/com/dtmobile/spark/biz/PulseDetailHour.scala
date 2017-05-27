@@ -54,10 +54,10 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
        """.stripMargin).createOrReplaceTempView("gt_pulse_cell_base60_tmp")
     sql(
       s"""
-         |select pct.ttime,
-         |       pct.hours,
-         |       pct.cellid,
-         |       pct.pulse_mark,
+         |select pct.ttime as ttime,
+         |       pct.hours as hours,
+         |       pct.cellid as cellid,
+         |       pct.pulse_mark as pulse_mark,
          |       1 as pulse_type,
          |       count(gpc.sub_pulse_mark) as pulse_timelen ,
          |       min(pct.first_pulse_mark) as first_pulse_mark,
