@@ -72,7 +72,8 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |    on pct.cellid =gpd.cellid
          | inner join gt_pulse_cell_min gpc
          |    on gpd.sub_pulse_mark = gpc.sub_pulse_mark
-         |    where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         |    and gpd.dt = gpc.dt
+         |    where gpd.dt="$ANALY_DATE" and gpd.h="$ANALY_HOUR"
          | group by pct.ttime,pct.hours,pct.cellid, pct.pulse_mark
 
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_pulse_cell_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
