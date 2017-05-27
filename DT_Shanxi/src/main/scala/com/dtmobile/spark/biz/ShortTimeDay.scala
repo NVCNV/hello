@@ -62,7 +62,7 @@ class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
-         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         |                                  where dt="$ANALY_DATE"
          |                                 GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a
@@ -87,7 +87,7 @@ class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
          |                                              0
          |                                           END) times
          |                                  FROM gt_pulse_cell_base60
-         |                                  where dt="$ANALY_DATE" and h="$ANALY_HOUR"
+         |                                  where dt="$ANALY_DATE"
          |                                GROUP BY cellid, HOURS) t1
          |                         WHERE t1.times > ${shortPlseTimes}
          |                         GROUP BY cellid) a
