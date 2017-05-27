@@ -36,7 +36,7 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |       ltcel.city,
            |       '${cal_date}' as ttime,
            |       ttt.cellid,
-           |       ltcel.cellname,
+           |       ltcel.cell_name as cellname,
            |       ttt.min_pluse_timelen as minpluse_timelen,
            |       ttt.min_hour as minhour,
            |       ttt.max_pluse_timelen as maxpluse_timelen,
@@ -97,7 +97,7 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |                 GROUP BY a.cellid) tt
            |         GROUP BY tt.cellid) ttt
            |  left join gt_publicandprofess_new_cell ltcel
-           |    on ttt.cellid = ltcel.cellid
+           |    on ttt.cellid = ltcel.cell_id
 
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_overtimelen_baseday/dt=$ANALY_DATE")
   }
