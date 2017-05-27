@@ -37,10 +37,10 @@ class OverTimeDay(ANALY_DATE: String,  DDB: String, warhouseDir: String) {
            |       '${cal_date}' as ttime,
            |       ttt.cellid,
            |       ltcel.cellname,
-           |       ttt.min_hour,
-           |       ttt.min_pluse_timelen,
-           |       ttt.max_hour,
-           |       ttt.max_pluse_timelen
+           |       ttt.min_pluse_timelen as minpluse_timelen,
+           |       ttt.min_hour as minhour,
+           |       ttt.max_pluse_timelen as maxpluse_timelen,
+           |       ttt.max_hour as maxhour
            |  from (SELECT cellid,
            |               max(min_hour) min_hour,
            |               max(min_pluse_timelen) min_pluse_timelen,
