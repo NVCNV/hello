@@ -32,7 +32,7 @@ class BalenceBaseDay(ANALY_DATE: String,DDB: String,warhouseDir: String) {
          | select a.*, (case when balratio<=$balence_userrate then 1 else 0 end) bal from gt_pulse_load_balence60 a
          | where dt="$ANALY_DATE"
          | ) b group by ttime,line,city,cellname,cellid,pairname
-         | ) c where sumbal > $balence_times;
+         | ) c where sumbal > $balence_times
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_balence_baseday/dt=$ANALY_DATE")
   }
 }
