@@ -25,8 +25,6 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/TB_XDR_IFC_GMMWMGMIMJISC/dt=${ANALY_DATE}/h=${
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/warnningtable/dt=${ANALY_DATE}/h=${ANALY_HOUR} 24 2
 
-sh VolumeAnalyseHDFS2db.sh ${DIR}/t_xdr_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2
-
 sh VolumeAnalyseHDFS2db.sh ${DIR}/LTECELL/dt=${ANALY_DATE}/h=${ANALY_HOUR} 26 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_HOUR} 27 2
