@@ -24,7 +24,7 @@ class Init(ORCAL: String ){
       .load().createOrReplaceTempView("ltecell")
 
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","gt_capacity_config")
+      .option("dbtable","(select a.*, CAST( to_char(balence_userrate,'S999.999') AS float ) balence_userrate_f from gt_capacity_config a ) T")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
