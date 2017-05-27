@@ -5,9 +5,8 @@ export HADOOP_HOME=/opt/app/hadoop
 export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/opt/app/sqoop/bin
 
-
 #oracle jdbc url
-URL=jdbc:oracle:thin:@10.204.215.99:1521/umorpho
+URL=jdbc:oracle:thin:@172.30.4.159:1521:morpho0503
 #oracle username
 USERNAME=scott
 #oracle passwd
@@ -19,10 +18,8 @@ COL_NUM=$2
 #map num
 MAP_NUM=$3
 
-
-
 #columns
-business_type_detail='ttime,city,region,CELLIDint,app_type,app_sub_type,uldata,dldata,counts,timespan'
+business_type_detail='ttime,city,region,CELLID,app_type,app_sub_type,uldata,dldata,counts,timespan'
 
 volte_user_data='ttime,hours,imsi,volte_start,volte_end'
 
@@ -102,124 +99,123 @@ KPI_MR_IMSI_COLS='imsi,imei,msisdn,cellid,rruid,gridid,ttime,dir_state,elong,ela
 
 KPI_MR_CELL_COLS='cellid,ttime,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
 
-if [$COL_NUM=1]
-then
+if [ $COL_NUM = 1 ];then
     COLS=$business_type_detail
     TABLE=business_type_detail
-elif [$COL_NUM=2];then
+elif [ $COL_NUM = 2 ];then
     COLS=$volte_user_data
     TABLE=volte_user_data
-elif [$COL_NUM=3];then
+elif [ $COL_NUM = 3 ];then
     COLS=$volte_gtuser_data
     TABLE=volte_gtuser_data
-elif [$COL_NUM=4];then
+elif [ $COL_NUM = 4 ];then
     COLS=$gt_pulse_detail
     TABLE=gt_pulse_detail
-elif [$COL_NUM=5];then
+elif [ $COL_NUM = 5 ];then
     COLS=$gt_pulse_cell_min
     TABLE=gt_pulse_cell_min
-elif [$COL_NUM=6];then
+elif [ $COL_NUM = 6 ];then
     COLS=$gt_pulse_cell_base60
     TABLE=gt_pulse_cell_base60
-elif [$COL_NUM=7];then
+elif [ $COL_NUM = 7 ];then
     COLS=$gt_pulse_detail_base60
     TABLE=gt_pulse_detail_base60
-elif [$COL_NUM=8];then
+elif [ $COL_NUM = 8 ];then
     COLS=$gt_freq_baseday
     TABLE=gt_freq_baseday
-elif [$COL_NUM=9];then
+elif [ $COL_NUM = 9 ];then
     COLS=$TB_XDR_IFC_UU
     TABLE=TB_XDR_IFC_UU
-elif [$COL_NUM=10];then
+elif [ $COL_NUM = 10 ];then
     COLS=$lte_mro_source
     TABLE=lte_mro_source
-elif [$COL_NUM=11];then
+elif [ $COL_NUM = 11 ];then
     COLS=$TB_XDR_IFC_GMMWMGMIMJISC
     TABLE=TB_XDR_IFC_GMMWMGMIMJISC
-elif [$COL_NUM=12];then
+elif [ $COL_NUM = 12 ];then
     COLS=$tac_hour_http
     TABLE=tac_hour_http
-elif [$COL_NUM=13];then
+elif [ $COL_NUM = 13 ];then
     COLS=$tac_day_http
     TABLE=tac_day_http
-elif [$COL_NUM=14];then
+elif [ $COL_NUM = 14 ];then
     COLS=$cell_hour_http
     TABLE=cell_hour_http
-elif [$COL_NUM=15];then
+elif [ $COL_NUM = 15 ];then
     COLS=$cell_day_http
     TABLE=cell_day_http
-elif [$COL_NUM=16];then
+elif [ $COL_NUM = 16 ];then
     COLS=$sp_hour_http
     TABLE=sp_hour_http
-elif [$COL_NUM=17];then
+elif [ $COL_NUM = 17 ];then
     COLS=$sp_day_http
     TABLE=sp_day_http
-elif [$COL_NUM=18];then
+elif [ $COL_NUM = 18 ];then
     COLS=$ue_hour_http
     TABLE=ue_hour_http
-elif [$COL_NUM=19;then
+elif [ $COL_NUM = 19 ];then
     COLS=$ue_day_http
     TABLE=ue_day_http
-elif [$COL_NUM=20];then
+elif [ $COL_NUM = 20 ];then
     COLS=$imsi_cell_hour_http
     TABLE=imsi_cell_hour_http
-elif [$COL_NUM=21];then
+elif [ $COL_NUM = 21 ];then
     COLS=$imsi_cell_day_http
     TABLE=imsi_cell_day_http
-elif [$COL_NUM=22];then
+elif [ $COL_NUM = 22 ];then
     COLS=$sgw_hour_http
     TABLE=sgw_hour_http
-elif [$COL_NUM=23];then
+elif [ $COL_NUM = 23 ];then
     COLS=$sgw_day_http
     TABLE=sgw_day_http
-elif [$COL_NUM=24];then
+elif [ $COL_NUM = 24 ];then
     COLS=$warnningtable
     TABLE=warnningtable
-elif [$COL_NUM=25];then
+elif [ $COL_NUM = 25 ];then
     COLS=$t_xdr_event_msg
     TABLE=t_xdr_event_msg
-elif [$COL_NUM=26];then
+elif [ $COL_NUM = 26 ];then
     COLS=$LTECELL
     TABLE=LTECELL
-elif [$COL_NUM=27];then
+elif [ $COL_NUM = 27 ];then
     COLS=$gt_capacity_config
     TABLE=gt_capacity_config
-elif [$COL_NUM=28];then
+elif [ $COL_NUM = 28 ];then
     COLS=$gt_balence_baseday
     TABLE=gt_balence_baseday
-elif [$CLO_NUM=29];then
+elif [ $CLO_NUM = 29 ];then
     COLS=$gt_shorttimelen_baseday
     TABLE=gt_shorttimelen_baseday
-elif [$CLO_NUM=30];then
+elif [ $CLO_NUM = 30 ];then
     COLS=$gt_overtimelen_baseday
     TABLE=gt_overtimelen_baseday
-elif [$CLO_NUM=31];then
+elif [ $CLO_NUM = 31 ];then
     COLS=$gt_commusermore_baseday
     TABLE=gt_commusermore_baseday
-elif [$CLO_NUM=32];then
+elif [ $CLO_NUM = 32 ];then
     COLS=$gt_highattach_baseday
     TABLE=gt_highattach_baseday
-elif [$CLO_NUM=33];then
+elif [ $CLO_NUM = 33 ];then
     COLS=$gt_pulse_load_balence60
     TABLE=gt_pulse_load_balence60
-elif [$CLO_NUM=34];then
+elif [ $CLO_NUM = 34 ];then
     COLS=$gt_balence_pair
     TABLE=gt_balence_pair
-elif [$CLO_NUM=35];then
+elif [ $CLO_NUM = 35 ];then
     COLS=$KPI_IMSI_COLS
     TABLE=KPI_IMSI_COLS
-elif [$CLO_NUM=36];then
+elif [ $CLO_NUM = 36 ];then
     COLS=$KPI_CELL_COLS
     TABLE=KPI_CELL_COLS
-elif [$CLO_NUM=37];then
+elif [ $CLO_NUM = 37 ];then
     COLS=$EVENT_MSG
     TABLE=EVENT_MSG
-elif [$CLO_NUM=38];then
+elif [ $CLO_NUM = 38 ];then
     COLS=$KPI_MR_IMSI_COLS
     TABLE=KPI_MR_IMSI_COLS
 else
     COLS=$KPI_MR_CELL_COLS
-    ABLE=KPI_MR_CELL_COLS
+    TABLE=KPI_MR_CELL_COLS
 fi
 
 sqoop export --connect $URL \
