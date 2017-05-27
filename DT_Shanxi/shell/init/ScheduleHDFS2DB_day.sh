@@ -31,3 +31,4 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_highattach_baseday/dt=${ANALY_DATE} 32 2
 
 
 
+
