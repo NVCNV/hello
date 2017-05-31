@@ -6,23 +6,23 @@ DATABASE=$3
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
 #Kpi Hour To Oracle
-echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2"
-sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2 &
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2 "
+sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  35 2 &
 
-echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2"
-sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2 &
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  36 2 &
 
-echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2"
-sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_IMSI_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2 &
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  38 2 &
 
-echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2"
-sh VolumeAnalyseHDFS2db.sh ${DIR}/KPI_MR_CELL_COLS/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2 &
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR}  39 2 &
 
 wait
 
 #exception to Oracle
-echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2"
-sh VolumeAnalyseHDFS2db.sh ${DIR}/EVENT_MSG/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2
+echo "sh VolumeAnalyseHDFS2db.sh ${DIR}/t_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2"
+sh VolumeAnalyseHDFS2db.sh ${DIR}/t_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR}  37 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/t_xdr_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2
 
