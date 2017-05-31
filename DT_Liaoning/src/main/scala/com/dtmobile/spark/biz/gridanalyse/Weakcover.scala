@@ -31,27 +31,27 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
     import sparkSession.sql
     val t = sql("select operator,value from ltecover_degree_condition where field = 'PoorCoverageRSRPTh'").collectAsList()
-    if(t.get(0).getString(0).length()!=0) {
+    if(t.size()>0) {
       poorRSRPOp = t.get(0).getString(0)
       poorRSRPTh = t.get(0).getInt(1)
     }
     val t1 = sql("select operator,value from ltecover_degree_condition where field = 'GoodCoverageRSRPTh'").collectAsList()
-    if(t1.get(0).getString(0).length()!=0) {
+    if(t1.size()>0) {
       goodRSRPOp = t1.get(0).getString(0)
       goodRSRP = t1.get(0).getInt(1)
     }
     val t2 = sql("select operator,value from ltecover_degree_condition where field = 'poorUEpowerTh'").collectAsList()
-    if(t2.get(0).getString(0).length()!=0) {
+    if(t2.size()>0) {
       poorUEPowerOp = t2.get(0).getString(0)
       poorUEPower = t2.get(0).getInt(1)
     }
     val t3 = sql("select operator,value from ltecover_degree_condition where field = 'bigUEtxrxTh'").collectAsList()
-    if(t3.get(0).getString(0).length()!=0) {
+    if(t3.size()>0) {
       bigUEtxrxOp = t3.get(0).getString(0)
       bigUEtxrx = t3.get(0).getInt(1)
     }
     val t4 = sql("select operator,value from ltecover_degree_condition where field = 'deviateAzimuthTh'").collectAsList()
-    if(t4.get(0).getString(0).length()!=0) {
+    if(t4.size()>0) {
       azimuthOp = t4.get(0).getString(0)
       azimuthTh = t4.get(0).getInt(1)
     }
