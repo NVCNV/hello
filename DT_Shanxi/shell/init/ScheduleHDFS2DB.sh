@@ -1,5 +1,7 @@
 #!/bin/bash
+
 export HADOOP_CONF_DIR=/opt/app/hdconf
+
 ANALY_DATE=$1
 ANALY_HOUR=$2
 DATABASE=$3
@@ -31,3 +33,10 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 32 2
 
+sh VolumeAnalyseHDFS2db.sh ${DIR}/tb_xdr_ifc_s1mme/dt=${ANALY_DATE}/h=${ANALY_HOUR} 44 2
+
+sh VolumeAnalyseHDFS2db.sh ${DIR}/tb_xdr_ifc_x2/dt=${ANALY_DATE}/h=${ANALY_HOUR} 45 2
+
+sh VolumeAnalyseHDFS2db.sh ${DIR}/tb_xdr_ifc_gxrx/dt=${ANALY_DATE}/h=${ANALY_HOUR} 46 2
+
+sh VolumeAnalyseHDFS2db.sh ${DIR}/tb_xdr_ifc_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 47 2
