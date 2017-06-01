@@ -17,7 +17,8 @@ HDFS_DIR=$1
 #oracel table
 
 #table cols
-COL_NUM=$3TABLE=$2
+COL_NUM=$3
+TABLE=$2
 #map num
 MAP_NUM=$4
 
