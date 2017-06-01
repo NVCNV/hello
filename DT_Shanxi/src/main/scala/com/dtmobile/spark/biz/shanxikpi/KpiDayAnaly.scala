@@ -1,4 +1,4 @@
-package com.dtmobile.spark.biz.kpi
+package com.dtmobile.spark.biz.shanxikpi
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
