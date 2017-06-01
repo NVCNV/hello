@@ -39,3 +39,5 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/ue_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/imsi_cell_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 20 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/sgw_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 22 2
+
+sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_grid_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 48 2
