@@ -30,8 +30,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
 
     imsiCellHourAnalyse(sparkSession)
     cellHourAnalyse(sparkSession)
-    mrImsiHourAnalyse(sparkSession)
-    mrCellHourAnalyse(sparkSession)
+    shanximrCellHourAnalyse(sparkSession)
+    shanximrImsigridHourAnalyse(sparkSession)
+    shanximrgridHourAnalyse(sparkSession)
   }
 
   def imsiCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
