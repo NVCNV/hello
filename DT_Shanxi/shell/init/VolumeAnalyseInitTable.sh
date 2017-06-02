@@ -53,7 +53,24 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',';
 
+<<<<<<< Updated upstream
 
+=======
+--高铁用户识别表
+drop table if exists volte_gtuser_data;
+create EXTERNAL table if not exists volte_gtuser_data(
+imsi string,
+cellid string,
+ttime string
+)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster//datang2/output/xdrnew/mw/20170508/12';
+>>>>>>> Stashed changes
 
 -- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
@@ -8174,7 +8191,7 @@ CREATE EXTERNAL TABLE sh_tb_xdr_ifc_email(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/email';
+  'hdfs://dtcluster/${DB_PATH}/email';
 
 --山西现场KPI
 drop table if exists sh_tb_xdr_ifc_http;
@@ -8259,7 +8276,7 @@ CREATE EXTERNAL TABLE sh_tb_xdr_ifc_http(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/http';
+  'hdfs://dtcluster/${DB_PATH}/http';
 
 --山西现场kpi
 drop table if exists sh_tb_xdr_ifc_mms;
@@ -8338,7 +8355,7 @@ CREATE EXTERNAL TABLE sh_tb_xdr_ifc_mms(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/mms';
+  'hdfs://dtcluster/${DB_PATH}/mms';
 
 --山西现场KPI
 drop table if exists t_pub_option_failcause;
@@ -8352,7 +8369,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/t_pub_option_failcause';
+  'hdfs://dtcluster/${DB_PATH}/t_pub_option_failcause';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1mme_new;
@@ -8447,7 +8464,7 @@ CREATE TABLE tb_xdr_ifc_s1mme_new(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_s1mme_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1mme_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sgs;
@@ -8492,7 +8509,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/TB_XDR_IFC_SGS';
+  'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_SGS';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sv;
@@ -8543,7 +8560,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$DB_PATH/TB_XDR_IFC_SV';
+  'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_SV';
 
 --山西现场
 drop table if exists tb_xdr_ifc_uu_new;
@@ -8612,7 +8629,7 @@ CREATE TABLE tb_xdr_ifc_uu_new(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_uu_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_uu_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_x2_new;
@@ -8675,7 +8692,7 @@ CREATE TABLE tb_xdr_ifc_x2_new(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_x2_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_x2_new';
 
 --山西现场
 drop table if exists grid_rru;
@@ -8685,12 +8702,17 @@ CREATE TABLE grid_rru(
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/grid_rru';
+  'hdfs://dtcluster/${WAREHOUSE}/grid_rru';
 
 
 --山西现场
+<<<<<<< Updated upstream
 drop table if exists tb_xdr_ifc_gmmwmgmimjisc;
 CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc(
+=======
+drop table if exists tb_xdr_ifc_gmmwmgmimjisc_new;
+CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
+>>>>>>> Stashed changes
   length int,
   city string,
   interface int,
@@ -8778,7 +8800,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$/tb_xdr_ifc_gmmwmgmimjisc';
+  'hdfs://dtcluster/${DB_PATH}/tb_xdr_ifc_gmmwmgmimjisc';
 
 --山西现场
 drop table if exists tb_xdr_ifc_gxrx_new;
@@ -8829,7 +8851,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/output/xdrnew/gxrx';
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/gxrx';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_common_new;
@@ -8893,7 +8915,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_common_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_common_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_dns_new;
@@ -8964,7 +8986,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_dns_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_dns_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_email_new;
@@ -9037,7 +9059,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_email_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_email_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_ftp_new;
@@ -9112,7 +9134,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_ftp_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_ftp_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_http_new;
@@ -9200,7 +9222,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_http_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_http_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_mms_new;
@@ -9282,7 +9304,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_mms_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_mms_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_p2p_new;
@@ -9349,7 +9371,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_p2p_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_p2p_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_rtcomm_new;
@@ -9417,7 +9439,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_rtcomm_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_rtcomm_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_rtsp_new;
@@ -9491,7 +9513,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_rtsp_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_rtsp_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_voip_new;
@@ -9562,7 +9584,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_voip_new';
+  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_voip_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sgs_new;
@@ -9620,7 +9642,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/output/xdrnew/sgs';
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sgs';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sv_new;
@@ -9685,10 +9707,78 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/output/xdrnew/sv_xdr';
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';
+
+<<<<<<< Updated upstream
 
 
+=======
+--山西现场
+drop table if exists tb_xdr_ifc_uu_new_sk;
+CREATE EXTERNAL TABLE tb_xdr_ifc_uu_new_sk(
+  length bigint,
+  city string,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype int,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  keyword1 int,
+  keyword2 int,
+  procedurestatus int,
+  plmnid string,
+  enbid int,
+  cellid int,
+  crnti int,
+  targetenbid int,
+  targetcellid int,
+  targetcrnti int,
+  mmeues1apid int,
+  mmegroupid int,
+  mmecode int,
+  mtmsi int,
+  csfbindication int,
+  epsbearernumber int,
+  bearer0id int,
+  bearer0status int,
+  bearer1id int,
+  bearer1status int,
+  bearer2id int,
+  bearer2status int,
+  bearer3id int,
+  bearer3status int,
+  bearer4id int,
+  bearer4status int,
+  bearer5id int,
+  bearer5status int,
+  rangetime string,
+  etype int,
+  gridid int,
+  slong string,
+  slat string,
+  dlong string,
+  dlat string,
+  distance string,
+  espeed string,
+  elong string,
+  elat string,
+  falurecause string,
+  flag int,
+  beforeflag int,
+  eupordown int)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_UU';
 
+>>>>>>> Stashed changes
 --山西现场
 drop table if exists volte_gt_busi_user_data;
 CREATE TABLE volte_gt_busi_user_data(
@@ -9713,7 +9803,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/volte_gt_busi_user_data';
+  'hdfs://dtcluster/${WAREHOUSE}/volte_gt_busi_user_data';
 
 drop table if exists cell_mr;
 CREATE TABLE cell_mr(
@@ -10093,7 +10183,7 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
-location '/$DB_PATH/volte_gtuser_data' ;
+location '/${DB_PATH}/volte_gtuser_data' ;
 
 
 
@@ -10102,10 +10192,6 @@ location '/$DB_PATH/volte_gtuser_data' ;
 
 CREATE DATABASE IF NOT EXISTS ${BaseDB};
 use $BaseDB ;
-
-
-
-
 
 drop table if exists tb_xdr_ifc_x2;
   CREATE EXTERNAL TABLE tb_xdr_ifc_x2(
@@ -10594,7 +10680,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$BasePath/TB_XDR_IFC_SV';
+  'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_SV';
 
 
 DROP TABLE  IF EXISTS TB_XDR_IFC_GMMWMGMIMJISC;
@@ -10807,7 +10893,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$BasePath/TB_XDR_IFC_SV';
+  'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_SV';
 
 
 
@@ -10920,8 +11006,6 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${BasePath}/TB_XDR_IFC_UU';
-
-
 
 
 EOF
