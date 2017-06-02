@@ -26,7 +26,9 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
     }
     sql(
       s"""
-         |select concat('${cal_date}',' ',t.hours,':',t.minutes,':','00'),
+         |select case when minutes > 10 then concat('${cal_date}',' ',hours,':',minutes,':','00')
+         |       else concat('${cal_date}',' ',hours,':0',minutes,':','00')
+         |       end,
          |       t.hours,
          |       t.minutes,
          |       t.cellid,
