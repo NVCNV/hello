@@ -35,13 +35,26 @@ class AnalyJob(args: Array[String]) extends Analyse {
       lastDay
     }
 
+   var currentDate:String= args(0)
+    val currentHour = args(1).toInt
+    var lastHour = ""
+    if( 0<currentHour && currentHour<10 ){
+      lastHour = "0"+currentHour.-(1)
+    }else if(currentHour==0){
+      lastHour = "00"
+      currentDate=getDaysBefore(cal_date)
+    }else{
+      lastHour =currentHour.toString
+    }
+
+
     val init =new Init(args(5))
     val volteUser =new VolteUser(args(0),args(1),args(2),args(3),warhouseDir,sourceDir)
-    val cell = new CellStatistics(args(0),args(1),args(2),args(3),warhouseDir,sourceDir)
-    val pulseLoadBalence =new PulseLoadBalence(args(0),args(1),args(2),args(3),warhouseDir)
-    val pulseDetailHour = new  PulseDetailHour(args(0),args(1),args(3),warhouseDir)
-    val pulseUserDetail = new PulseUserDetail(args(0),args(1),args(3),warhouseDir)
-    val subPulseStatis = new SubPulseStatis(args(0),args(1),args(3),warhouseDir)
+    val cell = new CellStatistics(currentDate,lastHour,args(2),args(3),warhouseDir,sourceDir)
+    val pulseLoadBalence =new PulseLoadBalence(currentDate,lastHour,args(2),args(3),warhouseDir)
+    val pulseDetailHour = new  PulseDetailHour(currentDate,lastHour,args(3),warhouseDir)
+    val pulseUserDetail = new PulseUserDetail(currentDate,lastHour,args(3),warhouseDir)
+    val subPulseStatis = new SubPulseStatis(currentDate,lastHour,args(3),warhouseDir)
 
     init.analyse
     volteUser.analyse
@@ -55,11 +68,11 @@ class AnalyJob(args: Array[String]) extends Analyse {
 
     //调用天级分析
     val lastDay = getDaysBefore(cal_date)
-       if(args(1)=="03"){
+//       if(args(1)=="03"){
 
          val gtUserFreqDay = new GtUserFreqDay(lastDay,args(3),warhouseDir,args(5))
          val highAttachCellDay = new HighAttachCellDay(lastDay,args(3),warhouseDir,args(5))
-         val gtCommUserCellBasedDay = new GtCommUserCellBasedDay(args(0),args(3),warhouseDir)
+         val gtCommUserCellBasedDay = new GtCommUserCellBasedDay(lastDay,args(3),warhouseDir)
          val balenceBaseDay = new BalenceBaseDay(lastDay,args(3),warhouseDir)
          val overTimeDay = new OverTimeDay(lastDay,args(3),warhouseDir)
          val shortTimeDay = new ShortTimeDay(lastDay,args(3),warhouseDir)
@@ -70,7 +83,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
              balenceBaseDay.analy
              overTimeDay.analyse
              shortTimeDay.analyse
-       }
+//       }
 
   }
 }
