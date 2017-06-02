@@ -4,7 +4,7 @@ import  org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by shenkaili on 17-4-13.
   */
-class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
+class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String){
 
 
   val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
