@@ -54,28 +54,25 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
        """.stripMargin).createOrReplaceTempView("gt_pulse_cell_base60_tmp")
     sql(
       s"""
-         |select pct.ttime as ttime,
+         | select
+         |       pct.ttime as ttime,
          |       pct.hours as hours,
          |       pct.cellid as cellid,
          |       pct.pulse_mark as pulse_mark,
          |       1 as pulse_type,
-         |       count(gpc.sub_pulse_mark) as pulse_timelen ,
+         |       count(bct.sub_pulse_mark) as pulse_timelen ,
          |       min(pct.first_pulse_mark) as first_pulse_mark,
          |       max(pct.users)  as sub_users_peak,
          |       max(pct.gt_users) as sub_gtusers_peak,
          |       max(pct.volte_users) as sub_volteusers_peak,
-         |       count(distinct gpd.imsi) as users,
-         |       count(distinct case when gpd.gtuser_flag = 1 then 1 else 0 end) as gt_users,
-         |       count(distinct case when gpd.volteuser_flag =1 then 1 else 0 end) as volte_users
+         |       count(distinct bct.imsi) as users,
+         |       count(distinct case when bct.gtuser_flag = 1 then 1 else 0 end) as gt_users,
+         |       count(distinct case when bct.volteuser_flag =1 then 1 else 0 end) as volte_users
          |  from gt_pulse_cell_base60_tmp pct
-         | inner join gt_pulse_detail gpd
-         |    on pct.cellid =gpd.cellid
-         | inner join gt_pulse_cell_min gpc
-         |    on gpd.sub_pulse_mark = gpc.sub_pulse_mark
-         |    and gpd.dt = gpc.dt
-         |    where gpd.dt="$ANALY_DATE" and gpd.h="$ANALY_HOUR"
+         | inner join
+         |    (select gpd.cellid,gpd.imsi,gpd.gtuser_flag,gpd.volteuser_flag,gpc.sub_pulse_mark from gt_pulse_detail gpd inner join gt_pulse_cell_min gpc on gpd.sub_pulse_mark = gpc.sub_pulse_mark where gpd.dt="$ANALY_DATE" and gpd.h="$ANALY_HOUR" and gpd.cellid = gpc.cellid ) as bct
+         |    on pct.cellid = bct.cellid
          | group by pct.ttime,pct.hours,pct.cellid, pct.pulse_mark
-
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_pulse_cell_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
