@@ -7851,7 +7851,7 @@ ROW FORMAT DELIMITED
 
 drop table if exists volte_gt_user_ana_base60;
 CREATE TABLE volte_gt_user_ana_base60(
-  	IMSI                   string,
+  IMSI                   string,
   IMEI                   string,
   MSISDN                 string,
   CELLID                 int,
@@ -7927,7 +7927,7 @@ ROW FORMAT DELIMITED
 
 drop table if exists volte_gt_user_ana_baseday;
 CREATE TABLE volte_gt_user_ana_baseday(
-	IMSI                   string,
+   IMSI                   string,
   IMEI                   string,
   MSISDN                 string,
   CELLID                 int,
