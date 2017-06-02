@@ -67,7 +67,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
     s"""
        |select
        |ttime,
-       |hours,
+       |cellid,
        |imsi
        |from  $DDB.volte_gtuser_data
        |where dt="$ANALY_DATE" and h="$ANALY_HOUR"  and IMSI!=''
