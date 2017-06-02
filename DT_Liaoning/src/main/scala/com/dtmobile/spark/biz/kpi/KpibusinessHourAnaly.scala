@@ -1366,7 +1366,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |""".stripMargin
   val businesskpi1=
     s"""
-       | |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then 1 else 0 end)browseChromeresp,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then 1 else 0 end)browseChromeresp,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 then 1 else 0 end)browseChromereq,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then httpfirstrede else 0 end)browseChromeresptimeall,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then 1 else 0 end)browseChromeshowsucc,
@@ -1762,7 +1762,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     val http=sql(
       s"""
          |select
-         |appserveripipv4,
+         |appserveripipv4 as sp,
          |$businesskpi
          |$businesskpi1
          |from $SDB.tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4
@@ -1770,7 +1770,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     val dns=sql(
       s"""
          |select
-         |appserveripipv4,
+         |appserveripipv4 as sp,
          |$busniessDns
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4
          """.stripMargin
@@ -1780,11 +1780,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
       s"""
          |select
          |'$cal_date',
-         |appserveripipv4,
+         |sp,
          |$kpibusinesssum
          |from
          |sptmp
-         |group by appserveripipv4
+         |group by sp
        """.stripMargin)
       .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
