@@ -17,6 +17,7 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
       s"""alter table gt_pulse_cell_min add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
            LOCATION 'hdfs://dtcluster/$warhouseDir/gt_pulse_cell_min/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
+    val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
 
     val t1 = sql("select sub_pulse_limit from gt_capacity_config ").collectAsList()
     var limit = 10
@@ -25,7 +26,9 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
     }
     sql(
       s"""
-         |select t.ttime,
+         |select case when minutes > 10 then concat('${cal_date}',' ',hours,':',minutes,':','00')
+         |       else concat('${cal_date}',' ',hours,':0',minutes,':','00')
+         |       end,
          |       t.hours,
          |       t.minutes,
          |       t.cellid,
@@ -40,7 +43,7 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
          |       cgtuser,
          |       cimsi - cgtuser,
          |       cvolteuser
-         |  from (select ttime,
+         |  from (select
          |               hours,
          |               minutes,
          |               cellid,
@@ -60,7 +63,7 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
          |                     end) cvolteuser
          |          from gt_pulse_detail
          |          where dt="$ANALY_DATE" and h="$ANALY_HOUR"
-         |         group by ttime, hours, minutes, cellid, sub_pulse_mark) t
+         |         group by  cellid,minutes,sub_pulse_mark,hours) t
          |
       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_pulse_cell_min/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
