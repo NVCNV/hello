@@ -27,3 +27,5 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/ue_day_http/dt=${ANALY_DATE} 19 2
 sh VolumeAnalyseHDFS2db.sh ${DIR}/imsi_cell_day_http/dt=${ANALY_DATE} 21 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/sgw_day_http/dt=${ANALY_DATE} 23 2
+
+sh VolumeAnalyseHDFS2db.sh ${DIR}/mr_gt_grid_ana_baseday/dt=${ANALY_DATE} 49 2

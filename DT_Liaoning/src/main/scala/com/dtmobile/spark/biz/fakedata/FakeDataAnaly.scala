@@ -96,6 +96,7 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
     sql(s"""alter table tb_fake_data_temp drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
     sql(s"""alter table tb_fake_data_temp add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
     LOCATION 'hdfs://dtcluster/$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+/*
     sql(
       s"""
          | select t.starttime,t.endtime,t.meatime,t.enbid,t.cellid,t.gridcenterlongitude,t.gridcenterlatitude,t.kpi1,t.kpi2,t.kpi11,t.kpi12,
@@ -104,7 +105,19 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
          | where t.dt="$ANALY_DATE" and t.h="$ANALY_HOUR"
          | and t.mrname = 'MR.LteScRSRP' and t.kpi2 - t.kpi1 >= 0 and t.kpi2 >= 0 and  t.eventtype <> 'PERIOD'
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
-
+*/
+///*
+    sql(
+      s"""
+         | select t.starttime,t.endtime,t.meatime,t.enbid,t.cellid,t.gridcenterlongitude,t.gridcenterlatitude,t.kpi1,t.kpi2,t.kpi11,t.kpi12,
+         | t.mmeues1apid,t.mmegroupid,t.mmecode,floor(c.distance)
+         | from
+         | (select a.* from $SDB.lte_mro_source a left join lte2lteadj_pci b on a.cellid=b.cellid and a.kpi12=b.adjpci
+         | and a.kpi11=b.adjfreq1 where b.adjcellid is null and a.dt="$ANALY_DATE" and a.h="$ANALY_HOUR" and a.mrname = 'MR.LteScRSRP'
+         | and a.kpi2 - a.kpi1 >= 0 and a.kpi2 >= 0 and a.eventtype <> 'PERIOD') t
+         | left join tb_cell_distance c on t.cellid = c.cellid and t.kpi12 = c.pci and t.kpi11 = c.freq1
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
+//*/
     //    insert into tb_fake_data (starttime,endtime,freq1,pci,cellnum,sessionnum,lon,lat,numcount)
     sql(s"""alter table tb_fake_data drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
     sql(s"""alter table tb_fake_data add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)

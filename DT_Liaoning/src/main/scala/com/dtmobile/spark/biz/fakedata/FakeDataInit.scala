@@ -40,9 +40,11 @@ class FakeDataInit(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: Stri
     //    sparkSession.udf.register("calcdis", calcdis(_:Float,_:Float,_:Float,_:Float))
         sparkSession.udf.register("calcdis", (fLon:Float,fLat:Float,tLon:Float,tLat:Float)=>(2 * scala.math.asin(scala.math.sqrt(scala.math.pow(scala.math.sin((fLat*3.14159265/180 - tLat*3.14159265/180)/2),2) + scala.math.cos(fLat*3.14159265/180)*scala.math.cos(tLat*3.14159265/180)*scala.math.pow(scala.math.sin((fLon*3.14159265/180 - tLon*3.14159265/180)/2),2))))*6378.137)
         sql(s"use $DDB")
+        sql(s"""truncate table tb_cell_distance""")
 //        sql(s"""alter table tb_cell_distance drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
 //        sql(s"""alter table tb_cell_distance add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
 //        LOCATION 'hdfs://dtcluster/$warhouseDir/tb_cell_distance/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+///*
         sql(
           s"""
              | select cellid, freq1,pci,min(dis) as dis  from
@@ -53,6 +55,14 @@ class FakeDataInit(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: Stri
              | group by cellid,freq1,pci
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_cell_distance/") //dt=$ANALY_DATE/h=$ANALY_HOUR")
     //    """.stripMargin).createOrReplaceTempView("tb_cell_distance")
-    /**/
+//*/
+    sql(s"""truncate table lte2lteadj_pci""")
+      sql(
+        s"""
+           | SELECT a.mmeGroupId,a.mmeId,a.eNodeBId,a.cellId,a.cellName,c1.pci,c1.freq1,a.adjMmeGroupId,a.adjMmeId,
+           | a.adjENodeBId,a.adjCellId,a.adjCellName,c2.pci as adjpci,c2.freq1 as adjfreq1
+           | from lte2lteadj a ,ltecell c1 ,ltecell c2 WHERE a.cellId = c1.cellId AND a.eNodeBId = c1.eNodeBId
+           | and a.adjCellId = c2.cellId and a.adjENodeBId = c2.eNodeBId
+          """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte2lteadj_pci/") //dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
