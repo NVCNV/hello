@@ -63,11 +63,11 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(s"alter table cell_mr add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(s"alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
 
-    sql(
-      s"""
-         |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-         |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
-       """.stripMargin)
+//    sql(
+//      s"""
+//         |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+//         |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
+//       """.stripMargin)
 
     sql(
       s"""
