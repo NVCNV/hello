@@ -10,7 +10,7 @@ SOURCEDIR=$7
 
 
 MAIN_CLASS=com.dtmobile.spark.job.AnalyJob
-JAR=/dt/bin/DT_Shanxi-1.0-SNAPSHOT.jar
+JAR=/dt/lib/DT_Shanxi-1.0-SNAPSHOT.jar
 
 
 /opt/app/spark/bin/spark-submit  \
