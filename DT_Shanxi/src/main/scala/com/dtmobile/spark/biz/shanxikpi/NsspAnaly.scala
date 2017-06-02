@@ -15,11 +15,11 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     import sparkSession.sql
     //原始表初始化
     sql(s"use $SDB")
-//    sql(
-//      s"""
-//         |alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-//         |location "/$localStr/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}"
-//       """.stripMargin)
+    sql(
+      s"""
+         |alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         |location "/$localStr/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
 //    sql(
 //      s"""
 //         |alter table tb_xdr_ifc_uu add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
