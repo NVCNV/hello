@@ -37,7 +37,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/business_type_detail';
+  'hdfs://dtcluster/${WAREHOUSE}/business_type_detail';
 
 --volte用户表
 drop table if exists volte_user_data;
@@ -53,9 +53,6 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',';
 
-<<<<<<< Updated upstream
-
-=======
 --高铁用户识别表
 drop table if exists volte_gtuser_data;
 create EXTERNAL table if not exists volte_gtuser_data(
@@ -69,8 +66,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster//datang2/output/xdrnew/mw/20170508/12';
->>>>>>> Stashed changes
+  'hdfs://dtcluster//datang2/output/xdrnew/volte_gtuser_data';
 
 -- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
@@ -924,7 +920,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/tac_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/tac_hour_http';
 
 drop table tac_day_http;
 CREATE EXTERNAL TABLE tac_day_http(
@@ -1482,7 +1478,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/tac_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/tac_day_http';
 
 drop table cell_hour_http;
 CREATE EXTERNAL TABLE cell_hour_http(
@@ -2041,7 +2037,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/cell_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/cell_hour_http';
 
 drop table cell_day_http;
 CREATE EXTERNAL TABLE cell_day_http(
@@ -2599,7 +2595,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/cell_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/cell_day_http';
 
 
 drop table sp_hour_http;
@@ -3159,7 +3155,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/sp_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/sp_hour_http';
 
 drop table sp_day_http;
 CREATE EXTERNAL TABLE sp_day_http(
@@ -3717,7 +3713,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/sp_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/sp_day_http';
 
 
 drop table ue_hour_http;
@@ -4278,7 +4274,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/ue_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/ue_hour_http';
 
 
 drop table ue_day_http;
@@ -4838,7 +4834,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/ue_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/ue_day_http';
 
 drop table imsi_cell_hour_http;
 CREATE EXTERNAL TABLE imsi_cell_hour_http(
@@ -5399,7 +5395,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/imsi_cell_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/imsi_cell_hour_http';
 
 drop table imsi_cell_day_http;
 CREATE EXTERNAL TABLE imsi_cell_day_http(
@@ -5959,7 +5955,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/imsi_cell_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/imsi_cell_day_http';
 
 drop table sgw_hour_http;
 CREATE EXTERNAL TABLE sgw_hour_http(
@@ -6518,7 +6514,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/sgw_hour_http';
+  'hdfs://dtcluster/${WAREHOUSE}/sgw_hour_http';
 
 drop table sgw_day_http;
 CREATE EXTERNAL TABLE sgw_day_http(
@@ -7076,7 +7072,7 @@ OtheryjtTime                        int
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/sgw_day_http';
+  'hdfs://dtcluster/${WAREHOUSE}/sgw_day_http';
 
 drop table warnningtable;
 CREATE EXTERNAL TABLE warnningtable(
@@ -7091,7 +7087,7 @@ effect           string
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/warnningtable';
+  'hdfs://dtcluster/${WAREHOUSE}/warnningtable';
 
 drop table t_xdr_event_msg;
 CREATE EXTERNAL TABLE t_xdr_event_msg(
@@ -7119,7 +7115,7 @@ CELLREGION     string
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/$WAREHOUSE/t_xdr_event_msg';
+  'hdfs://dtcluster/${WAREHOUSE}/t_xdr_event_msg';
 
 
 drop table LTECELL;
