@@ -31,7 +31,7 @@ sh VolumeAnalyseHDFS2db.sh ${DIR}/LTECELL/dt=${ANALY_DATE}/h=${ANALY_HOUR} 26 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_capacity_config/dt=${ANALY_DATE}/h=${ANALY_HOUR} 27 2
 
-sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 32 2
+sh VolumeAnalyseHDFS2db.sh ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 33 2
 
 sh VolumeAnalyseHDFS2db.sh ${DIR}/tb_xdr_ifc_s1mme/dt=${ANALY_DATE}/h=${ANALY_HOUR} 44 2
 

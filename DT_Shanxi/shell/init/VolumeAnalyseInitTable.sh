@@ -2,6 +2,10 @@
 
 DDLDB=$1
 DB_PATH=$2
+BaseDB=$3
+BasePath=$4
+
+
 WAREHOUSE="user/hive/warehouse/$DDLDB.db"
 #sh VolumeAnalyseInitTable.sh shanxi  'datang'
 
@@ -49,20 +53,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',';
 
---高铁用户识别表
-drop table if exists volte_gtuser_data;
-create EXTERNAL table if not exists volte_gtuser_data(
-imsi string,
-hours string,
-ttime string
-)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster//datang2/output/xdrnew/mw/20170508/12';
+
 
 -- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
@@ -162,77 +153,6 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
-CREATE EXTERNAL TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
-      PARENTXDRID                  STRING,
-      LENGTH                       BIGINT,
-      CITY                         STRING,
-      INTERFACE                     INT,
-      XDRID                         STRING,
-      RAT                           BIGINT,
-      IMSI                          STRING,
-      IMEI                          STRING,
-      MSISDN                        STRING,
-      PROCEDURETYPE                 INT,
-      PROCEDURESTARTTIME            BIGINT, -- STRING,
-      PROCEDUREENDTIME              BIGINT, -- STRING,
-      KEYWORD1                      INT,
-      KEYWORD2                      INT,
-      PROCEDURESTATUS               INT,
-      PLMNID                        STRING,
-      ENBID                         BIGINT,
-      CELLID                        BIGINT,
-      CRNTI                         BIGINT,
-      TARGETENBID                   BIGINT,
-      TARGETCELLID                  BIGINT,
-      TARGETCRNTI                   BIGINT,
-      MMEUES1APID                   BIGINT,
-      MMEGROUPID                    BIGINT,
-      MMECODE                       BIGINT,
-      MTMSI                         BIGINT,
-      CSFBINDICATION                BIGINT,
-      REDIRECTEDNETWORK             BIGINT,
-      EPSBEARERNUMBER               INT,
-      BEARER0ID                     BIGINT,
-      BEARER0STATUS                 BIGINT,
-      BEARER1ID                     BIGINT,
-      BEARER1STATUS                 BIGINT,
-      BEARER2ID                     BIGINT,
-      BEARER2STATUS                 BIGINT,
-      BEARER3ID                     BIGINT,
-      BEARER3STATUS                 BIGINT,
-      BEARER4ID                     BIGINT,
-      BEARER4STATUS                 BIGINT,
-      BEARER5ID                     BIGINT,
-      BEARER5STATUS                 BIGINT,
-      BEARER6ID                     BIGINT,
-      BEARER6STATUS                 BIGINT,
-      BEARER7ID                     BIGINT,
-      BEARER7STATUS                 BIGINT,
-      BEARER8ID                     BIGINT,
-      BEARER8STATUS                 BIGINT,
-      BEARER9ID                     BIGINT,
-      BEARER9STATUS                 BIGINT,
-      BEARER10ID                     STRING,
-      BEARER10STATUS                 STRING,
-      BEARER11ID                     STRING,
-      BEARER11STATUS                 STRING,
-      BEARER12ID                     STRING,
-      BEARER12STATUS                 STRING,
-      BEARER13ID                     STRING,
-      BEARER13STATUS                 STRING,
-      BEARER14ID                     STRING,
-      BEARER14STATUS                 STRING,
-      BEARER15ID                     STRING,
-      BEARER15STATUS                 STRING,
-      RANGETIME                     STRING
-)PARTITIONED BY (
-dt STRING,
-h STRING)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-STORED AS  TEXTFILE
-location '/${DB_PATH}/TB_XDR_IFC_UU';
 
 DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
 create EXTERNAL table   IF NOT EXISTS LTE_MRO_SOURCE
@@ -2668,7 +2588,7 @@ LOCATION
 drop table sp_hour_http;
 CREATE EXTERNAL TABLE sp_hour_http(
 ttime                        string,
-sp            string,
+appserveripipv4        string,
 browsedownloadvisits        int,
 videoservicevisits          int,
 instantmessagevisits        int,
@@ -3227,7 +3147,7 @@ LOCATION
 drop table sp_day_http;
 CREATE EXTERNAL TABLE sp_day_http(
 ttime                        string,
-sp             string,
+appserveripipv4             string,
 browsedownloadvisits        int,
 videoservicevisits          int,
 instantmessagevisits        int,
@@ -6027,7 +5947,7 @@ LOCATION
 drop table sgw_hour_http;
 CREATE EXTERNAL TABLE sgw_hour_http(
 ttime                        string,
-sgw                   string,
+sgwipaddr                   string,
 browsedownloadvisits        int,
 videoservicevisits          int,
 instantmessagevisits        int,
@@ -6070,7 +5990,7 @@ mailvisits                  int,
 p2pvisits                   int,
 voipvisits                  int,
 MultimediaMsgvisits         int,
-financialvisits            int,
+financialvisits             int,
 securityvisits              int,
 shoppingvisits              int,
 travelvisits                int,
@@ -6586,7 +6506,7 @@ LOCATION
 drop table sgw_day_http;
 CREATE EXTERNAL TABLE sgw_day_http(
 ttime                        string,
-sgw                   string,
+sgwipaddr                   string,
 browsedownloadvisits        int,
 videoservicevisits          int,
 instantmessagevisits        int,
@@ -8116,7 +8036,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
-#山西现场KPI
+--山西现场KPI
 drop table if exists sh_tb_xdr_ifc_dns;
 CREATE EXTERNAL TABLE sh_tb_xdr_ifc_dns(
   length int,
@@ -8179,12 +8099,14 @@ CREATE EXTERNAL TABLE sh_tb_xdr_ifc_dns(
   licensedconnum bigint,
   additionalconnum bigint,
   parentxdrid string)
+ PARTITIONED BY (
+  dt string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/dns';
+  'hdfs://dtcluster/${DB_PATH}/dns';
 
-#山西现场KPI
+--山西现场KPI
 drop table if exists sh_tb_xdr_ifc_email;
 CREATE EXTERNAL TABLE sh_tb_xdr_ifc_email(
   length int,
@@ -8254,7 +8176,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/email';
 
-#山西现场KPI
+--山西现场KPI
 drop table if exists sh_tb_xdr_ifc_http;
 CREATE EXTERNAL TABLE sh_tb_xdr_ifc_http(
   length int,
@@ -8339,7 +8261,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/http';
 
-#山西现场kpi
+--山西现场kpi
 drop table if exists sh_tb_xdr_ifc_mms;
 CREATE EXTERNAL TABLE sh_tb_xdr_ifc_mms(
   length int,
@@ -8418,7 +8340,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/mms';
 
-#山西现场KPI
+--山西现场KPI
 drop table if exists t_pub_option_failcause;
 CREATE EXTERNAL TABLE t_pub_option_failcause(
   option_definition_id bigint,
@@ -8432,7 +8354,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/t_pub_option_failcause';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1mme_new;
 CREATE TABLE tb_xdr_ifc_s1mme_new(
   length int,
@@ -8527,7 +8449,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_s1mme_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_sgs;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sgs(
   parentxdrid string,
@@ -8572,7 +8494,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/TB_XDR_IFC_SGS';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_sv;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sv(
   parentxdrid string,
@@ -8621,9 +8543,9 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/datang2/TB_XDR_IFC_SV';
+  'hdfs://dtcluster/$DB_PATH/TB_XDR_IFC_SV';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_uu_new;
 CREATE TABLE tb_xdr_ifc_uu_new(
   length bigint,
@@ -8692,7 +8614,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_uu_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_x2_new;
 CREATE TABLE tb_xdr_ifc_x2_new(
   length bigint,
@@ -8755,7 +8677,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/tb_xdr_ifc_x2_new';
 
-#山西现场
+--山西现场
 drop table if exists grid_rru;
 CREATE TABLE grid_rru(
   gridid int,
@@ -8766,9 +8688,9 @@ LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/grid_rru';
 
 
-#山西现场
-drop table if exists tb_xdr_ifc_gmmwmgmimjisc_new;
-CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
+--山西现场
+drop table if exists tb_xdr_ifc_gmmwmgmimjisc;
+CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc(
   length int,
   city string,
   interface int,
@@ -8856,9 +8778,9 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_gmmwmgmimjisc_new';
+  'hdfs://dtcluster/$/tb_xdr_ifc_gmmwmgmimjisc';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_gxrx_new;
 CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   length int,
@@ -8909,7 +8831,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/output/xdrnew/gxrx';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_common_new;
 CREATE TABLE tb_xdr_ifc_s1u_common_new(
   length bigint,
@@ -8973,7 +8895,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_common_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_dns_new;
 CREATE TABLE tb_xdr_ifc_s1u_dns_new(
   length bigint,
@@ -9044,7 +8966,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_dns_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_email_new;
 CREATE TABLE tb_xdr_ifc_s1u_email_new(
   length bigint,
@@ -9117,7 +9039,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_email_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_ftp_new;
 CREATE TABLE tb_xdr_ifc_s1u_ftp_new(
   length bigint,
@@ -9192,7 +9114,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_ftp_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_http_new;
 CREATE TABLE tb_xdr_ifc_s1u_http_new(
   length bigint,
@@ -9280,7 +9202,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_http_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_mms_new;
 CREATE TABLE tb_xdr_ifc_s1u_mms_new(
   length bigint,
@@ -9362,7 +9284,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_mms_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_p2p_new;
 CREATE TABLE tb_xdr_ifc_s1u_p2p_new(
   length bigint,
@@ -9429,7 +9351,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_p2p_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_rtcomm_new;
 CREATE TABLE tb_xdr_ifc_s1u_rtcomm_new(
   length bigint,
@@ -9497,7 +9419,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_rtcomm_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_rtsp_new;
 CREATE TABLE tb_xdr_ifc_s1u_rtsp_new(
   length bigint,
@@ -9571,7 +9493,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_rtsp_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_s1u_voip_new;
 CREATE TABLE tb_xdr_ifc_s1u_voip_new(
   length bigint,
@@ -9642,7 +9564,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/tb_xdr_ifc_s1u_voip_new';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_sgs_new;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   length int,
@@ -9700,7 +9622,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/output/xdrnew/sgs';
 
-#山西现场
+--山西现场
 drop table if exists tb_xdr_ifc_sv_new;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   length int,
@@ -9765,72 +9687,9 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/datang2/output/xdrnew/sv_xdr';
 
-#山西现场
-drop table if exists tb_xdr_ifc_uu_new_sk;
-CREATE EXTERNAL TABLE tb_xdr_ifc_uu_new_sk(
-  length bigint,
-  city string,
-  interface int,
-  xdrid string,
-  rat int,
-  imsi string,
-  imei string,
-  msisdn string,
-  proceduretype int,
-  procedurestarttime bigint,
-  procedureendtime bigint,
-  keyword1 int,
-  keyword2 int,
-  procedurestatus int,
-  plmnid string,
-  enbid int,
-  cellid int,
-  crnti int,
-  targetenbid int,
-  targetcellid int,
-  targetcrnti int,
-  mmeues1apid int,
-  mmegroupid int,
-  mmecode int,
-  mtmsi int,
-  csfbindication int,
-  epsbearernumber int,
-  bearer0id int,
-  bearer0status int,
-  bearer1id int,
-  bearer1status int,
-  bearer2id int,
-  bearer2status int,
-  bearer3id int,
-  bearer3status int,
-  bearer4id int,
-  bearer4status int,
-  bearer5id int,
-  bearer5status int,
-  rangetime string,
-  etype int,
-  gridid int,
-  slong string,
-  slat string,
-  dlong string,
-  dlat string,
-  distance string,
-  espeed string,
-  elong string,
-  elat string,
-  falurecause string,
-  flag int,
-  beforeflag int,
-  eupordown int)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/datang2/TB_XDR_IFC_UU';
 
-#山西现场
+
+--山西现场
 drop table if exists volte_gt_busi_user_data;
 CREATE TABLE volte_gt_busi_user_data(
   imsi string,
@@ -9856,7 +9715,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/user/hive/warehouse/shanxikpi2.db/volte_gt_busi_user_data';
 
-drop talbe if exists cell_mr;
+drop table if exists cell_mr;
 CREATE TABLE cell_mr(
   objectid string,
   vid bigint,
@@ -9970,7 +9829,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
-drop talbe if exists tb_xdr_ifc_x2;
+drop table if exists tb_xdr_ifc_x2;
 CREATE TABLE tb_xdr_ifc_x2(
   parentxdrid string,
   length bigint,
@@ -10033,6 +9892,1038 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
+
+DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
+CREATE  TABLE   TB_XDR_IFC_UU (
+      PARENTXDRID                  STRING,
+      LENGTH                       BIGINT,
+      CITY                         STRING,
+      INTERFACE                     INT,
+      XDRID                         STRING,
+      RAT                           BIGINT,
+      IMSI                          STRING,
+      IMEI                          STRING,
+      MSISDN                        STRING,
+      PROCEDURETYPE                 INT,
+      PROCEDURESTARTTIME            BIGINT,
+      PROCEDUREENDTIME              BIGINT,
+      KEYWORD1                      INT,
+      KEYWORD2                      INT,
+      PROCEDURESTATUS               INT,
+      PLMNID                        STRING,
+      ENBID                         BIGINT,
+      CELLID                        BIGINT,
+      CRNTI                         BIGINT,
+      TARGETENBID                   BIGINT,
+      TARGETCELLID                  BIGINT,
+      TARGETCRNTI                   BIGINT,
+      MMEUES1APID                   BIGINT,
+      MMEGROUPID                    BIGINT,
+      MMECODE                       BIGINT,
+      MTMSI                         BIGINT,
+      CSFBINDICATION                BIGINT,
+      REDIRECTEDNETWORK             BIGINT,
+      EPSBEARERNUMBER               INT,
+      BEARER0ID                     BIGINT,
+      BEARER0STATUS                 BIGINT,
+      BEARER1ID                     BIGINT,
+      BEARER1STATUS                 BIGINT,
+      BEARER2ID                     BIGINT,
+      BEARER2STATUS                 BIGINT,
+      BEARER3ID                     BIGINT,
+      BEARER3STATUS                 BIGINT,
+      BEARER4ID                     BIGINT,
+      BEARER4STATUS                 BIGINT,
+      BEARER5ID                     BIGINT,
+      BEARER5STATUS                 BIGINT,
+      BEARER6ID                     BIGINT,
+      BEARER6STATUS                 BIGINT,
+      BEARER7ID                     BIGINT,
+      BEARER7STATUS                 BIGINT,
+      BEARER8ID                     BIGINT,
+      BEARER8STATUS                 BIGINT,
+      BEARER9ID                     BIGINT,
+      BEARER9STATUS                 BIGINT,
+      BEARER10ID                     STRING,
+      BEARER10STATUS                 STRING,
+      BEARER11ID                     STRING,
+      BEARER11STATUS                 STRING,
+      BEARER12ID                     STRING,
+      BEARER12STATUS                 STRING,
+      BEARER13ID                     STRING,
+      BEARER13STATUS                 STRING,
+      BEARER14ID                     STRING,
+      BEARER14STATUS                 STRING,
+      BEARER15ID                     STRING,
+      BEARER15STATUS                 STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' ;
+
+
+DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
+create table   LTE_MRO_SOURCE
+(
+       objectID       STRING ,
+       VID             BIGINT  ,
+       fileFormatVersion STRING ,
+       startTime       STRING  ,
+       endTime         STRING ,
+       period          BIGINT ,
+       enbID           BIGINT,
+       userLabel      STRING ,
+       mrName         STRING ,
+       cellID          BIGINT ,
+       Earfcn          BIGINT ,
+       SubFrameNbr     BIGINT ,
+       PRBNbr          BIGINT ,
+       MmeUeS1apId     BIGINT ,
+       MmeGroupId      BIGINT ,
+       MmeCode         BIGINT ,
+       meaTime         STRING ,
+       EventType      STRING ,
+       gridcenterLongitude   STRING,
+       gridcenterLatitude    STRING,
+       kpi1            BIGINT ,
+       kpi2            BIGINT ,
+       kpi3            BIGINT ,
+       kpi4            BIGINT ,
+       kpi5            BIGINT ,
+       kpi6            BIGINT ,
+       kpi7            BIGINT ,
+       kpi8            BIGINT ,
+       kpi9            BIGINT ,
+       kpi10           BIGINT ,
+       kpi11           BIGINT ,
+       kpi12           BIGINT ,
+       kpi13           BIGINT ,
+       kpi14           BIGINT ,
+       kpi15           BIGINT ,
+       kpi16           BIGINT ,
+       kpi17           BIGINT ,
+       kpi18           BIGINT ,
+       kpi19           BIGINT ,
+       kpi20           BIGINT ,
+       kpi21           BIGINT ,
+       kpi22           BIGINT ,
+       kpi23           BIGINT ,
+       kpi24           BIGINT ,
+       kpi25           BIGINT ,
+       kpi26           BIGINT ,
+       kpi27           BIGINT ,
+       kpi28           BIGINT ,
+       kpi29           BIGINT ,
+       kpi30           BIGINT ,
+       kpi31           BIGINT ,
+       kpi32           BIGINT ,
+       kpi33           BIGINT ,
+       kpi34           BIGINT ,
+       kpi35           BIGINT ,
+       kpi36           BIGINT ,
+       kpi37           BIGINT ,
+       kpi38           BIGINT ,
+       kpi39           BIGINT ,
+       kpi40           BIGINT ,
+       kpi41           BIGINT ,
+       kpi42           BIGINT ,
+       kpi43           BIGINT ,
+       kpi44           BIGINT ,
+       kpi45           BIGINT ,
+       kpi46           BIGINT ,
+       kpi47           BIGINT ,
+       kpi48           BIGINT ,
+       kpi49           BIGINT ,
+       kpi50           BIGINT ,
+       kpi51           BIGINT ,
+       kpi52           BIGINT ,
+       kpi53           BIGINT ,
+       kpi54           BIGINT ,
+       kpi55           BIGINT ,
+       kpi56           BIGINT ,
+       kpi57           BIGINT ,
+       kpi58           BIGINT ,
+       kpi59           BIGINT ,
+       kpi60           BIGINT ,
+       kpi61           BIGINT ,
+       kpi62           BIGINT ,
+       kpi63           BIGINT ,
+       kpi64           BIGINT ,
+       kpi65           BIGINT ,
+       kpi66           BIGINT ,
+       kpi67           BIGINT ,
+       kpi68           BIGINT ,
+       kpi69           BIGINT ,
+       kpi70           BIGINT ,
+       kpi71           BIGINT ,
+       length          BIGINT ,
+       City            STRING ,
+       XDRType         BIGINT ,
+       Interface       BIGINT ,
+       XDRID          STRING ,
+       RAT             BIGINT ,
+       IMSI           STRING ,
+       IMEI           STRING ,
+       MSISDN         STRING ,
+       MRType          BIGINT ,
+       NeighborCellNumber BIGINT ,
+       gsmNeighborCellNumber   BIGINT ,
+       tdsNeighborCellNumber   BIGINT ,
+       v_enb BIGINT,
+     mrtime   BIGINT
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' ;
+
+
+
+--高铁用户识别表
+drop table if exists volte_gtuser_data;
+create EXTERNAL table if not exists volte_gtuser_data(
+imsi string,
+cellid string,
+ttime string
+)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+location '/$DB_PATH/volte_gtuser_data' ;
+
+
+
+
+
+
+CREATE DATABASE IF NOT EXISTS ${BaseDB};
+use $BaseDB ;
+
+
+
+
+
+drop table if exists tb_xdr_ifc_x2;
+  CREATE EXTERNAL TABLE tb_xdr_ifc_x2(
+  length bigint,
+  city string,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  procedurestatus bigint,
+  cellid bigint,
+  targetcellid bigint,
+  enbid bigint,
+  targetenbid bigint,
+  mmeues1apid bigint,
+  mmegroupid bigint,
+  mmecode bigint,
+  requestcause bigint,
+  failurecause bigint,
+  epsbearernumber bigint,
+  bearer0id bigint,
+  bearer0status bigint,
+  bearer1id bigint,
+  bearer1status bigint,
+  bearer2id bigint,
+  bearer2status bigint,
+  bearer3id bigint,
+  bearer3status bigint,
+  bearer4id bigint,
+  bearer4status bigint,
+  bearer5id bigint,
+  bearer5status bigint,
+  bearer6id bigint,
+  bearer6status bigint,
+  bearer7id bigint,
+  bearer7status bigint,
+  bearer8id bigint,
+  bearer8status bigint,
+  bearer9id bigint,
+  bearer9status bigint,
+  bearer10id bigint,
+  bearer10status bigint,
+  bearer11id bigint,
+  bearer11status bigint,
+  bearer12id bigint,
+  bearer12status bigint,
+  bearer13id bigint,
+  bearer13status bigint,
+  bearer14id bigint,
+  bearer14status bigint,
+  bearer15id bigint,
+  bearer15status bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_X2' ;
+
+drop table if exists tb_xdr_ifc_http;
+  CREATE EXTERNAL TABLE tb_xdr_ifc_http(
+  length int,
+  city int,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi bigint,
+  imei bigint,
+  msisdn bigint,
+  machineipaddtype int,
+  sgwipaddr string,
+  enbipaddr string,
+  sgwport int,
+  enbport int,
+  enbgtpteid bigint,
+  sgwgtpteid bigint,
+  tac bigint,
+  ecgi bigint,
+  apn string,
+  apptypecode bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  protocoltype bigint,
+  apptype bigint,
+  appsubtype bigint,
+  appcontent int,
+  appstatus int,
+  useripv4 string,
+  useripv6 string,
+  userport string,
+  l4protocal int,
+  appserveripipv4 string,
+  appserveripipv6 string,
+  appserverport string,
+  uldata bigint,
+  dldata bigint,
+  ulippacket bigint,
+  dlippacket bigint,
+  ultcppacketor bigint,
+  dltcppacketor bigint,
+  ultcppacketre bigint,
+  dltcppacketre bigint,
+  tcpestabrede bigint,
+  tcpestabdeconf bigint,
+  ulipfragpackets bigint,
+  dlipfragpackets bigint,
+  tcpfirstrede bigint,
+  tcpfirstconf bigint,
+  winsize bigint,
+  msssize bigint,
+  tcpattnum bigint,
+  tcplinkstatus bigint,
+  sessionflag int,
+  httpversion string,
+  transactiontype string,
+  httpstate string,
+  httpfirstrede bigint,
+  httplastrede bigint,
+  acklastconf bigint,
+  host string,
+  uri string,
+  xonlinehost string,
+  useragent string,
+  httpcontenttype string,
+  referuri string,
+  cookie string,
+  contentlength bigint,
+  targetbehavior int,
+  wtpinterrupttype int,
+  wtpinterruptcause int,
+  title string,
+  keyword string,
+  busconductlogo int,
+  buscompletionflag int,
+  busrede int,
+  browsingtool int,
+  portalapp int,
+  parentxdrid string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${BasePath}/tb_xdr_ifc_s1u_http_new' ;
+
+DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
+create EXTERNAL table   IF NOT EXISTS LTE_MRO_SOURCE
+(
+       objectID       STRING ,
+       VID             BIGINT  ,
+       fileFormatVersion STRING ,
+       startTime       STRING  ,
+       endTime         STRING ,
+       period          BIGINT ,
+       enbID           BIGINT,
+       userLabel      STRING ,
+       mrName         STRING ,
+       cellID          BIGINT ,
+       Earfcn          BIGINT ,
+       SubFrameNbr     BIGINT ,
+       PRBNbr          BIGINT ,
+       MmeUeS1apId     BIGINT ,
+       MmeGroupId      BIGINT ,
+       MmeCode         BIGINT ,
+       meaTime         STRING ,
+       EventType      STRING ,
+       gridcenterLongitude   STRING,
+       gridcenterLatitude    STRING,
+       kpi1            BIGINT ,
+       kpi2            BIGINT ,
+       kpi3            BIGINT ,
+       kpi4            BIGINT ,
+       kpi5            BIGINT ,
+       kpi6            BIGINT ,
+       kpi7            BIGINT ,
+       kpi8            BIGINT ,
+       kpi9            BIGINT ,
+       kpi10           BIGINT ,
+       kpi11           BIGINT ,
+       kpi12           BIGINT ,
+       kpi13           BIGINT ,
+       kpi14           BIGINT ,
+       kpi15           BIGINT ,
+       kpi16           BIGINT ,
+       kpi17           BIGINT ,
+       kpi18           BIGINT ,
+       kpi19           BIGINT ,
+       kpi20           BIGINT ,
+       kpi21           BIGINT ,
+       kpi22           BIGINT ,
+       kpi23           BIGINT ,
+       kpi24           BIGINT ,
+       kpi25           BIGINT ,
+       kpi26           BIGINT ,
+       kpi27           BIGINT ,
+       kpi28           BIGINT ,
+       kpi29           BIGINT ,
+       kpi30           BIGINT ,
+       kpi31           BIGINT ,
+       kpi32           BIGINT ,
+       kpi33           BIGINT ,
+       kpi34           BIGINT ,
+       kpi35           BIGINT ,
+       kpi36           BIGINT ,
+       kpi37           BIGINT ,
+       kpi38           BIGINT ,
+       kpi39           BIGINT ,
+       kpi40           BIGINT ,
+       kpi41           BIGINT ,
+       kpi42           BIGINT ,
+       kpi43           BIGINT ,
+       kpi44           BIGINT ,
+       kpi45           BIGINT ,
+       kpi46           BIGINT ,
+       kpi47           BIGINT ,
+       kpi48           BIGINT ,
+       kpi49           BIGINT ,
+       kpi50           BIGINT ,
+       kpi51           BIGINT ,
+       kpi52           BIGINT ,
+       kpi53           BIGINT ,
+       kpi54           BIGINT ,
+       kpi55           BIGINT ,
+       kpi56           BIGINT ,
+       kpi57           BIGINT ,
+       kpi58           BIGINT ,
+       kpi59           BIGINT ,
+       kpi60           BIGINT ,
+       kpi61           BIGINT ,
+       kpi62           BIGINT ,
+       kpi63           BIGINT ,
+       kpi64           BIGINT ,
+       kpi65           BIGINT ,
+       kpi66           BIGINT ,
+       kpi67           BIGINT ,
+       kpi68           BIGINT ,
+       kpi69           BIGINT ,
+       kpi70           BIGINT ,
+       kpi71           BIGINT ,
+       length          BIGINT ,
+       City            STRING ,
+       XDRType         BIGINT ,
+       Interface       BIGINT ,
+       XDRID          STRING ,
+       RAT             BIGINT ,
+       IMSI           STRING ,
+       IMEI           STRING ,
+       MSISDN         STRING ,
+       MRType          BIGINT ,
+       NeighborCellNumber BIGINT ,
+       gsmNeighborCellNumber   BIGINT ,
+       tdsNeighborCellNumber   BIGINT ,
+       v_enb BIGINT,
+     mrtime   BIGINT
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
+location '/${BasePath}/LTE_MRO_SOURCE';
+
+
+drop table if exists tb_xdr_ifc_s1mme;
+CREATE EXTERNAL TABLE tb_xdr_ifc_s1mme(
+  length int,
+  city string,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype int,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  procedurestatus int,
+  requestcause int,
+  failurecause int,
+  keyword1 int,
+  keyword2 int,
+  keyword3 int,
+  keyword4 int,
+  mmeues1apid int,
+  oldmmegroupid int,
+  oldmmecode int,
+  oldmtmsi int,
+  mmegroupid int,
+  mmecode int,
+  mtmsi int,
+  tmsi int,
+  useripv4 string,
+  useripv6 string,
+  mmeipadd string,
+  enbipadd string,
+  mmeport int,
+  enbport int,
+  tac int,
+  cellid int,
+  othertac int,
+  othereci int,
+  apn string,
+  epsbearernumber int,
+  bearer0id int,
+  bearer0type int,
+  bearer0qci int,
+  bearer0status int,
+  bearer0requestcause int,
+  bearer0failurecause int,
+  bearer0enbgtpteid int,
+  bearer0sgwgtpteid int,
+  bearer1id int,
+  bearer1type int,
+  bearer1qci int,
+  bearer1status int,
+  bearer1requestcause int,
+  bearer1failurecause int,
+  bearer1enbgtpteid int,
+  bearer1sgwgtpteid int,
+  bearer2id int,
+  bearer2type int,
+  bearer2qci int,
+  bearer2status int,
+  bearer2requestcause int,
+  bearer2failurecause int,
+  bearer2enbgtpteid int,
+  bearer2sgwgtpteid int,
+  bearer3id int,
+  bearer3type int,
+  bearer3qci int,
+  bearer3status int,
+  bearer3requestcause int,
+  bearer3failurecause int,
+  bearer3enbgtpteid int,
+  bearer3sgwgtpteid int,
+  bearer4id int,
+  bearer4type int,
+  bearer4qci int,
+  bearer4status int,
+  bearer4requestcause int,
+  bearer4failurecause int,
+  bearer4enbgtpteid int,
+  bearer4sgwgtpteid int,
+  bearer5id int,
+  bearer5type int,
+  bearer5qci int,
+  bearer5status int,
+  bearer5requestcause int,
+  bearer5failurecause int,
+  bearer5enbgtpteid int,
+  bearer5sgwgtpteid int,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_S1MME' ;
+
+drop table if exists tb_xdr_ifc_dns;
+CREATE EXTERNAL TABLE tb_xdr_ifc_dns(
+  length int,
+  city int,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi bigint,
+  imei bigint,
+  msisdn bigint,
+  machineipaddtype int,
+  sgwipaddr string,
+  enbipaddr string,
+  sgwport int,
+  enbport int,
+  enbgtpteid string,
+  sgwgtpteid bigint,
+  tac bigint,
+  ecgi bigint,
+  apn string,
+  apptypecode bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  protocoltype bigint,
+  apptype bigint,
+  appsubtype bigint,
+  appcontent int,
+  appstatus int,
+  useripv4 string,
+  useripv6 string,
+  userport string,
+  l4protocal int,
+  appserveripipv4 string,
+  appserveripipv6 string,
+  appserverport string,
+  uldata bigint,
+  dldata bigint,
+  ulippacket bigint,
+  dlippacket bigint,
+  ultcppacketor bigint,
+  dltcppacketor bigint,
+  ultcppacketre bigint,
+  dltcppacketre bigint,
+  tcpestabrede bigint,
+  tcpestabdeconf bigint,
+  ulipfragpackets bigint,
+  dlipfragpackets bigint,
+  tcpfirstrede bigint,
+  tcpfirstconf bigint,
+  winsize bigint,
+  msssize bigint,
+  tcpattnum int,
+  tcplinkstatus int,
+  sessionflag int,
+  reqdns string,
+  resultip string,
+  dnsrecode bigint,
+  dnsattnum bigint,
+  dnsrenum bigint,
+  licensedconnum bigint,
+  additionalconnum bigint,
+  parentxdrid string)
+  PARTITIONED BY (
+  dt string,
+  h string
+  )
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${BasePath}/tb_xdr_ifc_dns' ;
+
+--山西现场
+drop table if exists tb_xdr_ifc_sv;
+CREATE EXTERNAL TABLE tb_xdr_ifc_sv(
+  parentxdrid string,
+  length bigint,
+  city string,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  sourceneip string,
+  sourceneport bigint,
+  destneip string,
+  destneport bigint,
+  roamdirection bigint,
+  homemcc bigint,
+  homemnc bigint,
+  mcc bigint,
+  mnc bigint,
+  targetlac bigint,
+  sourcetac bigint,
+  sourceeci bigint,
+  svflags bigint,
+  ulcmscip string,
+  dlcmmeip string,
+  ulcmscteid bigint,
+  dlcmmeteid bigint,
+  stnsr string,
+  targetrncid bigint,
+  targetcellid bigint,
+  arp bigint,
+  requestresult bigint,
+  result bigint,
+  svcause bigint,
+  postfailurecause bigint,
+  respdelay bigint,
+  svdelay bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/$BasePath/TB_XDR_IFC_SV';
+
+
+DROP TABLE  IF EXISTS TB_XDR_IFC_GMMWMGMIMJISC;
+CREATE EXTERNAL TABLE  IF NOT EXISTS TB_XDR_IFC_GMMWMGMIMJISC (
+      LENGTH                        BIGINT,
+      CITY                         STRING,
+      INTERFACE                     BIGINT,
+      XDRID                        STRING,
+      RAT                           BIGINT,
+      IMSI                         STRING,
+      IMEI                         STRING,
+      MSISDN                       STRING,
+      PROCEDURETYPE                 BIGINT,
+      PROCEDURESTARTTIME           BIGINT,
+      PROCEDUREENDTIME             BIGINT,
+      SERVICETYPE                   BIGINT,
+      PROCEDURESTATUS               BIGINT,
+      CALLINGNUMBER                STRING,
+      CALLEDNUMBER                 STRING,
+      CALLINGPARTYURI              STRING,
+      REQUESTURI                   STRING,
+      USERIP                       STRING,
+      CALLID                       STRING,
+      ICID                         STRING,
+      SOURCENEIP                   STRING,
+      SOURCENEPORT                  BIGINT,
+      DESTNEIP                     STRING,
+      DESTNEPORT                    BIGINT,
+      CALLSIDE                      BIGINT,
+      SOURCEACCESSTYPE              BIGINT,
+      SOURCEECI                     BIGINT,
+      SOURCETAC                     BIGINT,
+      SOURCEIMSI                   STRING,
+      SOURCEIMEI                   STRING,
+      DESTACCESSTYPE                BIGINT,
+      DESTECI                       BIGINT,
+      DESTTAC                       BIGINT,
+      DESTIMSI                     STRING,
+      DESTIMEI                     STRING,
+      AUTHTYPE                      BIGINT,
+      EXPIRESTIMEREQ               BIGINT,
+      EXPIRESTIMERSP               BIGINT,
+      CALLINGSDPIPADDR             STRING,
+      CALLINGAUDIOSDPPORT           BIGINT,
+      CALLINGVIDEOSDPPORT           BIGINT,
+      CALLEDSDPIPADDR              STRING,
+      CALLEDAUDIOSDPPORT            BIGINT,
+      CALLEDVIDEOPORT               BIGINT,
+      AUDIOCODEC                    BIGINT,
+      VIDEOCODEC                    BIGINT,
+      REDIRECTINGPARTYADDRESS      STRING,
+      ORIGINALPARTYADDRESS         STRING,
+      REDIRECTREASON                BIGINT,
+      RESPONSECODE                  BIGINT,
+      FINISHWARNINGCODE             BIGINT,
+      FINISHREASONPROTOCOL          BIGINT,
+      FINISHREASONCAUSE             BIGINT,
+      FIRFAILTIME                  BIGINT,
+      FIRSTFAILNEIP                STRING,
+      ALERTINGTIME                 BIGINT,
+      ANSWERTIME                   BIGINT,
+      RELEASETIME                  BIGINT,
+      CALLDURATION                  BIGINT,
+      AUTHREQTIME                  BIGINT,
+      AUTHRSPTIME                  BIGINT,
+      STNSR                        STRING,
+      ATCFMGMT                     STRING,
+      ATUSTI                       STRING,
+      CMSISDN                      STRING,
+      SSI                          STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
+location '/${BasePath}/TB_XDR_IFC_GMMWMGMIMJISC';
+
+
+
+DROP TABLE  IF EXISTS tb_xdr_ifc_mw;
+CREATE EXTERNAL TABLE  IF NOT EXISTS tb_xdr_ifc_mw (
+      LENGTH                        BIGINT,
+      CITY                         STRING,
+      INTERFACE                     BIGINT,
+      XDRID                        STRING,
+      RAT                           BIGINT,
+      IMSI                         STRING,
+      IMEI                         STRING,
+      MSISDN                       STRING,
+      PROCEDURETYPE                 BIGINT,
+      PROCEDURESTARTTIME           BIGINT,
+      PROCEDUREENDTIME             BIGINT,
+      SERVICETYPE                   BIGINT,
+      PROCEDURESTATUS               BIGINT,
+      CALLINGNUMBER                STRING,
+      CALLEDNUMBER                 STRING,
+      CALLINGPARTYURI              STRING,
+      REQUESTURI                   STRING,
+      USERIP                       STRING,
+      CALLID                       STRING,
+      ICID                         STRING,
+      SOURCENEIP                   STRING,
+      SOURCENEPORT                  BIGINT,
+      DESTNEIP                     STRING,
+      DESTNEPORT                    BIGINT,
+      CALLSIDE                      BIGINT,
+      SOURCEACCESSTYPE              BIGINT,
+      SOURCEECI                     BIGINT,
+      SOURCETAC                     BIGINT,
+      SOURCEIMSI                   STRING,
+      SOURCEIMEI                   STRING,
+      DESTACCESSTYPE                BIGINT,
+      DESTECI                       BIGINT,
+      DESTTAC                       BIGINT,
+      DESTIMSI                     STRING,
+      DESTIMEI                     STRING,
+      AUTHTYPE                      BIGINT,
+      EXPIRESTIMEREQ               BIGINT,
+      EXPIRESTIMERSP               BIGINT,
+      CALLINGSDPIPADDR             STRING,
+      CALLINGAUDIOSDPPORT           BIGINT,
+      CALLINGVIDEOSDPPORT           BIGINT,
+      CALLEDSDPIPADDR              STRING,
+      CALLEDAUDIOSDPPORT            BIGINT,
+      CALLEDVIDEOPORT               BIGINT,
+      AUDIOCODEC                    BIGINT,
+      VIDEOCODEC                    BIGINT,
+      REDIRECTINGPARTYADDRESS      STRING,
+      ORIGINALPARTYADDRESS         STRING,
+      REDIRECTREASON                BIGINT,
+      RESPONSECODE                  BIGINT,
+      FINISHWARNINGCODE             BIGINT,
+      FINISHREASONPROTOCOL          BIGINT,
+      FINISHREASONCAUSE             BIGINT,
+      FIRFAILTIME                  BIGINT,
+      FIRSTFAILNEIP                STRING,
+      ALERTINGTIME                 BIGINT,
+      ANSWERTIME                   BIGINT,
+      RELEASETIME                  BIGINT,
+      CALLDURATION                  BIGINT,
+      AUTHREQTIME                  BIGINT,
+      AUTHRSPTIME                  BIGINT,
+      STNSR                        STRING,
+      ATCFMGMT                     STRING,
+      ATUSTI                       STRING,
+      CMSISDN                      STRING,
+      SSI                          STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
+location '/${BasePath}/TB_XDR_IFC_GMMWMGMIMJISC';
+
+
+
+
+
+
+
+drop table if exists tb_xdr_ifc_sv;
+CREATE EXTERNAL TABLE tb_xdr_ifc_sv(
+  parentxdrid string,
+  length bigint,
+  city string,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  sourceneip string,
+  sourceneport bigint,
+  destneip string,
+  destneport bigint,
+  roamdirection bigint,
+  homemcc bigint,
+  homemnc bigint,
+  mcc bigint,
+  mnc bigint,
+  targetlac bigint,
+  sourcetac bigint,
+  sourceeci bigint,
+  svflags bigint,
+  ulcmscip string,
+  dlcmmeip string,
+  ulcmscteid bigint,
+  dlcmmeteid bigint,
+  stnsr string,
+  targetrncid bigint,
+  targetcellid bigint,
+  arp bigint,
+  requestresult bigint,
+  result bigint,
+  svcause bigint,
+  postfailurecause bigint,
+  respdelay bigint,
+  svdelay bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/$BasePath/TB_XDR_IFC_SV';
+
+
+
+
+ drop table if exists tb_xdr_ifc_gxrx;
+CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx(
+  length bigint,
+  city string,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  icid string,
+  originrealm string,
+  destinationrealm string,
+  originhost string,
+  destinationhost string,
+  sgsnsgwsigip string,
+  afappid string,
+  ccrequesttype bigint,
+  rxrequesttype bigint,
+  mediatype bigint,
+  abortcause bigint,
+  resultcode bigint,
+  experimentalresultcode bigint,
+  sessionreleasecause bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_GXRX' ;
+
+
+DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
+CREATE EXTERNAL TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
+      PARENTXDRID                  STRING,
+      LENGTH                       BIGINT,
+      CITY                         STRING,
+      INTERFACE                     INT,
+      XDRID                         STRING,
+      RAT                           BIGINT,
+      IMSI                          STRING,
+      IMEI                          STRING,
+      MSISDN                        STRING,
+      PROCEDURETYPE                 INT,
+      PROCEDURESTARTTIME            BIGINT, -- STRING,
+      PROCEDUREENDTIME              BIGINT, -- STRING,
+      KEYWORD1                      INT,
+      KEYWORD2                      INT,
+      PROCEDURESTATUS               INT,
+      PLMNID                        STRING,
+      ENBID                         BIGINT,
+      CELLID                        BIGINT,
+      CRNTI                         BIGINT,
+      TARGETENBID                   BIGINT,
+      TARGETCELLID                  BIGINT,
+      TARGETCRNTI                   BIGINT,
+      MMEUES1APID                   BIGINT,
+      MMEGROUPID                    BIGINT,
+      MMECODE                       BIGINT,
+      MTMSI                         BIGINT,
+      CSFBINDICATION                BIGINT,
+      REDIRECTEDNETWORK             BIGINT,
+      EPSBEARERNUMBER               INT,
+      BEARER0ID                     BIGINT,
+      BEARER0STATUS                 BIGINT,
+      BEARER1ID                     BIGINT,
+      BEARER1STATUS                 BIGINT,
+      BEARER2ID                     BIGINT,
+      BEARER2STATUS                 BIGINT,
+      BEARER3ID                     BIGINT,
+      BEARER3STATUS                 BIGINT,
+      BEARER4ID                     BIGINT,
+      BEARER4STATUS                 BIGINT,
+      BEARER5ID                     BIGINT,
+      BEARER5STATUS                 BIGINT,
+      BEARER6ID                     BIGINT,
+      BEARER6STATUS                 BIGINT,
+      BEARER7ID                     BIGINT,
+      BEARER7STATUS                 BIGINT,
+      BEARER8ID                     BIGINT,
+      BEARER8STATUS                 BIGINT,
+      BEARER9ID                     BIGINT,
+      BEARER9STATUS                 BIGINT,
+      BEARER10ID                     STRING,
+      BEARER10STATUS                 STRING,
+      BEARER11ID                     STRING,
+      BEARER11STATUS                 STRING,
+      BEARER12ID                     STRING,
+      BEARER12STATUS                 STRING,
+      BEARER13ID                     STRING,
+      BEARER13STATUS                 STRING,
+      BEARER14ID                     STRING,
+      BEARER14STATUS                 STRING,
+      BEARER15ID                     STRING,
+      BEARER15STATUS                 STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS  TEXTFILE
+location '/${BasePath}/TB_XDR_IFC_UU';
+
+
+
+
 EOF
 exit 0
 
