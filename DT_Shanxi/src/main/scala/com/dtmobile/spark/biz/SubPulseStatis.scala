@@ -26,7 +26,7 @@ class SubPulseStatis(ANALY_DATE: String, ANALY_HOUR: String,  DDB: String, warho
     }
     sql(
       s"""
-         |select concat('${cal_date}',' ','t.hours,':',t.minutes,':','00'),
+         |select concat('${cal_date}',' ',t.hours,':',t.minutes,':','00'),
          |       t.hours,
          |       t.minutes,
          |       t.cellid,
