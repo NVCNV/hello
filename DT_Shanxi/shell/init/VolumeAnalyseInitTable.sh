@@ -10096,6 +10096,10 @@ ROW FORMAT DELIMITED
 location '/$DB_PATH/volte_gtuser_data' ;
 
 
+
+
+
+
 CREATE DATABASE IF NOT EXISTS ${BaseDB};
 use $BaseDB ;
 
