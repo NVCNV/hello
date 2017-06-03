@@ -7202,7 +7202,9 @@ create table if not exists gt_shorttimelen_baseday(
         cellid int,
         cellname string,
         minpluse_timelen string,
-        maxpluse_timelen string
+        minhour int,
+        maxpluse_timelen string,
+        maxhour int
 )
 PARTITIONED BY (
     dt string
@@ -7218,7 +7220,9 @@ create table if not exists gt_overtimelen_baseday(
         cellid int,
         cellname string,
         minpluse_timelen int,
-        maxpluse_timelen int
+        minhour  int,
+        maxpluse_timelen int,
+        maxhour int
 )
 PARTITIONED BY (
     dt string
