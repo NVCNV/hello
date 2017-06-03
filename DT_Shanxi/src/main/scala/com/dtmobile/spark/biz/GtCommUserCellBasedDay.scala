@@ -36,7 +36,7 @@ class GtCommUserCellBasedDay(ANALY_DATE: String,DDB: String,warhouseDir: String)
     sql(
       s"""
          |select
-         |l.freq1,
+         |gt.line_name,
          |l.city,
          |'$cal_date' ttime,
          |l.CELLID cellid,
@@ -56,7 +56,9 @@ class GtCommUserCellBasedDay(ANALY_DATE: String,DDB: String,warhouseDir: String)
          |having count(1)>$busiCellTimes )t3
          | inner join ltecell l
          | on l.cellid=t3.cellid
-         | group by l.cellid,l.city,l.cellname,l.freq1
+         | inner join gt_publicandprofess_new_cell gt
+         | on t3.cellid=gt.cell_id
+         | group by l.cellid,l.city,l.cellname,gt.line_name
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_commusermore_baseday/dt=$ANALY_DATE""")
 
 
