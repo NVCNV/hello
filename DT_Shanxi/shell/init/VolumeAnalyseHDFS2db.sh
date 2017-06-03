@@ -75,9 +75,9 @@ gt_capacity_config='sub_pulse_limit,non_gtsubpulse_commusers,non_gtsubpuse_times
 
 gt_balence_baseday='line_name,city,ttime,cellid,cellname,f1_f2,balenusesrateavg,balenusersavg'
 
-gt_shorttimelen_baseday='line_name,city,ttime,cellid,cellname,minpluse_timelen,maxpluse_timelen'
+gt_shorttimelen_baseday='line_name,city,ttime,cellid,cellname,minpluse_timelen,minhour,maxpluse_timelen,maxhour'
 
-gt_overtimelen_baseday='line_name,city,ttime,cellid,cellname,minpluse_timelen,maxpluse_timelen'
+gt_overtimelen_baseday='line_name,city,ttime,cellid,cellname,minpluse_timelen,minhour,maxpluse_timelen,maxhour'
 
 gt_commusermore_baseday='line_name,city,ttime,cellid,cellname,maxusers'
 
