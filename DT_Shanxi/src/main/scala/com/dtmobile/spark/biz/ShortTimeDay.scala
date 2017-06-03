@@ -23,10 +23,10 @@ class ShortTimeDay (ANALY_DATE: String, DDB: String, warhouseDir: String) {
     if (t1.size() > 0) {
       shortPlseTimes = t1.get(0).getInt(0)
     }
-    var shortPulseTimeLen = 4
+    var shortPulseTimeLen:BigDecimal = 4
     val t2 = sql("select short_pulse_timelen from gt_capacity_config ").collectAsList()
     if (t2.size() > 0) {
-      shortPulseTimeLen = t2.get(0).getInt(0)
+      shortPulseTimeLen = t2.get(0).getDecimal(0)
     }
     val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0, 2) + "-" + ANALY_DATE.substring(6) + " " + "00:00:00"
     sql(
