@@ -28,7 +28,7 @@ class Init(ORCAL: String ){
 
     //公网和专网视图
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","gt_publicandprofess_new_cell")
+      .option("dbtable","(select line_name,cell_id,cell_name,city,enodeb_id,enodeb_name,celltype from  gt_publicandprofess_new_cell) gt_cell")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
