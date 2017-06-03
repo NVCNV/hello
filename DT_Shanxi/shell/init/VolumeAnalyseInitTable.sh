@@ -8458,9 +8458,7 @@ CREATE TABLE tb_xdr_ifc_s1mme_new(
   bearer5sgwgtpteid int,
   rangetime string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1mme_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sgs;
@@ -8623,9 +8621,7 @@ CREATE TABLE tb_xdr_ifc_uu_new(
   bearer15status string,
   rangetime string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_uu_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_x2_new;
@@ -8686,9 +8682,7 @@ CREATE TABLE tb_xdr_ifc_x2_new(
   bearer15status bigint,
   rangetime string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_x2_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists grid_rru;
@@ -8696,19 +8690,11 @@ CREATE TABLE grid_rru(
   gridid int,
   rruid string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/grid_rru';
-
+  FIELDS TERMINATED BY ',';
 
 --山西现场
-<<<<<<< Updated upstream
-drop table if exists tb_xdr_ifc_gmmwmgmimjisc;
-CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc(
-=======
 drop table if exists tb_xdr_ifc_gmmwmgmimjisc_new;
 CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
->>>>>>> Stashed changes
   length int,
   city string,
   interface int,
@@ -8794,9 +8780,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${DB_PATH}/tb_xdr_ifc_gmmwmgmimjisc';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_gxrx_new;
@@ -8909,9 +8893,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_common_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_dns_new;
@@ -8980,9 +8962,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_dns_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_email_new;
@@ -9053,9 +9033,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_email_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_ftp_new;
@@ -9128,9 +9106,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_ftp_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_http_new;
@@ -9216,9 +9192,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_http_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_mms_new;
@@ -9298,9 +9272,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_mms_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_p2p_new;
@@ -9365,9 +9337,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_p2p_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_rtcomm_new;
@@ -9433,9 +9403,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_rtcomm_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_rtsp_new;
@@ -9507,9 +9475,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_rtsp_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_voip_new;
@@ -9578,9 +9544,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/tb_xdr_ifc_s1u_voip_new';
+  FIELDS TERMINATED BY ',';
 
 --山西现场
 drop table if exists tb_xdr_ifc_sgs_new;
@@ -9705,10 +9669,6 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';
 
-<<<<<<< Updated upstream
-
-
-=======
 --山西现场
 drop table if exists tb_xdr_ifc_uu_new_sk;
 CREATE EXTERNAL TABLE tb_xdr_ifc_uu_new_sk(
@@ -9774,7 +9734,7 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_UU';
 
->>>>>>> Stashed changes
+
 --山西现场
 drop table if exists volte_gt_busi_user_data;
 CREATE TABLE volte_gt_busi_user_data(
@@ -9797,9 +9757,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${WAREHOUSE}/volte_gt_busi_user_data';
+  FIELDS TERMINATED BY ',';
 
 drop table if exists cell_mr;
 CREATE TABLE cell_mr(
@@ -10187,7 +10145,7 @@ location '/${DB_PATH}/volte_gtuser_data' ;
 
 
 CREATE DATABASE IF NOT EXISTS ${BaseDB};
-use $BaseDB ;
+use ${BaseDB} ;
 
 drop table if exists tb_xdr_ifc_x2;
   CREATE EXTERNAL TABLE tb_xdr_ifc_x2(
@@ -10756,8 +10714,6 @@ FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${BasePath}/TB_XDR_IFC_GMMWMGMIMJISC';
 
-
-
 DROP TABLE  IF EXISTS tb_xdr_ifc_mw;
 CREATE EXTERNAL TABLE  IF NOT EXISTS tb_xdr_ifc_mw (
       LENGTH                        BIGINT,
@@ -10835,12 +10791,6 @@ FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${BasePath}/TB_XDR_IFC_GMMWMGMIMJISC';
 
-
-
-
-
-
-
 drop table if exists tb_xdr_ifc_sv;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sv(
   parentxdrid string,
@@ -10890,9 +10840,6 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
   'hdfs://dtcluster/${BasePath}/TB_XDR_IFC_SV';
-
-
-
 
  drop table if exists tb_xdr_ifc_gxrx;
 CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx(
@@ -11002,8 +10949,6 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${BasePath}/TB_XDR_IFC_UU';
-
-
 EOF
 exit 0
 
