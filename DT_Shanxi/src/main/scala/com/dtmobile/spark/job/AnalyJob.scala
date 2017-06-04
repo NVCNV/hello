@@ -41,10 +41,10 @@ class AnalyJob(args: Array[String]) extends Analyse {
     if( 0<currentHour && currentHour<10 ){
       lastHour = "0"+currentHour.-(1)
     }else if(currentHour==0){
-      lastHour = "00"
+      lastHour = "23"
       currentDate=getDaysBefore(cal_date)
     }else{
-      lastHour =currentHour.toString
+      lastHour =  currentHour.-(1)+""
     }
 
 
