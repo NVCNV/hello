@@ -35,7 +35,7 @@ class BalenceBaseDay(ANALY_DATE: String,DDB: String,warhouseDir: String) {
          | ) c
          |inner join gt_balence_pair gt
          |on gt.scellid=c.cellid
-         |where sumbal >= 0
+         |where sumbal > $balence_times
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/gt_balence_baseday/dt=$ANALY_DATE")
   }
 }
