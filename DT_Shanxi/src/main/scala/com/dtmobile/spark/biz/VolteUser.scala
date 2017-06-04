@@ -34,7 +34,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
        """.stripMargin)
     sql(
       s"""alter table $DDB.TB_XDR_IFC_GMMWMGMIMJISC add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_GMMWMGMIMJISC/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_GMMWMGMIMJISC/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
 
     //取出正常的数据，override
