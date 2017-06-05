@@ -120,6 +120,7 @@ create table if not exists gt_pulse_cell_base60(
      sub_users_peak bigint,
      sub_gtusers_peak bigint,
      sub_volteusers_peak bigint,
+     sub_commusers_peak bigint,
      users bigint,
      gt_users bigint,
      volte_users bigint)
