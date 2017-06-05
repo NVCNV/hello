@@ -65,7 +65,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       pct.cellid as cellid,
          |       pct.pulse_mark as pulse_mark,
          |       1 as pulse_type,
-         |       sum(bct.sub_pulse_mark) as pulse_timelen ,
+         |       min(pct.pulse_timelen) as pulse_timelen ,
          |       min(pct.first_pulse_mark) as first_pulse_mark,
          |       max(pct.users)  as sub_users_peak,
          |       max(pct.gt_users) as sub_gtusers_peak,
