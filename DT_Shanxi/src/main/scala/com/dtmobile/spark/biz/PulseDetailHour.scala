@@ -48,6 +48,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |                       sub_pulse_mark - row_number() over(partition by cellid order by sub_pulse_mark) as pluem,
          |                       users,
          |                       gt_users,
+         |                       comm_users,
          |                       volte_users
          |                  from gt_pulse_cell_min
          |                 where dt="$ANALY_DATE" and h="$ANALY_HOUR"
@@ -66,7 +67,6 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       min(pct.first_pulse_mark) as first_pulse_mark,
          |       max(pct.users)  as sub_users_peak,
          |       max(pct.gt_users) as sub_gtusers_peak,
-         |       max(pct.volte_users) as sub_volteusers_peak,
          |       max(pct.volte_users) as sub_volteusers_peak,
          |       max(pct.sub_commusers_peak) as sub_commusers_peak,
          |       count(distinct bct.imsi) as users,
