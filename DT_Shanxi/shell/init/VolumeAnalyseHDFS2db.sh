@@ -29,7 +29,7 @@ gt_pulse_detail='ttime,hours,minutes,cellid,imsi,imei,gtuser_flag,volteuser_flag
 
 gt_pulse_cell_min='ttime,hours,minutes,cellid,sub_pulse_mark,sub_pulse_type,users,gt_users,comm_users,volte_users'
 
-gt_pulse_cell_base60='ttime,hours,cellid,pulse_mark,pulse_type,pulse_timelen,first_pulse_mark,sub_users_peak,sub_gtusers_peak,sub_volteusers_peak,users,gt_users,volte_users'
+gt_pulse_cell_base60='ttime,hours,cellid,pulse_mark,pulse_type,pulse_timelen,first_pulse_mark,sub_users_peak,sub_gtusers_peak,sub_volteusers_peak,sub_commusers_peak,users,gt_users,volte_users'
 
 gt_pulse_detail_base60='ttime,hours,cellid,imsi,pulse_mark,pulse_type,pulse_timelen,first_pulse_mark,gtuser_flag,volteuser_flag'
 
