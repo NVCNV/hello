@@ -29,7 +29,7 @@ class PulseLoadBalence(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
          | c.imsi simsi,d.cellid ddcellid,d.imsi dimsi
          | from gt_balence_pair a, gt_pulse_cell_base60 b,
          |  (select h.* from gt_pulse_detail h inner join gt_balence_pair i on h.cellid=i.scellid) c,
-         |  (select j.* from gt_pulse_detail j inner join gt_balence_pair k on j.cellid=k.scellid) d
+         |  (select j.* from gt_pulse_detail j inner join gt_balence_pair k on j.cellid=k.dcellid) d
          | where a.scellid=b.cellid and c.cellid=b.cellid and c.hours=b.hours
          | and b.dt="$ANALY_DATE" and b.h="$ANALY_HOUR" and c.dt="$ANALY_DATE" and c.h="$ANALY_HOUR"
          | and d.dt="$ANALY_DATE" and d.h="$ANALY_HOUR"
