@@ -5,7 +5,7 @@ export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/opt/app/sqoop/bin
 
 #oracle jdbc url
-URL=jdbc:oracle:thin:@192.168.3.14:1521:umorpho
+URL=jdbc:oracle:thin:@192.168.3.14:1521:umorpho602
 #URL=jdbc:oracle:thin:@172.30.4.159:1521:m98v520
 
 #oracle username
