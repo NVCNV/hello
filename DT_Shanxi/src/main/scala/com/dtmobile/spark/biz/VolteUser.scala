@@ -15,7 +15,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   }else if(currentHour==0){
     lastHour = "00"
   }else{
-    lastHour =currentHour.toString
+    lastHour =currentHour.-(1).toString
   }
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + lastHour + ":00:00"
 
