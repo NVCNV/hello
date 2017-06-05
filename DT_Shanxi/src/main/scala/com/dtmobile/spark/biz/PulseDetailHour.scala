@@ -27,6 +27,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       1 as pulse_type,
          |       c1 as pulse_timelen,
          |       m1 as first_pulse_mark,
+         |       scu as sub_commusers_peak,
          |       musers as users,
          |       mgtusers as gt_users,
          |       mvlusers as volte_users
@@ -36,6 +37,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |               pluem,
          |               count(sub_pulse_mark) as c1,
          |               min(sub_pulse_mark) as m1,
+         |               max(comm_users) as scu,
          |               max(users) as musers,
          |               max(gt_users) as mgtusers,
          |               max(volte_users) as mvlusers
@@ -65,6 +67,8 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
          |       max(pct.users)  as sub_users_peak,
          |       max(pct.gt_users) as sub_gtusers_peak,
          |       max(pct.volte_users) as sub_volteusers_peak,
+         |       max(pct.volte_users) as sub_volteusers_peak,
+         |       max(pct.sub_commusers_peak) as sub_commusers_peak,
          |       count(distinct bct.imsi) as users,
          |       count(distinct case when bct.gtuser_flag = 1 then 1 else 0 end) as gt_users,
          |       count(distinct case when bct.volteuser_flag =1 then 1 else 0 end) as volte_users
