@@ -16,7 +16,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
   //todo 数据库
   sql(
     s"""alter table $DDB.tb_xdr_ifc_uu add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_UU/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
 
   val uu =sql(
@@ -32,7 +32,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
   //todo 修改数据库
   sql(
     s"""alter table $DDB.lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
   val ueMr = sql(
     s"""|

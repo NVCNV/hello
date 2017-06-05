@@ -48,8 +48,8 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
          |b.region line_name,
          |b.city,
          |'$cal_date' ttime,
-         |b.freq1 cell_feq,
-         |sum(a.cellid) cell_num,
+         |gt.sfreq cell_feq,
+         |count(c.cellid) cell_num,
          |sum(c.gt_users) gtusers,
          |sum(c.volte_users) commusers,
          |(sum(c.gt_users)/sum(c.volte_users)) cellavguses
@@ -58,7 +58,9 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
          |on a.cellid=b.cellid
          |inner join gt_pulse_cell_base60 c
          |on a.cellid=c.cellid
-         |group by b.cellid,b.freq1,b.region,b.city
+         |inner join 	$DDB.gt_balence_pair gt
+         |on a.cellid=gt.scellid
+         |group by b.cellid,gt.sfreq,b.region,b.city
          |
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_freq_baseday/dt=$ANALY_DATE""")
 
