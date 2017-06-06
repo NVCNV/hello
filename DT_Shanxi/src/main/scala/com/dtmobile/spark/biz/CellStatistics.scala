@@ -106,7 +106,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
 
  uu.union(ueMr).createOrReplaceTempView("temp_uu_ueMr")
 
-
+  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
 
   sql(s"""alter table $DDB.gt_pulse_detail drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""".stripMargin)
 
@@ -116,8 +116,10 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
     s"""
        |
        |select
-       |rangetime  ttime,
-       |hour(rangetime) hours,
+       |(case when minutes >= 10 then concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
+       |       else concat('${cal_date}','',$ANALY_HOUR,':0',minutes,':','00')
+       |       end) ttime,
+       |'$ANALY_HOUR' hours,
        |minutes,
        |cellid,
        |imsi,
@@ -126,7 +128,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |(case when (select count(*) from temp_uu_ueMr t where imsi in(select imsi from volte_user_data ))>0 then 1 else 0 end)   volteuser_flag,
        |minutes sub_pulse_mark
        |from temp_uu_ueMr
-       | group by minutes,CELLID,IMSI,IMEI,RANGETIME
+       | group by minutes,CELLID,IMSI,IMEI
        |order by minutes desc
      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_pulse_detail/dt=$ANALY_DATE/h=$ANALY_HOUR""")
 
