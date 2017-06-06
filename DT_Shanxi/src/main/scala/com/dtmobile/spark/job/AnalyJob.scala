@@ -83,6 +83,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
              balenceBaseDay.analy
              overTimeDay.analyse
              shortTimeDay.analyse
+
        }
 
   }
