@@ -35,30 +35,24 @@ class GtCommUserCellBasedDay(ANALY_DATE: String,DDB: String,warhouseDir: String)
 
     sql(
       s"""
-         |select
-         |gt.line_name,
+         |select gt.line_name,
          |l.city,
          |'$cal_date' ttime,
          |l.CELLID cellid,
-         |l.CELLNAME cellname,
-         |max(user2) maxusers
-         |from
-         |(select users,cellid,t2.user2 from
-         |(select t.users,t.cellid,t.user2 from
-         |        (select users,hours,cellid,sum(users)user2
+         |l.CELLNAME cellname,c.musers from
+         |(
+         |select cellid,max(husers) musers from(
+         |select hours,cellid,max(users) husers
          |         from $DDB.gt_pulse_cell_min
-         |          where dt="$ANALY_DATE" and sub_pulse_type=0
-         |          group by hours,users,cellid
-         |          having count(1)>=$non_gtsubpuse_times ) t
-         |     group by t.users,t.cellid,t.user2
-         |     having count(1)>=$non_gtsubpulse_commusers)t2
-         |group by cellid,users,user2
-         |having count(1)>$busiCellTimes )t3
-         | inner join ltecell l
-         | on l.cellid=t3.cellid
-         | inner join gt_publicandprofess_new_cell gt
-         | on t3.cellid=gt.cell_id
-         | group by l.cellid,l.city,l.cellname,gt.line_name
+         |          where dt="$ANALY_DATE" and sub_pulse_type=0 and users>=$non_gtsubpulse_commusers
+         |          group by hours,cellid
+         |          having count(1)>=$non_gtsubpuse_times
+         |) a group by cellid having count(1)>$busiCellTimes
+         |) c inner join ltecell l
+         |on l.cellid=c.cellid
+         |inner join gt_publicandprofess_new_cell gt
+         |on c.cellid=gt.cell_id
+         |
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_commusermore_baseday/dt=$ANALY_DATE""")
 
 
