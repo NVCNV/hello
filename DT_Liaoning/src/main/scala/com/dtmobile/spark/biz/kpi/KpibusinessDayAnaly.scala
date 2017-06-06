@@ -555,7 +555,12 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
        |sum(Otheryjtdownflow),
        |sum(Otheryjtdowntime),
        |sum(OtheryjtFlow),
-       |sum(OtheryjtTime)
+       |sum(OtheryjtTime),
+       |sum(internetvisits),
+       |sum(miguvisits),
+       |sum(internetbusiness),
+       |sum(migubusiness),
+       |sum(ServiceIMresptimeall)
      """.stripMargin
   def analyse(implicit sparkSession: SparkSession): Unit = {
     tacDayAnalyse(sparkSession)

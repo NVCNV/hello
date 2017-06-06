@@ -9739,31 +9739,6 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_UU';
 
-
---山西现场
-drop table if exists volte_gt_busi_user_data;
-CREATE TABLE volte_gt_busi_user_data(
-  imsi string,
-  cellid int,
-  targetcellid int,
-  proceduretype int,
-  procedurestatus int,
-  rangetime string,
-  imei int,
-  msisdn int,
-  procedurestarttime bigint,
-  procedureendtime bigint,
-  enbid int,
-  targetenbid int,
-  dir_state int,
-  seqnum int,
-  ispub int)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
-
 drop table if exists cell_mr;
 CREATE TABLE cell_mr(
   objectid string,

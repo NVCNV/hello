@@ -32,8 +32,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
     val kpibusinessDayAnaly = new KpibusinessDayAnaly(args(0), args(2), args(3), warhouseDir)
     val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
     val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
-    kpibusinessHourAnaly.analyse
     nsspAnaly.analyse
+    kpibusinessHourAnaly.analyse
     kpiHourAnaly.analyse
     exception.analyse
     typedetail.analyse
