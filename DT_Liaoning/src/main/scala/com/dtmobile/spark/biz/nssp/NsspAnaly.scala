@@ -43,6 +43,11 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
        """.stripMargin)
     sql(
       s"""
+         |alter table tb_xdr_ifc_dns add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "/$localStr/s1u_dns_orgn/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+    sql(
+      s"""
          |alter table tb_xdr_ifc_sv add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/volte_sv/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
