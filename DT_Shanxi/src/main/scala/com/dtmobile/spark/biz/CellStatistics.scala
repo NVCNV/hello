@@ -16,7 +16,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
   //todo 数据库
   sql(
     s"""alter table $DDB.tb_xdr_ifc_uu add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_UU/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
 
   val uu =sql(
@@ -32,7 +32,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
   //todo 修改数据库
   sql(
     s"""alter table $DDB.lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
   val ueMr = sql(
     s"""|
@@ -60,20 +60,51 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |
      """.stripMargin).createOrReplaceTempView("volte_user_data")
 
-  sql(
+ /* sql(
     s"""alter table $DDB.volte_gtuser_data add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
        """.stripMargin)
   sql(
     s"""
        |select
        |ttime,
-       |hours,
+       |cellid,
        |imsi
        |from  $DDB.volte_gtuser_data
        |where dt="$ANALY_DATE" and h="$ANALY_HOUR"  and IMSI!=''
-     """.stripMargin).createOrReplaceTempView("volte_gtuser_data")
+     """.stripMargin).createOrReplaceTempView("volte_gtuser_data")*/
 
-     uu.union(ueMr).createOrReplaceTempView("temp_uu_ueMr")
+
+
+
+  sql(
+    s"""
+       |alter table $DDB.VOLTE_GT_BUSI_USER_DATA drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       """.stripMargin)
+  sql(
+    s"""
+       |alter table $DDB.VOLTE_GT_FREE_USER_DATA drop if  exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       """.stripMargin)
+
+  sql(
+    s"""
+       |alter table $DDB.VOLTE_GT_FREE_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |location "/$sourceDir/FreeGtUser/$ANALY_DATE/$ANALY_HOUR"
+   """.stripMargin)
+
+  sql(
+    s"""
+       |alter table $DDB.VOLTE_GT_BUSI_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |location "/$sourceDir/BusinessGtUser/$ANALY_DATE/$ANALY_HOUR"
+   """.stripMargin)
+
+
+  val freeUser = sql(s"""select imsi,cellid,RANGETIME from $DDB.VOLTE_GT_FREE_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
+  val busiUser = sql(s"""select imsi,cellid,RANGETIME from $DDB.VOLTE_GT_BUSI_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
+
+  freeUser.union(busiUser).createOrReplaceTempView("volte_gtuser_data")
+
+
+ uu.union(ueMr).createOrReplaceTempView("temp_uu_ueMr")
 
 
 
@@ -84,7 +115,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
   sql(
     s"""
        |
-        |select
+       |select
        |rangetime  ttime,
        |hour(rangetime) hours,
        |minutes,

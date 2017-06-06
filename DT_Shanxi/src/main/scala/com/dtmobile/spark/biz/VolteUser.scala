@@ -15,7 +15,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   }else if(currentHour==0){
     lastHour = "00"
   }else{
-    lastHour =currentHour.toString
+    lastHour =currentHour.-(1).toString
   }
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + lastHour + ":00:00"
 
@@ -34,14 +34,14 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
        """.stripMargin)
     sql(
       s"""alter table $DDB.TB_XDR_IFC_GMMWMGMIMJISC add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_GMMWMGMIMJISC/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_GMMWMGMIMJISC/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
 
     //取出正常的数据，override
     sql(
       s"""select
-         '$cal_date',
-         '$ANALY_HOUR',
+         '$cal_date' ttime,
+         '$ANALY_HOUR' hours,
           t.imsi,
           from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
           from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'mm') procedureendtime
@@ -53,7 +53,8 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     //取出上一个小时的数据，append到上一个小时
     sql(
       s"""select
-         |'$cal_date2',
+         | '$cal_date2' ttime,
+         | '$lastHour' hours,
          |t.imsi,
          |from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
          |'00' procedureendtime
@@ -67,7 +68,8 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     sql(
         s"""
            |select
-           |'$cal_date',
+           |'$cal_date' ttime,
+           |'$ANALY_HOUR' hours,
            |t.imsi,
            |'00' procedurestarttime,
            |from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'mm')  procedureendtime
