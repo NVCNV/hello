@@ -24,18 +24,46 @@ class PulseLoadBalence(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
          | select ttime,hours,line,city,scellid,dcellid,sfreq,dfreq,pulse_mark,first_pulse_mark,pulse_timelen,
          | pairname,scellname,simsi,dimsi,(case when simsi=dimsi then 1 else 0 end) s_d from
          | (
-         | select distinct b.ttime,b.hours,a.line,a.city,a.scellid,a.dcellid,a.sfreq,a.dfreq,a.pairname,
-         | a.scellname,b.cellid bcellid,b.pulse_mark,b.first_pulse_mark,b.pulse_timelen,b.users,c.cellid ccellid,
-         | c.imsi simsi,d.cellid ddcellid,d.imsi dimsi
-         | from gt_balence_pair a, gt_pulse_cell_base60 b,
-         |  (select h.* from gt_pulse_detail h inner join gt_balence_pair i on h.cellid=i.scellid) c,
-         |  (select j.* from gt_pulse_detail j inner join gt_balence_pair k on j.cellid=k.dcellid) d
-         | where a.scellid=b.cellid and c.cellid=b.cellid and c.hours=b.hours
-         | and b.dt="$ANALY_DATE" and b.h="$ANALY_HOUR" and c.dt="$ANALY_DATE" and c.h="$ANALY_HOUR"
-         | and d.dt="$ANALY_DATE" and d.h="$ANALY_HOUR"
-         | and (c.sub_pulse_mark>=b.first_pulse_mark and c.sub_pulse_mark<(b.first_pulse_mark+pulse_timelen))
-         | and d.cellid=a.dcellid and d.hours = b.hours
-         | and (d.sub_pulse_mark>=b.first_pulse_mark and d.sub_pulse_mark<(b.first_pulse_mark+pulse_timelen))
+         | SELECT DISTINCT
+         | b.ttime,
+         |  b.hours,
+         |  a.line,
+         |  a.city,
+         |  a.scellid,
+         |  a.dcellid,
+         |  a.sfreq,
+         |  a.dfreq,
+         |  a.pairname,
+         |  a.scellname,
+         |  b.cellid bcellid,
+         |  b.pulse_mark,
+         |  b.first_pulse_mark,
+         |  b.pulse_timelen,
+         |  b.users,
+         |  c.cellid ccellid,
+         |  c.imsi simsi,
+         |  d.cellid ddcellid,
+         |  d.imsi dimsi
+         | FROM
+         |  gt_balence_pair a
+         |  INNER JOIN
+         |  (select ttime,hours,cellid,pulse_mark,first_pulse_mark,pulse_timelen,users from gt_pulse_cell_base60
+         |  WHERE dt='$ANALY_DATE' AND h='$ANALY_HOUR'
+         |  ) b ON a.scellid=b.cellid
+         |  INNER JOIN
+         |  (
+         |    SELECT h.cellid,h.imsi,sub_pulse_mark FROM gt_pulse_detail h INNER JOIN gt_balence_pair i ON h.cellid = i.scellid
+         |    WHERE dt='$ANALY_DATE' AND h='$ANALY_HOUR'
+         |  ) c ON a.scellid=c.cellid
+         |  INNER JOIN
+         |  (
+         |    SELECT j.cellid,j.imsi,sub_pulse_mark FROM gt_pulse_detail j INNER JOIN gt_balence_pair k ON j.cellid = k.dcellid
+         |    WHERE dt='$ANALY_DATE' AND h='$ANALY_HOUR'
+         |  ) d on a.dcellid=d.cellid
+         | WHERE
+         |   c.sub_pulse_mark >= b.first_pulse_mark AND c.sub_pulse_mark < (b.first_pulse_mark + pulse_timelen)
+         | AND
+         |   d.sub_pulse_mark >= b.first_pulse_mark AND d.sub_pulse_mark < ( b.first_pulse_mark + pulse_timelen )
          | ) e
          | ) f group by ttime,hours,line,city,scellid,dcellid,sfreq,dfreq,pulse_mark,first_pulse_mark,pulse_timelen,pairname,scellname
          | ) g
