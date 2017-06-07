@@ -38,8 +38,8 @@
 
    2.3 脚本说明
    2.3.1 VolumeAnalyseInitTable.sh 为hive建表语句，执行时须传入两个参数，第一个参数为数据库名称（如果不存在，可自动创建），
-       第二个 参数为hive外部表要使用的路径，即山西原始数据所在路径,第三个为原始表所在数据库，第四个为原始数据所在的路径。
-       例如： sh VolumeAnalyseInitTable.sh shanxi datang2 default datang2
+       第二个 参数为hive外部表要使用的路径，即山西原始数据所在路径。
+       例如： sh VolumeAnalyseInitTable.sh shanxi datang2
    2.3.2 VolumeAnalyseHDFS2db.sh 为sqoop脚本，用于hdfs导入Oracle数据库，此脚本主要用来被其他脚本调用。
    2.3.3 ScheduleHDFS2DB.sh 为调用sqoop脚本，每小时调用一次，用于将容量的小时级分析数据导入Oracle，
        须传入三个参数，第一个为日期，
