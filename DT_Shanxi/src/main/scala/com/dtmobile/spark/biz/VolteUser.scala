@@ -54,7 +54,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     sql(
       s"""select
          | '$cal_date2' ttime,
-         | '$ANALY_HOUR' hours,
+         | '$lastHour' hours,
          |t.imsi,
          |from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
          |'00' procedureendtime

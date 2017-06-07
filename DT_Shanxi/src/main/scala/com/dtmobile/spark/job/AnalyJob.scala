@@ -68,7 +68,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
 
     //调用天级分析
     val lastDay = getDaysBefore(cal_date)
-//       if(args(1)=="03"){
+       if(args(1)=="03"){
 
          val gtUserFreqDay = new GtUserFreqDay(lastDay,args(3),warhouseDir,args(5))
          val highAttachCellDay = new HighAttachCellDay(lastDay,args(3),warhouseDir,args(5))
@@ -83,7 +83,8 @@ class AnalyJob(args: Array[String]) extends Analyse {
              balenceBaseDay.analy
              overTimeDay.analyse
              shortTimeDay.analyse
-//       }
+
+       }
 
   }
 }

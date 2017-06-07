@@ -160,7 +160,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "6"
           |      end
           |)etype
-          |from (select * from tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
+          |from (select * from $SDB.tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
           |(httpstate>=400 or
           |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
           |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) or
