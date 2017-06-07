@@ -19,7 +19,7 @@ class Init(ORCAL: String ){
 
     //小区表
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","(select region,city,freq1,cellid,cellname from ltecell) t")
+      .option("dbtable","(select region,city,frequency,cellid,cellname from ltecell) t")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
