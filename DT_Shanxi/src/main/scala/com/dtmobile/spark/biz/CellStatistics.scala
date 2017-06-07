@@ -78,28 +78,28 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
 
   sql(
     s"""
-       |alter table $DDB.VOLTE_GT_BUSI_USER_DATA drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |alter table $SDB.VOLTE_GT_BUSI_USER_DATA drop if  exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
        """.stripMargin)
   sql(
     s"""
-       |alter table $DDB.VOLTE_GT_FREE_USER_DATA drop if  exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |alter table $SDB.VOLTE_GT_FREE_USER_DATA drop if  exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
        """.stripMargin)
 
   sql(
     s"""
-       |alter table $DDB.VOLTE_GT_FREE_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |alter table $SDB.VOLTE_GT_FREE_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
        |location "/$sourceDir/FreeGtUser/$ANALY_DATE/$ANALY_HOUR"
    """.stripMargin)
 
   sql(
     s"""
-       |alter table $DDB.VOLTE_GT_BUSI_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+       |alter table $SDB.VOLTE_GT_BUSI_USER_DATA add if not exists  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
        |location "/$sourceDir/BusinessGtUser/$ANALY_DATE/$ANALY_HOUR"
    """.stripMargin)
 
 
-  val freeUser = sql(s"""select imsi,cellid,RANGETIME from $DDB.VOLTE_GT_FREE_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
-  val busiUser = sql(s"""select imsi,cellid,RANGETIME from $DDB.VOLTE_GT_BUSI_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
+  val freeUser = sql(s"""select imsi,cellid,RANGETIME from $SDB.VOLTE_GT_FREE_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
+  val busiUser = sql(s"""select imsi,cellid,RANGETIME from $SDB.VOLTE_GT_BUSI_USER_DATA where dt=$ANALY_DATE and h=$ANALY_HOUR""")
 
   freeUser.union(busiUser).createOrReplaceTempView("volte_gtuser_data")
 
@@ -126,7 +126,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |(select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
        |left join volte_gtuser_data c on b.imsi=c.imsi
        |left join volte_user_data d on b.imsi=d.imsi
-       |order by b.minutes desc
+       |order by minutes desc
      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_pulse_detail/dt=$ANALY_DATE/h=$ANALY_HOUR""")
 
 

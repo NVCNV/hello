@@ -33,7 +33,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          LOCATION 'hdfs://dtcluster/$warhouseDir/volte_user_data/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     sql(
-      s"""alter table $DDB.TB_XDR_IFC_GMMWMGMIMJISC add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+      s"""alter table $SDB.TB_XDR_IFC_GMMWMGMIMJISC add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
          LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_GMMWMGMIMJISC/$ANALY_DATE/$ANALY_HOUR'
        """.stripMargin)
 
@@ -45,10 +45,10 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
           t.imsi,
           from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
           from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'mm') procedureendtime
-          from $DDB.TB_XDR_IFC_GMMWMGMIMJISC t
+          from $SDB.TB_XDR_IFC_GMMWMGMIMJISC t
           where dt="$ANALY_DATE" and h="$ANALY_HOUR" and t.Interface=14 and t.imsi is not null  and t.imsi!=''
          group by t.imsi,t.procedurestarttime,t.procedureendtime
-        having from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'HH')=$ANALY_HOUR and from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'HH')=$ANALY_HOUR
+        having from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'HH')=from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'HH')
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/volte_user_data/dt=$ANALY_DATE/h=$ANALY_HOUR""")
     //取出上一个小时的数据，append到上一个小时
     sql(
@@ -58,7 +58,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |t.imsi,
          |from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'mm')  procedurestarttime,
          |'00' procedureendtime
-         |from $DDB.TB_XDR_IFC_GMMWMGMIMJISC t
+         |from $SDB.TB_XDR_IFC_GMMWMGMIMJISC t
          |where dt="$ANALY_DATE" and h="$ANALY_HOUR" and t.Interface=14 and t.imsi is not null  and t.imsi!=''
          |group by t.imsi,t.procedurestarttime,procedureendtime
          | having from_unixtime(cast(round(procedurestarttime /1000) as bigint),'HH')=$lastHour
@@ -73,7 +73,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
            |t.imsi,
            |'00' procedurestarttime,
            |from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'mm')  procedureendtime
-           |from $DDB.TB_XDR_IFC_GMMWMGMIMJISC t
+           |from $SDB.TB_XDR_IFC_GMMWMGMIMJISC t
            |where dt="$ANALY_DATE" and h="$ANALY_HOUR" and t.Interface=14 and t.imsi is not null  and t.imsi!=''
            |group by t.imsi,procedurestarttime,t.procedureendtime
            | having from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'HH')=$lastHour
