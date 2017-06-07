@@ -60,7 +60,7 @@ class PulseDetailHour(ANALY_DATE: String, ANALY_HOUR: String, DDB: String, warho
     sql(
       s"""
          | select
-         |       concat('${cal_date} ','','${ANALY_HOUR}',':','00',':','00'),
+         |       concat('${cal_date}','','${ANALY_HOUR}',':','00',':','00'),
          |       pct.hours as hours,
          |       pct.cellid as cellid,
          |       pct.pulse_mark as pulse_mark,

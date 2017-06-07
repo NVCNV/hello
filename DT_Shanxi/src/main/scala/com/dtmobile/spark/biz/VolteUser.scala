@@ -48,7 +48,7 @@ class VolteUser(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
           from $DDB.TB_XDR_IFC_GMMWMGMIMJISC t
           where dt="$ANALY_DATE" and h="$ANALY_HOUR" and t.Interface=14 and t.imsi is not null  and t.imsi!=''
          group by t.imsi,t.procedurestarttime,t.procedureendtime
-        having from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'HH')=from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'HH')
+        having from_unixtime(cast(round(t.procedurestarttime /1000) as bigint),'HH')=$ANALY_HOUR and from_unixtime(cast(round(t.procedureendtime /1000) as bigint),'HH')=$ANALY_HOUR
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/volte_user_data/dt=$ANALY_DATE/h=$ANALY_HOUR""")
     //取出上一个小时的数据，append到上一个小时
     sql(

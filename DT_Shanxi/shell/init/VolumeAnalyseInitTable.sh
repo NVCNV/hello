@@ -9674,73 +9674,9 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';
 
---山西现场
-drop table if exists tb_xdr_ifc_uu_new_sk;
-CREATE EXTERNAL TABLE tb_xdr_ifc_uu_new_sk(
-  length bigint,
-  city string,
-  interface int,
-  xdrid string,
-  rat int,
-  imsi string,
-  imei string,
-  msisdn string,
-  proceduretype int,
-  procedurestarttime bigint,
-  procedureendtime bigint,
-  keyword1 int,
-  keyword2 int,
-  procedurestatus int,
-  plmnid string,
-  enbid int,
-  cellid int,
-  crnti int,
-  targetenbid int,
-  targetcellid int,
-  targetcrnti int,
-  mmeues1apid int,
-  mmegroupid int,
-  mmecode int,
-  mtmsi int,
-  csfbindication int,
-  epsbearernumber int,
-  bearer0id int,
-  bearer0status int,
-  bearer1id int,
-  bearer1status int,
-  bearer2id int,
-  bearer2status int,
-  bearer3id int,
-  bearer3status int,
-  bearer4id int,
-  bearer4status int,
-  bearer5id int,
-  bearer5status int,
-  rangetime string,
-  etype int,
-  gridid int,
-  slong string,
-  slat string,
-  dlong string,
-  dlat string,
-  distance string,
-  espeed string,
-  elong string,
-  elat string,
-  falurecause string,
-  flag int,
-  beforeflag int,
-  eupordown int)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
-LOCATION
-  'hdfs://dtcluster/${DB_PATH}/TB_XDR_IFC_UU';
 
 drop table if exists cell_mr;
-CREATE TABLE cell_mr(
+CREATE EXTERNAL TABLE cell_mr(
   objectid string,
   vid bigint,
   fileformatversion string,
@@ -9851,141 +9787,10 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+  LOCATION
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';;
 
-drop table if exists tb_xdr_ifc_x2;
-CREATE TABLE tb_xdr_ifc_x2(
-  parentxdrid string,
-  length bigint,
-  city string,
-  interface int,
-  xdrid string,
-  rat int,
-  imsi string,
-  imei string,
-  msisdn string,
-  proceduretype int,
-  procedurestarttime bigint,
-  procedureendtime bigint,
-  procedurestatus int,
-  cellid bigint,
-  targetcellid bigint,
-  enbid bigint,
-  targetenbid bigint,
-  mmeues1apid bigint,
-  mmegroupid bigint,
-  mmecode bigint,
-  requestcause bigint,
-  failurecause bigint,
-  epsbearernumber bigint,
-  bearer0id bigint,
-  bearer0status bigint,
-  bearer1id bigint,
-  bearer1status bigint,
-  bearer2id bigint,
-  bearer2status bigint,
-  bearer3id bigint,
-  bearer3status bigint,
-  bearer4id bigint,
-  bearer4status bigint,
-  bearer5id bigint,
-  bearer5status bigint,
-  bearer6id bigint,
-  bearer6status bigint,
-  bearer7id bigint,
-  bearer7status bigint,
-  bearer8id bigint,
-  bearer8status bigint,
-  bearer9id bigint,
-  bearer9status bigint,
-  bearer10id bigint,
-  bearer10status bigint,
-  bearer11id bigint,
-  bearer11status bigint,
-  bearer12id bigint,
-  bearer12status bigint,
-  bearer13id bigint,
-  bearer13status bigint,
-  bearer14id bigint,
-  bearer14status bigint,
-  bearer15id bigint,
-  bearer15status bigint,
-  rangetime string)
-PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',' ;
-
-DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
-CREATE  TABLE   TB_XDR_IFC_UU (
-      PARENTXDRID                  STRING,
-      LENGTH                       BIGINT,
-      CITY                         STRING,
-      INTERFACE                     INT,
-      XDRID                         STRING,
-      RAT                           BIGINT,
-      IMSI                          STRING,
-      IMEI                          STRING,
-      MSISDN                        STRING,
-      PROCEDURETYPE                 INT,
-      PROCEDURESTARTTIME            BIGINT,
-      PROCEDUREENDTIME              BIGINT,
-      KEYWORD1                      INT,
-      KEYWORD2                      INT,
-      PROCEDURESTATUS               INT,
-      PLMNID                        STRING,
-      ENBID                         BIGINT,
-      CELLID                        BIGINT,
-      CRNTI                         BIGINT,
-      TARGETENBID                   BIGINT,
-      TARGETCELLID                  BIGINT,
-      TARGETCRNTI                   BIGINT,
-      MMEUES1APID                   BIGINT,
-      MMEGROUPID                    BIGINT,
-      MMECODE                       BIGINT,
-      MTMSI                         BIGINT,
-      CSFBINDICATION                BIGINT,
-      REDIRECTEDNETWORK             BIGINT,
-      EPSBEARERNUMBER               INT,
-      BEARER0ID                     BIGINT,
-      BEARER0STATUS                 BIGINT,
-      BEARER1ID                     BIGINT,
-      BEARER1STATUS                 BIGINT,
-      BEARER2ID                     BIGINT,
-      BEARER2STATUS                 BIGINT,
-      BEARER3ID                     BIGINT,
-      BEARER3STATUS                 BIGINT,
-      BEARER4ID                     BIGINT,
-      BEARER4STATUS                 BIGINT,
-      BEARER5ID                     BIGINT,
-      BEARER5STATUS                 BIGINT,
-      BEARER6ID                     BIGINT,
-      BEARER6STATUS                 BIGINT,
-      BEARER7ID                     BIGINT,
-      BEARER7STATUS                 BIGINT,
-      BEARER8ID                     BIGINT,
-      BEARER8STATUS                 BIGINT,
-      BEARER9ID                     BIGINT,
-      BEARER9STATUS                 BIGINT,
-      BEARER10ID                     STRING,
-      BEARER10STATUS                 STRING,
-      BEARER11ID                     STRING,
-      BEARER11STATUS                 STRING,
-      BEARER12ID                     STRING,
-      BEARER12STATUS                 STRING,
-      BEARER13ID                     STRING,
-      BEARER13STATUS                 STRING,
-      BEARER14ID                     STRING,
-      BEARER14STATUS                 STRING,
-      BEARER15ID                     STRING,
-      BEARER15STATUS                 STRING,
-      RANGETIME                     STRING
-)PARTITIONED BY (
-dt STRING,
-h STRING)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ',' ;
 
 
 DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
@@ -10860,7 +10665,6 @@ LOCATION
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
 CREATE EXTERNAL TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
-      PARENTXDRID                  STRING,
       LENGTH                       BIGINT,
       CITY                         STRING,
       INTERFACE                     INT,
