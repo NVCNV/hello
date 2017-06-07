@@ -13104,6 +13104,74 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
+DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
+CREATE  TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
+      LENGTH                       BIGINT,
+      CITY                         STRING,
+      INTERFACE                     INT,
+      XDRID                         STRING,
+      RAT                           BIGINT,
+      IMSI                          STRING,
+      IMEI                          STRING,
+      MSISDN                        STRING,
+      PROCEDURETYPE                 INT,
+      PROCEDURESTARTTIME            BIGINT, -- STRING,
+      PROCEDUREENDTIME              BIGINT, -- STRING,
+      KEYWORD1                      INT,
+      KEYWORD2                      INT,
+      PROCEDURESTATUS               INT,
+      PLMNID                        STRING,
+      ENBID                         BIGINT,
+      CELLID                        BIGINT,
+      CRNTI                         BIGINT,
+      TARGETENBID                   BIGINT,
+      TARGETCELLID                  BIGINT,
+      TARGETCRNTI                   BIGINT,
+      MMEUES1APID                   BIGINT,
+      MMEGROUPID                    BIGINT,
+      MMECODE                       BIGINT,
+      MTMSI                         BIGINT,
+      CSFBINDICATION                BIGINT,
+      REDIRECTEDNETWORK             BIGINT,
+      EPSBEARERNUMBER               INT,
+      BEARER0ID                     BIGINT,
+      BEARER0STATUS                 BIGINT,
+      BEARER1ID                     BIGINT,
+      BEARER1STATUS                 BIGINT,
+      BEARER2ID                     BIGINT,
+      BEARER2STATUS                 BIGINT,
+      BEARER3ID                     BIGINT,
+      BEARER3STATUS                 BIGINT,
+      BEARER4ID                     BIGINT,
+      BEARER4STATUS                 BIGINT,
+      BEARER5ID                     BIGINT,
+      BEARER5STATUS                 BIGINT,
+      BEARER6ID                     BIGINT,
+      BEARER6STATUS                 BIGINT,
+      BEARER7ID                     BIGINT,
+      BEARER7STATUS                 BIGINT,
+      BEARER8ID                     BIGINT,
+      BEARER8STATUS                 BIGINT,
+      BEARER9ID                     BIGINT,
+      BEARER9STATUS                 BIGINT,
+      BEARER10ID                     STRING,
+      BEARER10STATUS                 STRING,
+      BEARER11ID                     STRING,
+      BEARER11STATUS                 STRING,
+      BEARER12ID                     STRING,
+      BEARER12STATUS                 STRING,
+      BEARER13ID                     STRING,
+      BEARER13STATUS                 STRING,
+      BEARER14ID                     STRING,
+      BEARER14STATUS                 STRING,
+      BEARER15ID                     STRING,
+      BEARER15STATUS                 STRING,
+      RANGETIME                     STRING
+)PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';
 
 
 
@@ -13843,7 +13911,6 @@ LOCATION
 
 DROP TABLE IF EXISTS TB_XDR_IFC_UU ;
 CREATE EXTERNAL TABLE  IF NOT EXISTS  TB_XDR_IFC_UU (
-      PARENTXDRID                  STRING,
       LENGTH                       BIGINT,
       CITY                         STRING,
       INTERFACE                     INT,
