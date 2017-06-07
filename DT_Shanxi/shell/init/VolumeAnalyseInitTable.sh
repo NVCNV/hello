@@ -7638,7 +7638,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/${DB_PATH}/tb_xdr_ifc_s1u_http_new' ;
+  'hdfs://dtcluster/${DB_PATH}/s1u_http_orgn' ;
 
 drop table if exists mr_gt_grid_ana_base60;
 CREATE TABLE mr_gt_grid_ana_base60(
