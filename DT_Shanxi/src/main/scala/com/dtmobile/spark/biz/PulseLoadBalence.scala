@@ -16,7 +16,7 @@ class PulseLoadBalence(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
     LOCATION 'hdfs://dtcluster/$warhouseDir/gt_pulse_load_balence60/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
     sql(
       s"""
-         | select g.*,(case when susers=dusers then 0 else s_dusers/abs(susers-dusers) end) s_dratio from
+         | select g.*,(case when susers=dusers then 0 else round(s_dusers/abs(susers-dusers),3) end) s_dratio from
          | (
          | select ttime,hours,line,city,pulse_mark,sfreq,scellname,scellid,first_pulse_mark,pulse_timelen,pairname,
          | count(distinct simsi) susers,count(distinct dimsi) dusers,sum(s_d) s_dusers from
