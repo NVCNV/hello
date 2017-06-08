@@ -6,17 +6,17 @@ export HADOOP_CONF_DIR=/opt/app/hdconf
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/opt/app/sqoop/bin
 
 #oracle jdbc url
-URL=jdbc:oracle:thin:@172.30.4.159:1521:yan
+URL=jdbc:oracle:thin:@$1
 #oracle username
 USERNAME=scott
 #oracle passwd
 PASSWD=tiger
 #export hdfs dir
-HDFS_DIR=$1
+HDFS_DIR=$2
 #table cols
-COL_NUM=$2
+COL_NUM=$3
 #map num
-MAP_NUM=$3
+MAP_NUM=$4
 
 #columns
 business_type_detail='ttime,city,region,app_type,app_sub_type,uldata,dldata,counts,timespan,succCnt,dltime,resptime,respsucccnt'
@@ -117,6 +117,9 @@ tb_xdr_ifc_http='length,city,interface,xdrid,rat,imsi,imei,msisdn,machineipaddty
 mr_gt_grid_ana_base60='cellid,rruid,gridid,ttime,dir_state,elong,elat,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
 
 mr_gt_grid_ana_baseday='ellid,rruid,gridid,ttime,dir_state,elong,elat,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,upsigrateavgx,upsigrateavgy,updiststrox,updiststroy,model3diststrox,model3diststroy,uebootx,uebooty'
+
+zc_city_data='ttime,city,cellid,businessdelay,pageDownKps,etype'
+
 
 if [ $COL_NUM = 1 ];then
     COLS=$business_type_detail
@@ -262,9 +265,12 @@ elif [ $COL_NUM = 47 ];then
 elif [ $COL_NUM = 48 ];then
     COLS=$mr_gt_grid_ana_base60
     TABLE=mr_gt_grid_ana_base60
-else
+elif [ $COL_NUM = 49 ];then
     COLS=$mr_gt_grid_ana_baseday
     TABLE=mr_gt_grid_ana_baseday
+else
+    COLS=$zc_city_data
+    TABLE=zc_city_data
 fi
 
 sqoop export --connect $URL \
