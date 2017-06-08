@@ -18,7 +18,7 @@
    2.1 高铁原有功能说明
       公参目录为公参数据 放入hdfs上面，目录为：/datang2/parameter
       gt_balence_pair目录为负载均衡公参，放入/user/hive/warehouse/(下面建表传入的第一个数据库).db/gt_balence_pair下。
-      bin 目录为脚本目录，放在/dt目录下
+      bin 目录为脚本目录，放在/dt目录下(需保证所有脚本具有可执行权限 chmod +x repeat_analy.sh  )
       2.1.1 bin 目录下repeat_analy.sh为小时级分析调度脚本（每小时调度一次），需传入两个参数  日期 小时
            此脚本里面调用了其他的脚本分别为：
 	   （1）、repeat_volteTrain.sh 需传入日期 小时
