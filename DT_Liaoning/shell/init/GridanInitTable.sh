@@ -732,7 +732,7 @@ create table CELL_LTEMRKPITEMP(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop tbale LTE_MRO_OVERLAP_B_ANA60;
+drop table LTE_MRO_OVERLAP_B_ANA60;
 create table LTE_MRO_OVERLAP_B_ANA60(
    STARTTIME   string,
    ENDTIME   string,

@@ -15,7 +15,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx(
   length bigint, 
   city string, 
   interface int, 
-  xdrid string, 
+  xdrid string,
   rat int, 
   imsi string, 
   imei string, 
