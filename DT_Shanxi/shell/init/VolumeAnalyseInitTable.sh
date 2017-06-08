@@ -13131,7 +13131,7 @@ create table zc_city_data(
     businessdelay double,
     pageDownKps double,
     etype int
-)partitioned by
+)PARTITIONED by (
 dt string,
 h string)
 ROW FORMAT DELIMITED
