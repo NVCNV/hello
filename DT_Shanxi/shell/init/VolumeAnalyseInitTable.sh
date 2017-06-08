@@ -7636,7 +7636,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/s1u_http_orgn' ;
 
@@ -9928,57 +9928,6 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 location '/${DB_PATH}/volte_gtuser_data' ;
-
---20170605新增
-drop table VOLTE_GT_FREE_USER_DATA;
-create EXTERNAL table VOLTE_GT_FREE_USER_DATA
-(
-  IMSI              string,
-  CELLID             bigint,
-  PROCEDURETYPE      int,
-  PROCEDURESTATUS    int,
-  RANGETIME          string,
-  IMEI               string,
-  MSISDN             string,
-  PROCEDURESTARTTIME bigint,
-  PROCEDUREENDTIME   bigint,
-  DIR_STATE          int,
-  SEQNUM             int,
-  ISPUB              int
-)
-PARTITIONED BY (
-dt STRING,
-h STRING)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-location '/${DB_PATH}/FreeGtUser';
-
---20170605新增
-drop table VOLTE_GT_BUSI_USER_DATA;
-create EXTERNAL table VOLTE_GT_BUSI_USER_DATA
-(
-  IMSI               string,
-  CELLID             bigint,
-  TARGETCELLID       bigint,
-  PROCEDURETYPE      bigint,
-  PROCEDURESTATUS    bigint,
-  RANGETIME          string,
-  IMEI               string,
-  MSISDN            string,
-  PROCEDURESTARTTIME bigint,
-  PROCEDUREENDTIME   bigint,
-  ENBID              bigint,
-  TARGETENBID        bigint,
-  DIR_STATE          int,
-  SEQNUM             int,
-  ISPUB              int
-)
-PARTITIONED BY (
-dt STRING,
-h STRING)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-location '/${DB_PATH}/BusinessGtUser';
 
 --20170606山西现场
 drop table  kpi_mid_cell_day;
@@ -13173,6 +13122,20 @@ h STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
 
+--质差小区表
+drop table zc_city_data;
+create table zc_city_data(
+    tttime string,
+    city  string,
+    cellid int,
+    businessdelay double,
+    pageDownKps double,
+    etype int
+)partitioned by
+dt string,
+h string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';
 
 
 CREATE DATABASE IF NOT EXISTS ${BaseDB};
@@ -13979,6 +13942,57 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS  TEXTFILE
 location '/${BasePath}/TB_XDR_IFC_UU';
+
+--20170605新增
+drop table VOLTE_GT_FREE_USER_DATA;
+create EXTERNAL table VOLTE_GT_FREE_USER_DATA
+(
+  IMSI              string,
+  CELLID             bigint,
+  PROCEDURETYPE      int,
+  PROCEDURESTATUS    int,
+  RANGETIME          string,
+  IMEI               string,
+  MSISDN             string,
+  PROCEDURESTARTTIME bigint,
+  PROCEDUREENDTIME   bigint,
+  DIR_STATE          int,
+  SEQNUM             int,
+  ISPUB              int
+)
+PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+location '/${DB_PATH}/FreeGtUser';
+
+--20170605新增
+drop table VOLTE_GT_BUSI_USER_DATA;
+create EXTERNAL table VOLTE_GT_BUSI_USER_DATA
+(
+  IMSI               string,
+  CELLID             bigint,
+  TARGETCELLID       bigint,
+  PROCEDURETYPE      bigint,
+  PROCEDURESTATUS    bigint,
+  RANGETIME          string,
+  IMEI               string,
+  MSISDN            string,
+  PROCEDURESTARTTIME bigint,
+  PROCEDUREENDTIME   bigint,
+  ENBID              bigint,
+  TARGETENBID        bigint,
+  DIR_STATE          int,
+  SEQNUM             int,
+  ISPUB              int
+)
+PARTITIONED BY (
+dt STRING,
+h STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+location '/${DB_PATH}/BusinessGtUser';
 EOF
 exit 0
 
