@@ -69,8 +69,7 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
          |on a.cellid=b.cellid
          |) e
          |group by e.city,e.region,e.frequency
-       """.stripMargin).show()
-//      .write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_freq_baseday/dt=$ANALY_DATE""")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_freq_baseday/dt=$ANALY_DATE""")
 
 
 
