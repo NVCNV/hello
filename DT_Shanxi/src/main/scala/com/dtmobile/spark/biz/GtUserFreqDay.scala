@@ -23,7 +23,8 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
        |select
        |cellid,
        |gt_users,
-       |volte_users
+       |volte_users,
+       |users
        |from $DDB.gt_pulse_cell_base60
        |where dt=$ANALY_DATE
      """.stripMargin).createOrReplaceTempView("gt_pulse_cell_base60")
@@ -45,27 +46,76 @@ class GtUserFreqDay(ANALY_DATE: String,DDB: String,warhouseDir: String,ORCAL:Str
     sql(
       s"""
          |select
-         |gt.line_name,
-         |b.city,
+         |region,
+         |city,
          |'$cal_date' ttime,
+         |e.frequency,
+         |count(distinct cellid) cell_num,
+         |sum(gt_users) gtusers,
+         |sum(users)-sum(gt_users) commusers,
+         |(case when (count(distinct cellid)=0) then 0
+         |else (cast (sum(gt_users)/count(distinct cellid) as int ) ) end) cellavguses
+         | from
+         |(
+         |select
+         |b.region,
+         |b.city,
          |b.frequency,
-         |count(c.cellid) cell_num,
-         |sum(c.gt_users) gtusers,
-         |sum(c.volte_users) commusers,
-         |(sum(c.gt_users)/sum(c.volte_users)) cellavguses
-         |from gt_pulse_detail_base60 a
+         |a.cellid,
+         |gt_users,
+         |users
+         |from gt_pulse_cell_base60 a
          |inner join ltecell b
          |on a.cellid=b.cellid
-         |inner join gt_pulse_cell_base60 c
-         |on a.cellid=c.cellid
-         |inner join 	$DDB.gt_balence_pair gt
-         |on a.cellid=gt.scellid
-         |inner join gt_publicandprofess_new_cell gt
-         |on a.cellid=gt.cell_id
-         |group by b.cellid,b.frequency,b.region,b.city,gt.line_name
-         |
+         |) e
+         |group by e.city,e.region,e.frequency
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_freq_baseday/dt=$ANALY_DATE""")
 
+
+
+
+
+
+  /*
+  count(c.cellid) cell_num,
+
+  sql(
+      s"""
+         |
+         |select
+         |d.region,
+         |d.city,
+         |'$cal_date' ttime,
+         |d.frequency,
+         |
+         |b.gtusers,
+         |e.cell_num cell_num,
+         |round( b.cellavguses*100,0)
+         |
+         |from gt_pulse_detail_base60 a
+         |
+         |inner join (
+         |  select
+         |
+         |  sum(c.gt_users) gtusers,
+         |  round((sum(c.gt_users)/sum(c.users)),3) cellavguses,
+         |
+         |from gt_pulse_detail_base60 gt
+         |inner join gt_pulse_cell_base60 c
+         |on gt.cellid=c.cellid
+         |group by gt.cellid
+         |) b
+         |on a.cellid=b.cellid
+         |inner join ltecell d
+         |  on a.cellid=d.cellid
+         |inner join(
+         |select count(cellid) cell_num,cellid
+         |from ltecell group by frequency,cellid
+         |) e
+         |on a.cellid=e.cellid
+         |
+         |
+       """.stripMargin).show()*/
   }
 
 
