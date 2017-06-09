@@ -14073,6 +14073,7 @@ h STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 location '/${DB_PATH}/BusinessGtUser';
+
 EOF
 exit 0
 
