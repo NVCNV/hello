@@ -13371,7 +13371,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster/${BasePath}/tb_xdr_ifc_s1u_http_new' ;
+  'hdfs://dtcluster/${BasePath}/s1u_http_orgn' ;
 
 DROP TABLE   IF EXISTS LTE_MRO_SOURCE;
 create EXTERNAL table   IF NOT EXISTS LTE_MRO_SOURCE
