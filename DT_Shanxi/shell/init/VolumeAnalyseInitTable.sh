@@ -13369,7 +13369,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${BasePath}/s1u_http_orgn' ;
 
