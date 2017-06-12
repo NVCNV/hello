@@ -42,10 +42,9 @@
        例如： sh VolumeAnalyseInitTable.sh shanxi datang2 default datang2
    2.3.2 VolumeAnalyseHDFS2db.sh 为sqoop脚本，用于hdfs导入Oracle数据库，此脚本主要用来被其他脚本调用。
    2.3.3 ScheduleHDFS2DB.sh 为调用sqoop脚本，每小时调用一次，用于将容量的小时级分析数据导入Oracle，
-       须传入三个参数，第一个为日期，
-       第二个小时，第三个数据库名称
-   2.3.4 ScheduleHDFS2DB_day.sh     为调用sqoop脚本，每天调用一次，用于将容量的小时级分析数据导入Oracle，须传入三个参数，第一个为日期，
-     第二个小时，第三个数据库名称
+       须传入三个参数，第一个为Oracle地址，第二个为日期，第三个小时，第四个数据库名称
+   2.3.4 ScheduleHDFS2DB_day.sh     为调用sqoop脚本，每天调用一次，用于将容量的小时级分析数据导入Oracle，须传入四个参数，第一个为Oracle地址，
+   第二个为日期，第三个数据库名称
 
 3、操作步骤：
    3.1、首先建hive表，hive建表脚本需要指定数据库，例如：sh VolumeAnalyseInitTable.sh shanxi
