@@ -25,12 +25,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
 
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
+      imsiCellHourAnalyse(sparkSession)
+      cellHourAnalyse(sparkSession)
+      mrCellHourAnalyse(sparkSession)
+      mrImsiHourAnalyse(sparkSession)
 
-
-    imsiCellHourAnalyse(sparkSession)
-    cellHourAnalyse(sparkSession)
-    mrImsiHourAnalyse(sparkSession)
-    mrCellHourAnalyse(sparkSession)
   }
 
   def imsiCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -3233,5 +3232,6 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	cellid
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
+
 }
 

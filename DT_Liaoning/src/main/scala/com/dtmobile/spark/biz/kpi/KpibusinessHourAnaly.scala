@@ -1822,6 +1822,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |select
          |imsi,
          |msisdn,
+<<<<<<< HEAD
          |$busniessDns
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn
          """.stripMargin
