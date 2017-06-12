@@ -793,6 +793,97 @@ LOCATION
 CREATE DATABASE IF NOT EXISTS ${DCLDB};
 USE ${DCLDB};
 
+DROP TABLE IF EXISTS tb_xdr_ifc_http;
+CREATE EXTERNAL TABLE tb_xdr_ifc_http(
+  length bigint,
+  city bigint,
+  interface bigint,
+  xdrid bigint,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  machineipaddtype bigint,
+  sgwipaddr string,
+  enbipaddr string,
+  sgwport bigint,
+  enbport bigint,
+  enbgtpteid bigint,
+  sgwgtpteid bigint,
+  tac bigint,
+  ecgi bigint,
+  apn string,
+  apptypecode bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  protocoltype bigint,
+  apptype bigint,
+  appsubtype bigint,
+  appcontent bigint,
+  appstatus bigint,
+  useripv4 string,
+  useripv6 string,
+  userport string,
+  l4protocal bigint,
+  appserveripipv4 string,
+  appserveripipv6 string,
+  appserverport string,
+  uldata bigint,
+  dldata bigint,
+  ulippacket bigint,
+  dlippacket bigint,
+  ultcppacketor bigint,
+  dltcppacketor bigint,
+  ultcppacketre bigint,
+  dltcppacketre bigint,
+  tcpestabrede bigint,
+  tcpestabdeconf bigint,
+  ulipfragpackets bigint,
+  dlipfragpackets bigint,
+  tcpfirstrede bigint,
+  tcpfirstconf bigint,
+  winsize bigint,
+  msssize bigint,
+  tcpattnum bigint,
+  tcplinkstatus bigint,
+  sessionflag bigint,
+  httpversion string,
+  transactiontype string,
+  httpstate string,
+  httpfirstrede bigint,
+  httplastrede bigint,
+  acklastconf bigint,
+  host string,
+  uri string,
+  xonlinehost string,
+  useragent string,
+  httpcontenttype string,
+  referuri string,
+  cookie string,
+  contentlength bigint,
+  targetbehavior bigint,
+  wtpinterrupttype bigint,
+  wtpinterruptcause bigint,
+  title string,
+  keyword string,
+  busconductlogo bigint,
+  buscompletionflag bigint,
+  busrede bigint,
+  browsingtool bigint,
+  portalapp bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '|'
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/${DB_PATH}/s1u_http_orgn';
+
 DROP TABLE IF EXISTS cell_mr;  
 CREATE  TABLE cell_mr(
   objectid string, 
@@ -1391,5 +1482,151 @@ srvccsuccS1 int)
 PARTITIONED BY ( 
   dt string)
 ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',';
+
+drop table zc_city_data;
+create table zc_city_data(
+    tttime string,
+    city  string,
+    cellid int,
+    businessdelay double,
+    pageDownKps double,
+    etype int
+)PARTITIONED by (
+dt string,
+h string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';
+
+DROP TABLE IF EXISTS tb_xdr_ifc_uu;
+CREATE  TABLE tb_xdr_ifc_uu(
+  length bigint,
+  city string,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype int,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  keyword1 int,
+  keyword2 int,
+  procedurestatus int,
+  plmnid string,
+  enbid bigint,
+  cellid bigint,
+  crnti bigint,
+  targetenbid bigint,
+  targetcellid bigint,
+  targetcrnti bigint,
+  mmeues1apid bigint,
+  mmegroupid bigint,
+  mmecode bigint,
+  mtmsi bigint,
+  csfbindication bigint,
+  redirectednetwork bigint,
+  epsbearernumber int,
+  bearer0id bigint,
+  bearer0status bigint,
+  bearer1id bigint,
+  bearer1status bigint,
+  bearer2id bigint,
+  bearer2status bigint,
+  bearer3id bigint,
+  bearer3status bigint,
+  bearer4id bigint,
+  bearer4status bigint,
+  bearer5id bigint,
+  bearer5status bigint,
+  bearer6id bigint,
+  bearer6status bigint,
+  bearer7id bigint,
+  bearer7status bigint,
+  bearer8id bigint,
+  bearer8status bigint,
+  bearer9id bigint,
+  bearer9status bigint,
+  bearer10id bigint,
+  bearer10status bigint,
+  bearer11id bigint,
+  bearer11status bigint,
+  bearer12id bigint,
+  bearer12status bigint,
+  bearer13id bigint,
+  bearer13status bigint,
+  bearer14id bigint,
+  bearer14status bigint,
+  bearer15id bigint,
+  bearer15status bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ',' ;
+
+DROP TABLE IF EXISTS tb_xdr_ifc_x2;
+CREATE TABLE tb_xdr_ifc_x2(
+  length bigint,
+  city string,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype int,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  procedurestatus int,
+  cellid bigint,
+  targetcellid bigint,
+  enbid bigint,
+  targetenbid bigint,
+  mmeues1apid bigint,
+  mmegroupid bigint,
+  mmecode bigint,
+  requestcause bigint,
+  failurecause bigint,
+  epsbearernumber bigint,
+  bearer0id bigint,
+  bearer0status bigint,
+  bearer1id bigint,
+  bearer1status bigint,
+  bearer2id bigint,
+  bearer2status bigint,
+  bearer3id bigint,
+  bearer3status bigint,
+  bearer4id bigint,
+  bearer4status bigint,
+  bearer5id bigint,
+  bearer5status bigint,
+  bearer6id bigint,
+  bearer6status bigint,
+  bearer7id bigint,
+  bearer7status bigint,
+  bearer8id bigint,
+  bearer8status bigint,
+  bearer9id bigint,
+  bearer9status bigint,
+  bearer10id bigint,
+  bearer10status bigint,
+  bearer11id bigint,
+  bearer11status bigint,
+  bearer12id bigint,
+  bearer12status bigint,
+  bearer13id bigint,
+  bearer13status bigint,
+  bearer14id bigint,
+  bearer14status bigint,
+  bearer15id bigint,
+  bearer15status bigint,
+  rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 EOF
