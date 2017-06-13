@@ -21,7 +21,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
   override val appName: String = this.getClass.getName
   override val master: String = args(4)
   override val sourceDir: String = args(6)
-  val warhouseDir: String = "/user/hive/warehouse/" + args(3) + ".db"
+  val warhouseDir: String = "user/hive/warehouse/" + args(3) + ".db"
 //  override val warhouseDir: String = "/"+args(2)
   val onoff=args(7).toInt
 
