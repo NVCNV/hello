@@ -158,7 +158,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |)
           |else "7"
           |end)errorcode,
-          |(case when httpstate>=400 then "10"
+          |(case
           |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) then "7"
           |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "8"
           |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "9"
@@ -168,6 +168,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "4"
           |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
           |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "6"
+          |      when httpstate>=400 then "10"
           |      end
           |)etype
           |from (select * from $SDB.tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
