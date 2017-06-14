@@ -13202,6 +13202,7 @@ h STRING)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
 
+
 --质差小区表
 drop table zc_city_data;
 create table zc_city_data(
