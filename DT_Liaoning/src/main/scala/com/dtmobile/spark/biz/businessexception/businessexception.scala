@@ -9,7 +9,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   */
 class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
 
-
+  val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
     def analyse(implicit sparkSession: SparkSession): Unit = {
       exceptionAnalyse(sparkSession)
 
@@ -63,6 +63,11 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
      var SGWSvInstantmessagedownv = 25
      var SGWSvlnstantmessagedelay = 5000
 
+     var tiemdelay = 1
+     var vsdelay = 1
+     var timeandvsdelay = 1
+     var exdrnum = 5000
+
      if(map.get("browseServicetimedelay")!=0 && map.get("browseServicetimedelay")!=null) {
        XDRthreshold01 = map.get("browseServicetimedelay")
        XDRthreshold02 = map.get("browseServicedownv")
@@ -105,6 +110,11 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
        SGWSvVideodelay = map.get("SGWSvVideodelay")
        SGWSvInstantmessagedownv = map.get("SGWSvInstantmessagedownv")
        SGWSvlnstantmessagedelay = map.get("SGWSvlnstantmessagedelay")
+
+       tiemdelay = map.get("tiemdelay")
+       vsdelay = map.get("vsdelay")
+       timeandvsdelay = map.get("timeandvsdelay")
+       exdrnum = map.get("exdrnum")
      }
 
 
@@ -191,6 +201,28 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |) t100
 
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
+
+     sql(
+       s"""alter table zc_city_data add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+        """.stripMargin)
+     sql(
+       s"""
+          |select "$CAL_DATE",t2.city,t2.cellid,t2.businessdelay,t2.pageDownKps,t2.etype from
+          |(select t.city,t.cellid,t.etype,
+          |avg((s.pageresptimeall+s.SERVICEIMTIME+ s.mediaRespTimeall)/(s.pageresp+s.SERVICEIMTRANS+s.mediaResp))as businessdelay,
+          |avg((s.SERVICEIMFLOW + s.mediadownflow +s.httpdownflow) /(s.SERVICEIMTIME +s.mediadowntime + s.httpdowntime)) as pageDownKps,
+          |(sum(case when t.etype in (2,4,6,7,8,9) and t.apptype in (1, 5, 15) then 1 else 0 end) / sum(s.browsedownloadvisits + s.videoservicevisits +s.instantmessagevisits))speed,
+          |(sum(case when t.etype in (1,3,5,7,8,9) and t.apptype in (1, 5, 15) then 1 else 0 end)/sum(s.browsedownloadvisits+s.videoservicevisits+s.instantmessagevisits))delay ,
+          |(sum(case when t.etype in (7,8,9) and t.apptype in (1, 5, 15) then 1 else 0 end)/sum(s.browsedownloadvisits+s.videoservicevisits+s.instantmessagevisits))inst
+          |from t_xdr_event_msg t
+          |inner join (select * from cell_hour_http where dt=$ANALY_DATE and h=$ANALY_HOUR) s
+          |on t.cellid = s.cellid
+          |where t.dt=$ANALY_DATE and t.h=$ANALY_HOUR
+          |group by t.cellid,t.etype,t.city)t2
+          |where t2.speed >$tiemdelay/100 or t2.delay>$vsdelay/100 or t2.inst>$timeandvsdelay/100
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
+
 
 }
