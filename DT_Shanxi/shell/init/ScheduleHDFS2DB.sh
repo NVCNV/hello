@@ -8,7 +8,7 @@ DATABASE=$3
 OracleADDR=$4
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
-sh VolumeAnalyseHDFS2db.sh ${DIR}/volte_user_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} 2 2
+sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_user_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} 2 2
 
 sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/gt_pulse_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} 4 2
 
