@@ -7152,7 +7152,7 @@ LOCATION
 
 drop table t_xdr_event_msg;
 CREATE EXTERNAL TABLE t_xdr_event_msg(
-City   int,
+City   String,
 XDRID  string,
 ProcedureStartTime bigint,
 ttime string,
