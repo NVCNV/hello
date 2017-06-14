@@ -26,21 +26,21 @@ class AnalyJob(args: Array[String]) extends Analyse {
   val onoff=args(7).toInt
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
-    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
-    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
-    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
+//    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+//    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
+//    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
+//
+//    val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
+//    val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
+//    nsspAnaly.analyse
+//    kpibusinessHourAnaly.analyse
+//
+//    kpiHourAnaly.analyse
+//    exception.analyse
+//    typedetail.analyse
 
-    val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
-    val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
-    nsspAnaly.analyse
-    kpibusinessHourAnaly.analyse
 
-    kpiHourAnaly.analyse
-    exception.analyse
-    typedetail.analyse
-
-
-//    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5))
+    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5),sourceDir)
 //    val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
 //    val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
 //    val disturbMixAna =new DisturbMixAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
@@ -51,7 +51,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
 //    val gridCover = new GridCover(args(0), args(1), args(2), args(3), warhouseDir)
 //
 //
-//     init.analyse
+     init.analyse
 //     overcover.analyse
 //     disturbAnalysis.analyse
 //     disturbMixAna.analyse
@@ -74,12 +74,12 @@ class AnalyJob(args: Array[String]) extends Analyse {
       fAnaly.analyse
     }
 */
-    if("03".equals(args(1))){
-    val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
-      val kpibusinessDayAnaly = new KpibusinessDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
-      kpiDayAnALY.analyse
-      kpibusinessDayAnaly.analyse
-    }
+//    if("03".equals(args(1))){
+//    val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
+//      val kpibusinessDayAnaly = new KpibusinessDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
+//      kpiDayAnALY.analyse
+//      kpibusinessDayAnaly.analyse
+//    }
   }
 }
 
