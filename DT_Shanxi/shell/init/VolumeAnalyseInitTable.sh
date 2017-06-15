@@ -8504,7 +8504,7 @@ CREATE TABLE tb_xdr_ifc_s1mme_new(
   bearer15failurecause bigint,
   bearer15enbgtpteid bigint,
   bearer15sgwgtpteid bigint,
-  rangetime string.
+  rangetime string,
   etype int)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
