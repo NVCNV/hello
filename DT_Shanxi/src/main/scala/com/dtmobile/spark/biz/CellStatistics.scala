@@ -129,7 +129,6 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |order by minutes desc
      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_pulse_detail/dt=$ANALY_DATE/h=$ANALY_HOUR""")
 
-
 }
 
 
