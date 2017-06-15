@@ -122,7 +122,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |'$ANALY_HOUR' hours,
        |b.minutes,b.cellid,b.imsi,b.imei,(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
        |(case when (d.imsi is not null) then 1 else 0 end) volteuser_flag,
-       |b.minutes sub_pulse_mark from
+       |b.minutes+1 sub_pulse_mark from
        |(select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
        |left join volte_gtuser_data c on b.imsi=c.imsi
        |left join volte_user_data d on b.imsi=d.imsi
