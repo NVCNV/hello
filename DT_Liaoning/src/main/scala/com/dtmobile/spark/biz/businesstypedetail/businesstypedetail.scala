@@ -44,7 +44,7 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
          | (select *, (case when appstatus=0 then 1 else 0 end) appstatusxdr,
          | (case when httpfirstrede is null then 0
          | when httplastrede is null then httpfirstrede
-         | when (httplastrede-httpfirstrede)<=10 then httpfirstrede
+         | when (httplastrede-httpfirstrede)<=10000 then httpfirstrede
          | else (httplastrede-httpfirstrede) end) rede,
          | (case when (httpfirstrede is null or httpfirstrede=0 or httpfirstrede=4294967295 ) then 0 else 1 end) recnt
          | from $SDB.tb_xdr_ifc_http a) t1
