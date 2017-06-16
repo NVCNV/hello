@@ -507,7 +507,6 @@ ROW FORMAT DELIMITED
 
 drop table grid_view;
 CREATE TABLE grid_view(
-  objectid_1 string, 
   objectid string, 
   shapeentity double, 
   shapenumpts double, 
