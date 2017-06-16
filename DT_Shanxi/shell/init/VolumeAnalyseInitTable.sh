@@ -8506,6 +8506,9 @@ CREATE TABLE tb_xdr_ifc_s1mme_new(
   bearer15sgwgtpteid bigint,
   rangetime string,
   etype int)
+PARTITIONED BY (
+  dt string,
+  h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
