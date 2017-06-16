@@ -53,8 +53,16 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
         print("----------------------"+t+"--------------------------------------")*/
 
       val t=  sql(
-        s"""|select x1.*,
-            |x2.OBJECTID
+        s"""|SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
+            |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
+            |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
+            |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
+            |, x1.KPI7 as kpi7, x1.KPI8 as kpi8, x1.KPI9 as kpi9, x1.KPI10 as kpi10, x1.KPI11 as kpi11
+            |, x1.KPI12 as kpi12, x1.KPI13 as kpi13, x1.KPI14 as kpi14, x1.KPI15 as kpi15, x1.KPI16 as kpi16
+            |, x1.KPI17 as kpi17, x1.KPI18 as kpi18, x1.KPI19 as kpi19, x1.KPI20 as kpi20, x1.KPI21 as kpi21
+            |, x1.KPI22 as kpi22, x1.KPI23 as kpi23, x1.KPI24 as kpi24, x1.KPI25 as kpi25, x1.KPI26 as kpi26
+            |, x1.KPI27 as kpi27, x1.KPI28 as kpi28, x1.KPI29 as kpi29,
+            |x2.OBJECTID as OID
             |from $SDB.lte_mro_source x1
             |left join
             |(select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID
