@@ -52,7 +52,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             | t1.shapeminy<t2.maxlongitude and t1.shapemaxy<t2.maxlatitude """.stripMargin)
         print("----------------------"+t+"--------------------------------------")*/
 
-      val t=  sql(
+     sql(
         s"""|SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
             |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
             |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
@@ -68,13 +68,13 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |(select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID
             |from
             |(select distinct gridcenterlongitude,gridcenterlatitude
-            |from lte_mro_source
+            |from $SDB.lte_mro_source
             |where dt=$ANALY_DATE  and  h=$ANALY_HOUR)s1,
             |(select * from $DDB.grid_view t1 ,
             |(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
             |min(gridcenterlongitude) as minlongitude,
             |min(gridcenterlatitude) as minlatitude
-            |from lte_mro_source
+            |from $SDB.lte_mro_source
             |where dt=$ANALY_DATE  and  h=$ANALY_HOUR)t2
             |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
             |t1.shapeminy<t2.maxlongitude and t1.shapemaxy<t2.maxlatitude)s2
