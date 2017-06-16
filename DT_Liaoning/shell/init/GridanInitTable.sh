@@ -527,9 +527,6 @@ CREATE TABLE grid_view(
   y double, 
   x1 double, 
   y1 double)
-PARTITIONED BY ( 
-  dt string, 
-  h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
