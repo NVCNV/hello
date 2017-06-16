@@ -5,7 +5,7 @@ DATABASE=$1
 
 hive<<EOF
 
-create database $DATABASE;
+create database if not exists  $DATABASE;
 use $DATABASE ;
 
 drop table LTE_MRO_SOURCE_ANA_TMP ;
@@ -1257,7 +1257,6 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
-
 
 EOF
 
