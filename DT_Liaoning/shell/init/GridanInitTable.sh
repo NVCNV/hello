@@ -2,11 +2,24 @@
 
 DATABASE=$1
 
+INITDATABSES=$2
+SOURCEDIR=$3
+
+
+usage="Please input DATABASE,INITDATABSES,SOURCEDIR
+       Example  sh GridanInitTable.sh morpho liaoning datang "
+
+# if no args specified, show usage
+if [ $# -le 2 ]; then
+  echo $usage
+  exit 1
+fi
 
 hive<<EOF
 
 create database if not exists $DATABASE;
 use $DATABASE ;
+
 
 drop table LTE_MRO_SOURCE_ANA_TMP ;
 create table LTE_MRO_SOURCE_ANA_TMP(
@@ -1253,6 +1266,135 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
+
+
+
+CREATE DATABASE IF NOT EXISTS  ${INITDATABSES}  ;
+
+USE ${INITDATABSES}
+
+
+
+-- 原始表
+drop table if exists lte_mro_source;
+CREATE EXTERNAL TABLE lte_mro_source(
+  objectid string,
+  vid bigint,
+  fileformatversion string,
+  starttime string,
+  endtime string,
+  period bigint,
+  enbid bigint,
+  userlabel string,
+  mrname string,
+  cellid bigint,
+  earfcn bigint,
+  subframenbr bigint,
+  prbnbr bigint,
+  mmeues1apid bigint,
+  mmegroupid bigint,
+  mmecode bigint,
+  meatime string,
+  eventtype string,
+  gridcenterlongitude string,
+  gridcenterlatitude string,
+  kpi1 bigint,
+  kpi2 bigint,
+  kpi3 bigint,
+  kpi4 bigint,
+  kpi5 bigint,
+  kpi6 bigint,
+  kpi7 bigint,
+  kpi8 bigint,
+  kpi9 bigint,
+  kpi10 bigint,
+  kpi11 bigint,
+  kpi12 bigint,
+  kpi13 bigint,
+  kpi14 bigint,
+  kpi15 bigint,
+  kpi16 bigint,
+  kpi17 bigint,
+  kpi18 bigint,
+  kpi19 bigint,
+  kpi20 bigint,
+  kpi21 bigint,
+  kpi22 bigint,
+  kpi23 bigint,
+  kpi24 bigint,
+  kpi25 bigint,
+  kpi26 bigint,
+  kpi27 bigint,
+  kpi28 bigint,
+  kpi29 bigint,
+  kpi30 bigint,
+  kpi31 bigint,
+  kpi32 bigint,
+  kpi33 bigint,
+  kpi34 bigint,
+  kpi35 bigint,
+  kpi36 bigint,
+  kpi37 bigint,
+  kpi38 bigint,
+  kpi39 bigint,
+  kpi40 bigint,
+  kpi41 bigint,
+  kpi42 bigint,
+  kpi43 bigint,
+  kpi44 bigint,
+  kpi45 bigint,
+  kpi46 bigint,
+  kpi47 bigint,
+  kpi48 bigint,
+  kpi49 bigint,
+  kpi50 bigint,
+  kpi51 bigint,
+  kpi52 bigint,
+  kpi53 bigint,
+  kpi54 bigint,
+  kpi55 bigint,
+  kpi56 bigint,
+  kpi57 bigint,
+  kpi58 bigint,
+  kpi59 bigint,
+  kpi60 bigint,
+  kpi61 bigint,
+  kpi62 bigint,
+  kpi63 bigint,
+  kpi64 bigint,
+  kpi65 bigint,
+  kpi66 bigint,
+  kpi67 bigint,
+  kpi68 bigint,
+  kpi69 bigint,
+  kpi70 bigint,
+  kpi71 bigint,
+  length bigint,
+  city string,
+  xdrtype bigint,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  mrtype bigint,
+  neighborcellnumber bigint,
+  gsmneighborcellnumber bigint,
+  tdsneighborcellnumber bigint,
+  v_enb bigint,
+  mrtime bigint)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${SOURCEDIR}/LTE_MRO_SOURCE'
+
+
+
+
 
 
 EOF
