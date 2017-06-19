@@ -2,13 +2,12 @@
 
 DATABASE=$1
 
-
 hive<<EOF
 
-create database $DATABASE;
-use $DATABASE ;
+create database if not exists ${DATABASE};
+use ${DATABASE} ;
 
-drop table LTE_MRO_SOURCE_ANA_TMP ;
+drop table if exists LTE_MRO_SOURCE_ANA_TMP ;
 create table LTE_MRO_SOURCE_ANA_TMP(
   OBJECTID               int,
   VID                    int,
@@ -63,7 +62,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table lte_mro_disturb_pretreate60 ;
+drop table if exists lte_mro_disturb_pretreate60 ;
 CREATE TABLE lte_mro_disturb_pretreate60(
   id bigint, 
   starttime string, 
@@ -131,12 +130,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-
-
-
-
-drop table ltecell ;
+drop table if exists ltecell ;
 create table ltecell(
   MCC         bigint,
   MNC         bigint,
@@ -179,8 +173,7 @@ create table ltecell(
 )ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-drop table lte_mrs_dlbestrow_ana60;
+drop table if exists lte_mrs_dlbestrow_ana60;
 CREATE TABLE lte_mrs_dlbestrow_ana60(
   id bigint, 
   starttime string, 
@@ -223,8 +216,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-drop table MR_INDOORANA_TEMP;
+drop table if exists MR_INDOORANA_TEMP;
 create table MR_INDOORANA_TEMP
 (
   MMEUES1APID bigint,
@@ -242,8 +234,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-drop table LTE_MRO_JOINUSER_ANA60;
+drop table if exists LTE_MRO_JOINUSER_ANA60;
 create table LTE_MRO_JOINUSER_ANA60
 (
   ID                 bigint,
@@ -269,9 +260,7 @@ create table LTE_MRO_JOINUSER_ANA60
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-
-drop table LTE_MRS_OVERCOVER_ANA60;
+drop table if exists LTE_MRS_OVERCOVER_ANA60;
 create table LTE_MRS_OVERCOVER_ANA60
 (
   ID                             bigint,
@@ -301,9 +290,7 @@ create table LTE_MRS_OVERCOVER_ANA60
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-
-
-drop table LTE2LTEADJ_PCI;
+drop table if exists LTE2LTEADJ_PCI;
 create table LTE2LTEADJ_PCI
 (
   MMEGROUPID    bigint,
@@ -326,7 +313,7 @@ create table LTE2LTEADJ_PCI
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop table LTE2LTEADJ;
+drop table if exists LTE2LTEADJ;
 create table LTE2LTEADJ
 (
   MMEGROUPID    bigint,
@@ -346,7 +333,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table LTE_MRO_DISTURB_PRETREATE60tmp;
+drop table if exists LTE_MRO_DISTURB_PRETREATE60tmp;
 CREATE TABLE LTE_MRO_DISTURB_PRETREATE60tmp(
   starttime date, 
   endtime date, 
@@ -413,7 +400,7 @@ PARTITIONED BY (
   FIELDS TERMINATED BY ',' ;
 
 
-drop table lte2lteadj_pci;
+drop table if exists lte2lteadj_pci;
 CREATE TABLE lte2lteadj_pci(
   mmegroupid bigint, 
   mmeid bigint, 
@@ -435,7 +422,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop table LTE_MRO_DISTURB_PRETREATE60;
+drop table if exists LTE_MRO_DISTURB_PRETREATE60;
 create table LTE_MRO_DISTURB_PRETREATE60(
   id             int,
   starttime      DATE,
@@ -505,7 +492,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table grid_view;
+drop table if exists grid_view;
 CREATE TABLE grid_view(
   objectid_1 string, 
   objectid string, 
@@ -534,7 +521,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table LTE_MRS_DLBESTROW_GRID_ANA60;
+drop table if exists LTE_MRS_DLBESTROW_GRID_ANA60;
 create table LTE_MRS_DLBESTROW_GRID_ANA60(
    OID   bigint,
    STARTTIME   string,
@@ -561,7 +548,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table LTE_MRO_OVERLAP_GRID_ANA60;
+drop table if exists LTE_MRO_OVERLAP_GRID_ANA60;
 create table LTE_MRO_OVERLAP_GRID_ANA60(
    OID   bigint,
    STARTTIME   string,
@@ -586,7 +573,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table GRID_LTEMRKPI60;
+drop table if exists GRID_LTEMRKPI60;
 create table GRID_LTEMRKPI60(
    BEGINTIME   string,
    ENDTIME   string,
@@ -611,7 +598,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table CELL_LTEMRKPITEMP;
+drop table if exists CELL_LTEMRKPITEMP;
 create table CELL_LTEMRKPITEMP(
    BEGINTIME   string,
    ENDTIME   string,
@@ -732,7 +719,7 @@ create table CELL_LTEMRKPITEMP(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop table LTE_MRO_OVERLAP_B_ANA60;
+drop table if exists LTE_MRO_OVERLAP_B_ANA60;
 create table LTE_MRO_OVERLAP_B_ANA60(
    STARTTIME   string,
    ENDTIME   string,
@@ -758,7 +745,7 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-drop table CELL_LTENEWMRKPI60;
+drop table if exists CELL_LTENEWMRKPI60;
 create table CELL_LTENEWMRKPI60(
    STARTTIME   string,
    ENDTIME   string,
@@ -777,7 +764,7 @@ create table CELL_LTENEWMRKPI60(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop table CELL_LTEMRKPI60;
+drop table if exists CELL_LTEMRKPI60;
 create table CELL_LTEMRKPI60(
    BEGINTIME   string,
    ENDTIME   string,
@@ -1130,135 +1117,5 @@ create table LTE_MRO_SOURCE_TMP
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
 
-  drop table if exists LTE_MRO_DISTURB_SEC;
-    create table LTE_MRO_DISTURB_SEC
-(
-  ID         int ,
-  STARTTIME  string ,
-  ENDTIME    string ,
-  PERIOD     int ,
-  TIMESEQ    int ,
-  MMEGROUPID int,
-  MMEID      int,
-  ENODEBID   int,
-  CELLID     int,
-  CELLNAME   string,
-  PCI        int,
-  SFN        int,
-  KPINAME    string,
-  SEQ0       int,
-  SEQ1       int,
-  SEQ2       int,
-  SEQ3       int,
-  SEQ4       int,
-  SEQ5       int,
-  SEQ6       int,
-  SEQ7       int,
-  SEQ8       int,
-  SEQ9       int,
-  SEQ10      int,
-  SEQ11      int,
-  SEQ12      int,
-  SEQ13      int,
-  SEQ14      int,
-  SEQ15      int,
-  SEQ16      int,
-  SEQ17      int,
-  SEQ18      int,
-  SEQ19      int,
-  SEQ20      int,
-  SEQ21      int,
-  SEQ22      int,
-  SEQ23      int,
-  SEQ24      int,
-  SEQ25      int,
-  SEQ26      int,
-  SEQ27      int,
-  SEQ28      int,
-  SEQ29      int,
-  SEQ30      int,
-  SEQ31      int,
-  SEQ32      int,
-  SEQ33      int,
-  SEQ34      int,
-  SEQ35      int,
-  SEQ36      int,
-  SEQ37      int,
-  SEQ38      int,
-  SEQ39      int,
-  SEQ40      int,
-  SEQ41      int,
-  SEQ42      int,
-  SEQ43      int,
-  SEQ44      int,
-  SEQ45      int,
-  SEQ46      int,
-  SEQ47      int,
-  SEQ48      int,
-  SEQ49      int,
-  SEQ50      int,
-  SEQ51      int,
-  SEQ52      int,
-  SEQ53      int,
-  SEQ54      int,
-  SEQ55      int,
-  SEQ56      int,
-  SEQ57      int,
-  SEQ58      int,
-  SEQ59      int,
-  SEQ60      int,
-  SEQ61      int,
-  SEQ62      int,
-  SEQ63      int,
-  SEQ64      int,
-  SEQ65      int,
-  SEQ66      int,
-  SEQ67      int,
-  SEQ68      int,
-  SEQ69      int,
-  SEQ70      int,
-  SEQ71      int
-)PARTITIONED BY ( 
-  dt string, 
-  h string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ',' ;
-
-
-drop table if exists lte_mro_disturb_mix;
-  CREATE TABLE lte_mro_disturb_mix(
-  id int, 
-  starttime string, 
-  endtime string, 
-  period int, 
-  timeseq int, 
-  mmegroupid int, 
-  mmeid int, 
-  enodebid int, 
-  cellid int, 
-  cellname string, 
-  pci int, 
-  sfn int, 
-  disturbmmegroupid int, 
-  disturbmmeid int, 
-  disturbenodebid int, 
-  disturbcellid int, 
-  disturbcellname string, 
-  disturbpci int, 
-  disturbsfn int, 
-  disturbnum int, 
-  adjdisturbtotalnum bigint, 
-  disturbrate string, 
-  asadjcellrsrptotalvalue string, 
-  asadjcellrsrptotalnum bigint, 
-  asadjcellavgrsrp string)
-PARTITIONED BY ( 
-  dt string, 
-  h string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ','  ;
-
-
 EOF
-
 exit 0
