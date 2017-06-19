@@ -8,19 +8,19 @@ VAADDR=$5
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
 #Kpi Hour To Oracle
-#echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 35 2"
+#echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 35 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 35 2 &
 
-#echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 36 2"
+#echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 36 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 36 2 &
 
-#echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 38 2"
+#echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 38 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 38 2 &
 
-#echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 39 2"
+#echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 39 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 39 2 &
 
-#echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/t_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2"
+#echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/t_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/t_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 37 2 &
 
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/t_xdr_event_msg/dt=${ANALY_DATE}/h=${ANALY_HOUR} 25 2
