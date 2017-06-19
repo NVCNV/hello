@@ -2,8 +2,11 @@
 
 ANALY_DATE=$1
 ANALY_HOUR=$2
+DATABASE=$3
 
 hive << EOF
+use ${DATABASE};
+
 alter table lte_mro_disturb_ana drop if exists partition(dt=${ANALY_DATE},h=${ANALY_HOUR});
 alter table lte_mro_disturb_ana add partition(dt=${ANALY_DATE},h=${ANALY_HOUR});
 
