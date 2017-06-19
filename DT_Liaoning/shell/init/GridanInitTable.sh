@@ -89,6 +89,131 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
+drop table if exists LTE_MRO_SOURCE_TMP;
+create table LTE_MRO_SOURCE_TMP
+(
+  OBJECTID               int ,
+  VID                    int ,
+  STARTTIME              string ,
+  ENDTIME                string ,
+  TIMESEQ                string,
+  ENBID                  int ,
+  MRNAME                 string,
+  CELLID                 int ,
+  MMEUES1APID            int,
+  MMEGROUPID             int,
+  MMECODE                int,
+  MEATIME                string,
+  GRIDCENTERLONGITUDE    string,
+  GRIDCENTERLATITUDE     string,
+  OLDGRIDCENTERLONGITUDE string,
+  OLDGRIDCENTERLATITUDE  string,
+  KPI1                   int,
+  KPI2                   int,
+  KPI3                   int,
+  KPI4                   int,
+  KPI5                   int,
+  KPI6                   int,
+  KPI7                   int,
+  KPI8                   int,
+  KPI9                   int,
+  KPI10                  int,
+  KPI11                  int,
+  KPI12                  int,
+  KPI13                  int,
+  KPI14                  int,
+  KPI15                  int,
+  KPI16                  int,
+  KPI17                  int,
+  KPI18                  int,
+  KPI19                  int,
+  KPI20                  int,
+  KPI21                  int,
+  KPI22                  int,
+  KPI23                  int,
+  KPI24                  int,
+  KPI25                  int,
+  KPI26                  int,
+  KPI27                  int,
+  KPI28                  int,
+  KPI29                  int,
+  OID                    int
+)PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','  ;
+
+
+
+drop table lte_mro_disturb_pretreate60 ;
+CREATE TABLE lte_mro_disturb_pretreate60(
+  id bigint,
+  starttime string,
+  endtime string,
+  timeseq bigint,
+  mmegroupid bigint,
+  mmeid bigint,
+  enodebid bigint,
+  cellid bigint,
+  cellname string,
+  cellpci bigint,
+  cellfreq bigint,
+  tenodebid bigint,
+  tcellid bigint,
+  tcellname string,
+  tcellpci bigint,
+  tcellfreq bigint,
+  cellrsrpsum double,
+  cellrsrpcount bigint,
+  tcellrsrpsum double,
+  tcellrsrpcount bigint,
+  rsrpdifseqls12 bigint,
+  rsrpdifseqn12 bigint,
+  rsrpdifseqn11 bigint,
+  rsrpdifseqn10 bigint,
+  rsrpdifseqn9 bigint,
+  rsrpdifseqn8 bigint,
+  rsrpdifseqn7 bigint,
+  rsrpdifseqn6 bigint,
+  rsrpdifseqn5 bigint,
+  rsrpdifseqn4 bigint,
+  rsrpdifseqn3 bigint,
+  rsrpdifseqn2 bigint,
+  rsrpdifseqn1 bigint,
+  rsrpdifseqn0 bigint,
+  rsrpdifseqp1 bigint,
+  rsrpdifseqp2 bigint,
+  rsrpdifseqp3 bigint,
+  rsrpdifseqp4 bigint,
+  rsrpdifseqp5 bigint,
+  rsrpdifseqp6 bigint,
+  rsrpdifseqp7 bigint,
+  rsrpdifseqp8 bigint,
+  rsrpdifseqp9 bigint,
+  rsrpdifseqp10 bigint,
+  rsrpdifseqp11 bigint,
+  rsrpdifseqp12 bigint,
+  rsrpdifseqp13 bigint,
+  rsrpdifseqp14 bigint,
+  rsrpdifseqp15 bigint,
+  rsrpdifseqp16 bigint,
+  rsrpdifseqp17 bigint,
+  rsrpdifseqp18 bigint,
+  rsrpdifseqp19 bigint,
+  rsrpdifseqp20 bigint,
+  rsrpdifseqp21 bigint,
+  rsrpdifseqp22 bigint,
+  rsrpdifseqp23 bigint,
+  rsrpdifseqp24 bigint,
+  rsrpdifseqp25 bigint,
+  rsrpdifseqmo25 bigint)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ',' ;
+
 
 
 drop table lte_mrs_dlbestrow_ana60;
