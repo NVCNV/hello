@@ -8738,9 +8738,11 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   bearer15id string,
   bearer15status string,
   rangetime string)
+PARTITIONED BY (
+  dt string,
+  h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
-location ''
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_uu';
 
