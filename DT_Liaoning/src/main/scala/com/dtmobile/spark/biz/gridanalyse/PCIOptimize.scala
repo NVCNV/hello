@@ -54,7 +54,8 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
     sql(s"use $DDB")
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 drop if  exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 add  partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
-    val selectSql=s"""select t.startTime, t.endTime, t.timeseq,
+    val selectSql=s"""select
+                      |       t.startTime, t.endTime, t.timeseq,
                       |        t.mmecode, t.enbid, t.cellid,t2.cellname,
                       |        (case when t.kpi10!= -1 then t.kpi10 else null end) as cellpci,
                       |        (case when t.kpi9!= -1  then t.kpi9  else null end) as cellfreq,
