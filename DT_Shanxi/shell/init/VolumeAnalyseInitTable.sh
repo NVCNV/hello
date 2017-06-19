@@ -8337,181 +8337,247 @@ LOCATION
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1mme_new;
-CREATE TABLE tb_xdr_ifc_s1mme_new(
+CREATE external TABLE tb_xdr_ifc_s1mme_new(
+  length int,
+ city string,
+ interface int,
+ xdrid string,
+ rat int,
+ imsi string,
+ imei string,
+ msisdn string,
+ proceduretype int,
+ procedurestarttime bigint,
+ procedureendtime bigint,
+ procedurestatus int,
+ requestcause int,
+ failurecause int,
+ keyword1 int,
+ keyword2 int,
+ keyword3 int,
+ keyword4 int,
+ mmeues1apid int,
+ oldmmegroupid int,
+ oldmmecode int,
+ oldmtmsi int,
+ mmegroupid int,
+ mmecode int,
+ mtmsi int,
+ tmsi int,
+ useripv4 string,
+ useripv6 string,
+ mmeipadd string,
+ enbipadd string,
+ mmeport int,
+ enbport int,
+ tac int,
+ cellid int,
+ othertac int,
+ othereci int,
+ apn string,
+ epsbearernumber int,
+ bearer0id int,
+ bearer0type int,
+ bearer0qci int,
+ bearer0status int,
+ bearer0requestcause int,
+ bearer0failurecause int,
+ bearer0enbgtpteid int,
+ bearer0sgwgtpteid int,
+ bearer1id int,
+ bearer1type int,
+ bearer1qci int,
+ bearer1status int,
+ bearer1requestcause int,
+ bearer1failurecause int,
+ bearer1enbgtpteid int,
+ bearer1sgwgtpteid int,
+ bearer2id int,
+ bearer2type int,
+ bearer2qci int,
+ bearer2status int,
+ bearer2requestcause int,
+ bearer2failurecause int,
+ bearer2enbgtpteid int,
+ bearer2sgwgtpteid int,
+ bearer3id int,
+ bearer3type int,
+ bearer3qci int,
+ bearer3status int,
+ bearer3requestcause int,
+ bearer3failurecause int,
+ bearer3enbgtpteid int,
+ bearer3sgwgtpteid int,
+ bearer4id int,
+ bearer4type int,
+ bearer4qci int,
+ bearer4status int,
+ bearer4requestcause int,
+ bearer4failurecause int,
+ bearer4enbgtpteid int,
+ bearer4sgwgtpteid int,
+ bearer5id int,
+ bearer5type int,
+ bearer5qci int,
+ bearer5status int,
+ bearer5requestcause int,
+ bearer5failurecause int,
+ bearer5enbgtpteid int,
+ bearer5sgwgtpteid int,
+ rangetime string,
+ etype int,
+ gridid int,
+ slong string,
+ slat string,
+ dlong string,
+ dlat string,
+ distance string,
+ espeed string,
+ elong string,
+ elat string,
+ falurecause string,
+ flag int,
+ beforeflag int,
+ eupordown int,
+ echk4gtype int,
+ echk4g23type int)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1mme';
+
+drop table lte_mro_source_new;
+CREATE EXTERNAL TABLE lte_mro_source_new(
+  objectid string,
+  vid int,
+  fileformatversion string,
+  starttime string,
+  endtime string,
+  period int,
+  enbid int,
+  userlabel string,
+  mrname string,
+  cellid int,
+  earfcn int,
+  subframenbr int,
+  prbnbr int,
+  mmeues1apid int,
+  mmegroupid int,
+  mmecode int,
+  meatime string,
+  eventtype string,
+  gridcenterlongitude string,
+  gridcenterlatitude string,
+  kpi1 int,
+  kpi2 int,
+  kpi3 int,
+  kpi4 int,
+  kpi5 int,
+  kpi6 int,
+  kpi7 int,
+  kpi8 int,
+  kpi9 int,
+  kpi10 int,
+  kpi11 int,
+  kpi12 int,
+  kpi13 int,
+  kpi14 int,
+  kpi15 int,
+  kpi16 int,
+  kpi17 int,
+  kpi18 int,
+  kpi19 int,
+  kpi20 int,
+  kpi21 int,
+  kpi22 int,
+  kpi23 int,
+  kpi24 int,
+  kpi25 int,
+  kpi26 int,
+  kpi27 int,
+  kpi28 int,
+  kpi29 int,
+  kpi30 int,
+  kpi31 int,
+  kpi32 int,
+  kpi33 int,
+  kpi34 int,
+  kpi35 int,
+  kpi36 int,
+  kpi37 int,
+  kpi38 int,
+  kpi39 int,
+  kpi40 int,
+  kpi41 int,
+  kpi42 int,
+  kpi43 int,
+  kpi44 int,
+  kpi45 int,
+  kpi46 int,
+  kpi47 int,
+  kpi48 int,
+  kpi49 int,
+  kpi50 int,
+  kpi51 int,
+  kpi52 int,
+  kpi53 int,
+  kpi54 int,
+  kpi55 int,
+  kpi56 int,
+  kpi57 int,
+  kpi58 int,
+  kpi59 int,
+  kpi60 int,
+  kpi61 int,
+  kpi62 int,
+  kpi63 int,
+  kpi64 int,
+  kpi65 int,
+  kpi66 int,
+  kpi67 int,
+  kpi68 int,
+  kpi69 int,
+  kpi70 int,
+  kpi71 int,
   length int,
   city string,
+  xdrtype int,
   interface int,
   xdrid string,
   rat int,
   imsi string,
   imei string,
   msisdn string,
-  proceduretype int,
-  procedurestarttime bigint,
-  procedureendtime bigint,
-  procedurestatus int,
-  requestcause int,
-  failurecause int,
-  keyword1 int,
-  keyword2 int,
-  keyword3 int,
-  keyword4 int,
-  mmeues1apid int,
-  oldmmegroupid int,
-  oldmmecode int,
-  oldmtmsi int,
-  mmegroupid int,
-  mmecode int,
-  mtmsi int,
-  tmsi int,
-  useripv4 string,
-  useripv6 string,
-  mmeipadd string,
-  enbipadd string,
-  mmeport int,
-  enbport int,
-  tac int,
-  cellid int,
-  othertac int,
-  othereci int,
-  apn string,
-  epsbearernumber int,
-  bearer0id int,
-  bearer0type int,
-  bearer0qci int,
-  bearer0status int,
-  bearer0requestcause int,
-  bearer0failurecause int,
-  bearer0enbgtpteid int,
-  bearer0sgwgtpteid int,
-  bearer1id int,
-  bearer1type int,
-  bearer1qci int,
-  bearer1status int,
-  bearer1requestcause int,
-  bearer1failurecause int,
-  bearer1enbgtpteid int,
-  bearer1sgwgtpteid int,
-  bearer2id int,
-  bearer2type int,
-  bearer2qci int,
-  bearer2status int,
-  bearer2requestcause int,
-  bearer2failurecause int,
-  bearer2enbgtpteid int,
-  bearer2sgwgtpteid int,
-  bearer3id int,
-  bearer3type int,
-  bearer3qci int,
-  bearer3status int,
-  bearer3requestcause int,
-  bearer3failurecause int,
-  bearer3enbgtpteid int,
-  bearer3sgwgtpteid int,
-  bearer4id int,
-  bearer4type int,
-  bearer4qci int,
-  bearer4status int,
-  bearer4requestcause int,
-  bearer4failurecause int,
-  bearer4enbgtpteid int,
-  bearer4sgwgtpteid int,
-  bearer5id int,
-  bearer5type int,
-  bearer5qci int,
-  bearer5status int,
-  bearer5requestcause int,
-  bearer5failurecause int,
-  bearer5enbgtpteid int,
-  bearer5sgwgtpteid int,
-  bearer6id bigint,
-  bearer6type bigint,
-  bearer6qci bigint,
-  bearer6status bigint,
-  bearer6requestcause bigint,
-  bearer6failurecause bigint,
-  bearer6enbgtpteid bigint,
-  bearer6sgwgtpteid bigint,
-  bearer7id bigint,
-  bearer7type bigint,
-  bearer7qci bigint,
-  bearer7status bigint,
-  bearer7requestcause bigint,
-  bearer7failurecause bigint,
-  bearer7enbgtpteid bigint,
-  bearer7sgwgtpteid bigint,
-  bearer8id bigint,
-  bearer8type bigint,
-  bearer8qci bigint,
-  bearer8status bigint,
-  bearer8requestcause bigint,
-  bearer8failurecause bigint,
-  bearer8enbgtpteid bigint,
-  bearer8sgwgtpteid bigint,
-  bearer9id bigint,
-  bearer9type bigint,
-  bearer9qci bigint,
-  bearer9status bigint,
-  bearer9requestcause bigint,
-  bearer9failurecause bigint,
-  bearer9enbgtpteid bigint,
-  bearer9sgwgtpteid bigint,
-  bearer10id bigint,
-  bearer10type bigint,
-  bearer10qci bigint,
-  bearer10status bigint,
-  bearer10requestcause bigint,
-  bearer10failurecause bigint,
-  bearer10enbgtpteid bigint,
-  bearer10sgwgtpteid bigint,
-  bearer11id bigint,
-  bearer11type bigint,
-  bearer11qci bigint,
-  bearer11status bigint,
-  bearer11requestcause bigint,
-  bearer11failurecause bigint,
-  bearer11enbgtpteid bigint,
-  bearer11sgwgtpteid bigint,
-  bearer12id bigint,
-  bearer12type bigint,
-  bearer12qci bigint,
-  bearer12status bigint,
-  bearer12requestcause bigint,
-  bearer12failurecause bigint,
-  bearer12enbgtpteid bigint,
-  bearer12sgwgtpteid bigint,
-  bearer13id bigint,
-  bearer13type bigint,
-  bearer13qci bigint,
-  bearer13status bigint,
-  bearer13requestcause bigint,
-  bearer13failurecause bigint,
-  bearer13enbgtpteid bigint,
-  bearer13sgwgtpteid bigint,
-  bearer14id bigint,
-  bearer14type bigint,
-  bearer14qci bigint,
-  bearer14status bigint,
-  bearer14requestcause bigint,
-  bearer14failurecause bigint,
-  bearer14enbgtpteid bigint,
-  bearer14sgwgtpteid bigint,
-  bearer15id bigint,
-  bearer15type bigint,
-  bearer15qci bigint,
-  bearer15status bigint,
-  bearer15requestcause bigint,
-  bearer15failurecause bigint,
-  bearer15enbgtpteid bigint,
-  bearer15sgwgtpteid bigint,
-  rangetime string,
-  etype int)
+  mrtype int,
+  neighborcellnumber int,
+  gsmneighborcellnumber int,
+  tdsneighborcellnumber int,
+  v_enb int,
+  mrtime bigint,
+  etype int,
+  gridid int,
+  slong string,
+  slat string,
+  dlong string,
+  dlat string,
+  distance string,
+  espeed string,
+  elong string,
+  elat string,
+  falurecause string,
+  flag int,
+  beforeflag int,
+  eupordown int)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
-
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/lte_mro_source';
 --山西现场
 drop table if exists tb_xdr_ifc_sgs;
 CREATE EXTERNAL TABLE tb_xdr_ifc_sgs(
@@ -8610,7 +8676,7 @@ LOCATION
 
 --山西现场
 drop table if exists tb_xdr_ifc_uu_new;
-CREATE TABLE tb_xdr_ifc_uu_new(
+CREATE external TABLE tb_xdr_ifc_uu_new(
   length bigint,
   city string,
   interface int,
@@ -8673,11 +8739,14 @@ CREATE TABLE tb_xdr_ifc_uu_new(
   bearer15status string,
   rangetime string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+location ''
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_uu';
 
 --山西现场
 drop table if exists tb_xdr_ifc_x2_new;
-CREATE TABLE tb_xdr_ifc_x2_new(
+CREATE external TABLE tb_xdr_ifc_x2_new(
   length bigint,
   city string,
   interface bigint,
@@ -8734,7 +8803,9 @@ CREATE TABLE tb_xdr_ifc_x2_new(
   bearer15status bigint,
   rangetime string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_x2';
 
 --山西现场
 drop table if exists grid_rru;
@@ -8746,7 +8817,7 @@ ROW FORMAT DELIMITED
 
 --山西现场
 drop table if exists tb_xdr_ifc_gmmwmgmimjisc_new;
-CREATE TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
+CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   length int,
   city string,
   interface int,
@@ -8832,7 +8903,9 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_mw';
 
 --山西现场
 drop table if exists tb_xdr_ifc_gxrx_new;
@@ -9162,7 +9235,7 @@ ROW FORMAT DELIMITED
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_http_new;
-CREATE TABLE tb_xdr_ifc_s1u_http_new(
+CREATE external TABLE tb_xdr_ifc_s1u_http_new(
   length bigint,
   city bigint,
   interface bigint,
@@ -9244,11 +9317,12 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
-
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1u_http_new';
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_mms_new;
-CREATE TABLE tb_xdr_ifc_s1u_mms_new(
+CREATE external TABLE tb_xdr_ifc_s1u_mms_new(
   length bigint,
   city bigint,
   interface bigint,
@@ -9324,7 +9398,9 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1u_mms';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_p2p_new;
@@ -9459,7 +9535,7 @@ ROW FORMAT DELIMITED
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_rtsp_new;
-CREATE TABLE tb_xdr_ifc_s1u_rtsp_new(
+CREATE external TABLE tb_xdr_ifc_s1u_rtsp_new(
   length bigint,
   city bigint,
   interface bigint,
@@ -9527,7 +9603,9 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ',';
+  FIELDS TERMINATED BY ','
+location
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1u_rtsp_new';
 
 --山西现场
 drop table if exists tb_xdr_ifc_s1u_voip_new;
