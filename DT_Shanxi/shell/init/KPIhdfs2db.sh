@@ -40,3 +40,4 @@ sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/imsi_cell_hour_http/dt
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/sgw_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} 22 2
 
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/zc_city_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} 50 2
+
