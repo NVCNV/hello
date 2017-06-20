@@ -2,8 +2,7 @@
 ANALY_DATE=$1
 DB=$2
 CAL_DATE="${ANALY_DATE:0:(4)}-${ANALY_DATE:4:(2)}-${ANALY_DATE:6:(2)} 00:00:00"
-
-
+echo $DB
 
 hive<<EOF
 set mapreduce.map.memory.mb=4096;set mapreduce.reduce.memory.mb=8192;set mapreduce.map.java.opts=-Xmx3482m;set mapreduce.reduce.java.opts=-Xmx6963m;

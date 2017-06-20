@@ -4,6 +4,8 @@ mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 DB=$2
+echo $DB
+
 echo "CRH_cell_day_KPI_new.sh ${ANALY_DATE} ${DB}"
 ./CRH_cell_day_KPI_new.sh ${ANALY_DATE} ${DB} &
 echo "CRH_IMSI_cell_day_KPI_new.sh ${ANALY_DATE} ${DB}"
