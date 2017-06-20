@@ -75,7 +75,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |min(gridcenterlongitude) as minlongitude,
             |min(gridcenterlatitude) as minlatitude
             |from $SDB.lte_mro_source
-            |where dt=$ANALY_DATE  and  h=$ANALY_HOUR)t2
+            |where dt=$ANALY_DATE  and  h=$ANALY_HOUR and gridcenterlatitude>0)t2
             |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
             |t1.shapeminy>=t2.minlatitude and t1.shapemaxy<t2.maxlatitude)s2
             |where s2.shapeminx <= s1.gridcenterlongitude and s2.shapemaxx>s1.gridcenterlongitude and
