@@ -78,8 +78,8 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |where dt=$ANALY_DATE  and  h=$ANALY_HOUR)t2
             |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
             |t1.shapeminy>=t2.minlatitude and t1.shapemaxy<t2.maxlatitude)s2
-            |where s2.shapeminx <= s1.gridcenterlatitude and s2.shapemaxx>s1.gridcenterlongitude and
-            |s2.shapeminy<s1.gridcenterlongitude
+            |where s2.shapeminx <= s1.gridcenterlongitude and s2.shapemaxx>s1.gridcenterlongitude and
+            |s2.shapeminy<s1.gridcenterlatitude
             |and s2.shapemaxy>s1.gridcenterlatitude)x2
             |on x2.gridcenterlongitude=x1.gridcenterlongitude
             |and x2.gridcenterlatitude=x1.gridcenterlatitude
