@@ -7545,62 +7545,57 @@ LOCATION
 
 drop table if exists mr_gt_grid_ana_base60;
 CREATE TABLE mr_gt_grid_ana_base60(
-  cellid int, 
-  rruid string, 
-  gridid int, 
-  ttime string, 
-  dir_state int, 
-  elong int, 
-  elat int, 
-  avgrsrpx int, 
-  commy int, 
-  avgrsrqx int, 
-  ltecoverratex int, 
-  weakcoverratex int, 
-  overlapcoverratex int, 
-  overlapcoverratey int, 
-  upsigrateavgx int, 
-  upsigrateavgy int, 
-  updiststrox int, 
-  updiststroy int, 
-  model3diststrox int, 
-  model3diststroy int, 
-  uebootx int, 
+  gridid int,
+  ttime string,
+  dir_state int,
+  cellid int,
+  rruid string,
+  avgrsrpx int,
+  commy int,
+  avgrsrqx int,
+  ltecoverratex int,
+  weakcoverratex int,
+  overlapcoverratex int,
+  overlapcoverratey int,
+  upsigrateavgx int,
+  upsigrateavgy int,
+  updiststrox int,
+  updiststroy int,
+  model3diststrox int,
+  model3diststroy int,
+  uebootx int,
   uebooty int)
-PARTITIONED BY ( 
-  dt string, 
+PARTITIONED BY (
+  dt string,
   h string)
-ROW FORMAT DELIMITED 
+ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 drop table if exists mr_gt_grid_ana_baseday;
-  CREATE TABLE mr_gt_grid_ana_baseday(
-  cellid int, 
-  rruid string, 
-  gridid int, 
-  ttime string, 
-  dir_state int, 
-  elong int, 
-  elat int, 
-  avgrsrpx int, 
-  commy int, 
-  avgrsrqx int, 
-  ltecoverratex int, 
-  weakcoverratex int, 
-  overlapcoverratex int, 
-  overlapcoverratey int, 
-  upsigrateavgx int, 
-  upsigrateavgy int, 
-  updiststrox int, 
-  updiststroy int, 
-  model3diststrox int, 
-  model3diststroy int, 
-  uebootx int, 
+ CREATE TABLE mr_gt_grid_ana_baseday(
+  gridid int,
+  ttime string,
+  dir_state int,
+  cellid int,
+  rruid string,
+  avgrsrpx int,
+  commy int,
+  avgrsrqx int,
+  ltecoverratex int,
+  weakcoverratex int,
+  overlapcoverratex int,
+  overlapcoverratey int,
+  upsigrateavgx int,
+  upsigrateavgy int,
+  updiststrox int,
+  updiststroy int,
+  model3diststrox int,
+  model3diststroy int,
+  uebootx int,
   uebooty int)
-PARTITIONED BY ( 
-  dt string
-)
-ROW FORMAT DELIMITED 
+PARTITIONED BY (
+  dt string)
+ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
 drop table if exists volte_gt_cell_ana_base60;
