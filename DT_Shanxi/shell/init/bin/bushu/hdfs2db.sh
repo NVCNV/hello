@@ -85,7 +85,8 @@ user_home=imsi,pnumber,home
 
 VOLTE_CELLMR=cellid,meatime,xdrid,rip
 
-numberiden=imsi,xdrid,cellid,upordown,groupname,intime,outtime,instation,outstation,sorttime
+#numberiden=imsi,xdrid,cellid,upordown,groupname,intime,outtime,instation,outstation,sorttime
+numberiden=trainnumber,upordown,groupname
 
 if [ $COL_NUM = 1 ] 
 then
