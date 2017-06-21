@@ -27,6 +27,7 @@ echo "CRH_export_mr_cell_grid_day_KPI_new.sh"
 ./CRH_export_mr_cell_grid_day_KPI_new.sh ${ANALY_DATE} ${DB} &
 echo "CRH_export_mr_imsi_cell_grid_day_KPI_new.sh"
 ./CRH_export_mr_imsi_cell_grid_day_KPI_new.sh ${ANALY_DATE} ${DB} &
+
 wait
 #echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_user_ana_baseday volte_gt_user_ana_baseda 14 2"
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_user_ana_baseday/dt=${ANALY_DATE} volte_gt_user_ana_baseday 14 2 
