@@ -8,7 +8,7 @@ INITDB=$4
 hive<<EOF
 USE ${DB};
 alter table lte_mro_source_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
-alter table lte_mro_source_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/ltemrosource/${ANALY_DATE}/${ANALY_HOUR}";
+alter table lte_mro_source_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/lte_mro_source/${ANALY_DATE}/${ANALY_HOUR}";
 
 alter table ${INITDB}.lte_mro_source drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table ${INITDB}.lte_mro_source add partition(dt="$ANALY_DATE",h="$ANALY_HOUR")location "/datang2/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}";
