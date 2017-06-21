@@ -37,8 +37,8 @@ echo $ANALY_HOUR
 mkdir /dt/bin/sqoop_log
 
 ./repeat_volteTrain.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
-./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} shanxikpi2 >> job_logs.log 2>&1
-./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} shanxikpi2 ddl_for_kpi >> job_logs.log 2>&1
+./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} result init >> job_logs.log 2>&1
+./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} result  init >> job_logs.log 2>&1
 
 
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}/tb* tb_xdr_ifc_gmmwmgmimjisc_new 19 2 >> /dt/bin/sqoop_log/mw_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
@@ -50,7 +50,7 @@ mkdir /dt/bin/sqoop_log
 #./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/sgs/${ANALY_DATE}/${ANALY_HOUR} tb_xdr_ifc_sgs_new 24 2 >> job_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/lte_mro_source/${ANALY_DATE}_${ANALY_HOUR} lte_mro_source_new 26 2 >>/dt/bin/sqoop_log/mr_source_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 #./hdfs2db.sh hdfs://dtcluster/datang2/output/userHome/${ANALY_DATE}_${ANALY_HOUR} user_home 31 2  >> job_logs.log 2>&1
-#./hdfs2db.sh hdfs://dtcluster/datang2/output/trainiden/${ANALY_DATE}_${ANALY_HOUR} numberiden 35 2 >> job_logs.log 2>&1
+./hdfs2db.sh hdfs://dtcluster/datang2/output/trainiden/${ANALY_DATE} numberiden 35 2 >> job_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/volte_gtuser_data/${ANALY_DATE}/${ANALY_HOUR} volte_gtuser_data 28 2 >> /dt/bin/sqoop_log/gtuser_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u1/${ANALY_DATE}/${ANALY_HOUR} u1 27 2 >> /dt/bin/sqoop_log/u1_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u2/${ANALY_DATE}/${ANALY_HOUR} u2 27 2 >> /dt/bin/sqoop_log/u2_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
