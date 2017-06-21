@@ -8787,6 +8787,9 @@ length int,
   flag int,
   beforeflag int,
   eupordown int)
+PARTITIONED BY (
+  dt string,
+  h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 location
