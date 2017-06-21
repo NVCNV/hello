@@ -9,7 +9,7 @@ import org.apache.spark.sql.SparkSession
   */
 class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String) {
 
-  var oracle = "jdbc:oracle:thin:@"+ORCAL
+  val oracle:String = "jdbc:oracle:thin:@"+ORCAL
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
       InitLteCell(sparkSession)
@@ -86,7 +86,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
          """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
 
-
+        /*sql("select oid from lte_mro_source_ana_tmp").show(50)*/
 
     }
 
@@ -125,7 +125,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          """.stripMargin).createOrReplaceTempView("Mr_InDoorAna_Temp")
     }
   def InitLteCell(sparkSession: SparkSession): Unit ={
-    val CellDF = sparkSession.read
+    sparkSession.read
       .format("jdbc")
       .option("url", s"$oracle")
       .option("dbtable", "ltecell")
