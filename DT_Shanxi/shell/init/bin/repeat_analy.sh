@@ -55,8 +55,8 @@ mkdir /dt/bin/sqoop_log
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u1/${ANALY_DATE}/${ANALY_HOUR} u1 27 2 >> /dt/bin/sqoop_log/u1_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u2/${ANALY_DATE}/${ANALY_HOUR} u2 27 2 >> /dt/bin/sqoop_log/u2_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u3/${ANALY_DATE}/${ANALY_HOUR} u3 27 2 >> /dt/bin/sqoop_log/u3_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
-./hdfs2db.sh hdfs://dtcluster/datang2/output/u4/${ANALY_DATE} u4 27 2 >> /dt/bin/sqoop_log/u4_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
-#./hdfs2db.sh hdfs://dtcluster/datang2/output/updowntrain/${ANALY_DATE}_${ANALY_HOUR} upordown 29 2 >> /dt/bin/sqoop_log/upordown_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
+#./hdfs2db.sh hdfs://dtcluster/datang2/output/u4/${ANALY_DATE} u4 27 2 >> /dt/bin/sqoop_log/u4_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
+#./hdfs2db.sh hdfs://dtcluster/datang2/output/updowntrain/${ANALY_DATE} upordown 29 2 >> /dt/bin/sqoop_log/upordown_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/business/${ANALY_DATE}/${ANALY_HOUR}/loc_guser_mark* loc_guser_mark 8 2 >> /dt/bin/sqoop_log/business_guser_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/free/${ANALY_DATE}/${ANALY_HOUR}/VOLTE_GT_FREE_USER* volte_gt_free_user_data 30 2 >> /dt/bin/sqoop_log/free_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/business/${ANALY_DATE}/${ANALY_HOUR}/VOLTE_GT_BUSI_USER* volte_gt_busi_user_data 9 2 >> /dt/bin/sqoop_log/business_user_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
