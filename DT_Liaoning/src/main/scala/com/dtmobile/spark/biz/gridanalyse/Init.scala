@@ -52,10 +52,11 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             | t1.shapeminy<t2.maxlongitude and t1.shapemaxy<t2.maxlatitude """.stripMargin)
         print("----------------------"+t+"--------------------------------------")*/
 
-     sql(
-        s"""|SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
+    /* sql(
+        s"""|
+            |SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
             |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
-            |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
+            |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x1.gridcenterlongitude,x1.gridcenterlatitude, x1.KPI1 as kpi1
             |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
             |, x1.KPI7 as kpi7, x1.KPI8 as kpi8, x1.KPI9 as kpi9, x1.KPI10 as kpi10, x1.KPI11 as kpi11
             |, x1.KPI12 as kpi12, x1.KPI13 as kpi13, x1.KPI14 as kpi14, x1.KPI15 as kpi15, x1.KPI16 as kpi16
@@ -63,30 +64,74 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |, x1.KPI22 as kpi22, x1.KPI23 as kpi23, x1.KPI24 as kpi24, x1.KPI25 as kpi25, x1.KPI26 as kpi26
             |, x1.KPI27 as kpi27, x1.KPI28 as kpi28, x1.KPI29 as kpi29,
             |x2.OBJECTID as OID
-            |from $SDB.lte_mro_source x1
-            |left join
-            |(select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID
-            |from
-            |(select distinct gridcenterlongitude,gridcenterlatitude
-            |from $SDB.lte_mro_source
-            |where dt=$ANALY_DATE  and  h=$ANALY_HOUR)s1,
-            |(select * from $DDB.grid_view t1 ,
-            |(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
-            |min(gridcenterlongitude) as minlongitude,
-            |min(gridcenterlatitude) as minlatitude
-            |from $SDB.lte_mro_source
-            |where dt=$ANALY_DATE  and  h=$ANALY_HOUR and gridcenterlatitude>0)t2
-            |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
-            |t1.shapeminy>=t2.minlatitude and t1.shapemaxy<t2.maxlatitude)s2
-            |where s2.shapeminx <= s1.gridcenterlongitude and s2.shapemaxx>s1.gridcenterlongitude and
-            |s2.shapeminy<s1.gridcenterlatitude
-            |and s2.shapemaxy>s1.gridcenterlatitude)x2
-            |on x2.gridcenterlongitude=x1.gridcenterlongitude
-            |and x2.gridcenterlatitude=x1.gridcenterlatitude
-            |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
+            |from (select a.*,cast(a.gridcenterlongitude*100 as bigint) as lon,cast(a.gridcenterlatitude*100 as bigint) as lat
+            |from $SDB.lte_mro_source a where dt=$ANALY_DATE and h=$ANALY_HOUR) x1
+            |left join $DDB.grid_new x2 on  x1.lon=x2.xx and x1.lat=x2.yy
+            |where (x2.shapeminx <= x1.gridcenterlongitude and x2.shapemaxx>x1.gridcenterlongitude and
+            |x2.shapeminy<x1.gridcenterlatitude
+            |and x2.shapemaxy>x1.gridcenterlatitude) or x2.OBJECTID is NULL
+            |
+         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")*/
+      sql(
+        s"""
+           |
+           |select distinct t.* from
+           |(
+           |select a.*, cast(shapeminx*100 as bigint) as xx,cast(shapeminy*100 as bigint) as yy from $DDB.grid_view a
+           |union
+           |select b.*, cast(shapemaxx*100 as bigint) as xx,cast(shapeminy*100 as bigint) as yy from $DDB.grid_view b
+           |union
+           |select c.*, cast(shapeminx*100 as bigint) as xx,cast(shapemaxy*100 as bigint) as yy from $DDB.grid_view c
+           |union
+           |select d.*, cast(shapemaxx*100 as bigint) as xx,cast(shapemaxy*100 as bigint) as yy from $DDB.grid_view d
+           |) t
+           |
+         """.stripMargin).createOrReplaceTempView("grid_new")
+
+
+      sql(
+        s"""
+           |
+           |SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
+           |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
+           |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
+           |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
+           |, x1.KPI7 as kpi7, x1.KPI8 as kpi8, x1.KPI9 as kpi9, x1.KPI10 as kpi10, x1.KPI11 as kpi11
+           |, x1.KPI12 as kpi12, x1.KPI13 as kpi13, x1.KPI14 as kpi14, x1.KPI15 as kpi15, x1.KPI16 as kpi16
+           |, x1.KPI17 as kpi17, x1.KPI18 as kpi18, x1.KPI19 as kpi19, x1.KPI20 as kpi20, x1.KPI21 as kpi21
+           |, x1.KPI22 as kpi22, x1.KPI23 as kpi23, x1.KPI24 as kpi24, x1.KPI25 as kpi25, x1.KPI26 as kpi26
+           |, x1.KPI27 as kpi27, x1.KPI28 as kpi28, x1.KPI29 as kpi29,
+           |x2.OBJECTID as OID
+           |from $SDB.lte_mro_source x1
+           |left join
+           |(
+           |select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID
+           |from
+           |(select distinct gridcenterlongitude,gridcenterlatitude,cast(gridcenterlongitude*100 as bigint) as lon,cast(gridcenterlatitude*100 as bigint) as lat
+           |from $SDB.lte_mro_source
+           |where dt=$ANALY_DATE and h=$ANALY_HOUR)s1 left join
+           |(select * from grid_new t1 ,
+           |(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
+           |min(gridcenterlongitude) as minlongitude,
+           |min(gridcenterlatitude) as minlatitude
+           |from $SDB.lte_mro_source
+           |where dt=$ANALY_DATE and h=$ANALY_HOUR and gridcenterlatitude>0)t2
+           |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
+           |t1.shapeminy>=t2.minlatitude and t1.shapemaxy<t2.maxlatitude)s2 on s1.lon=s2.xx and s1.lat=s2.yy
+           |where s2.shapeminx <= s1.gridcenterlongitude and s2.shapemaxx>s1.gridcenterlongitude and
+           |s2.shapeminy<s1.gridcenterlatitude
+           |and s2.shapemaxy>s1.gridcenterlatitude)x2
+           |on x2.gridcenterlongitude=x1.gridcenterlongitude
+           |and x2.gridcenterlatitude=x1.gridcenterlatitude
+           |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
+           |
          """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
 
-        /*sql("select oid from lte_mro_source_ana_tmp").show(50)*/
+
+
+
+      sql("select count(*) from grid_new").show()
+        sql("select oid from lte_mro_source_ana_tmp where oid>0").show()
 
     }
 
