@@ -70,7 +70,7 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
            |           CASE
            |            WHEN SIGN(s.kpi1 - ${thrScGoodCoverRSRP}) = 1 THEN 1
            |            ELSE  0 END )
-           |  FROM lte_mro_source_tmp s
+           |  FROM lte_mro_source_ana_tmp s
            |  left join lte2lteadj_pci p
            |    ON p.eNodeBId = s.enbID
            |   AND p.cellID = s.cellId
