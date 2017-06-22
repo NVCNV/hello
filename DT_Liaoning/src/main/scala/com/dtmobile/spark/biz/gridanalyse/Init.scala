@@ -109,7 +109,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |from
            |(select distinct gridcenterlongitude,gridcenterlatitude,cast(gridcenterlongitude*100 as bigint) as lon,cast(gridcenterlatitude*100 as bigint) as lat
            |from $SDB.lte_mro_source
-           |where dt=$ANALY_DATE and h=$ANALY_HOUR)s1 left join
+           |where dt=$ANALY_DATE and h=$ANALY_HOUR)s1  left join
            |(select * from grid_new t1 ,
            |(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
            |min(gridcenterlongitude) as minlongitude,
@@ -124,14 +124,10 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |on x2.gridcenterlongitude=x1.gridcenterlongitude
            |and x2.gridcenterlatitude=x1.gridcenterlatitude
            |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
+           |where x1.mrname = 'MR.LteScRSRP'
            |
          """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
 
-
-
-
-      sql("select count(*) from grid_new").show()
-        sql("select oid from lte_mro_source_ana_tmp where oid>0").show()
 
     }
 
