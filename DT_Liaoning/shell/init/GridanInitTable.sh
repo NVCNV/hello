@@ -6,8 +6,8 @@ INITDATABSES=$2
 SOURCEDIR=$3
 
 
-usage="Please input DATABASE,INITDATABSES,SOURCEDIR
-       Example  sh GridanInitTable.sh morpho liaoning datang "
+usage="Please input ResultDatabase,InitDatabase,SourceDir
+       Example [ sh GridanInitTable.sh morpho liaoning datang ]"
 
 # if no args specified, show usage
 if [ $# -le 2 ]; then
@@ -89,66 +89,10 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
-drop table if exists LTE_MRO_SOURCE_TMP;
-create table LTE_MRO_SOURCE_TMP
-(
-  OBJECTID               int ,
-  VID                    int ,
-  STARTTIME              string ,
-  ENDTIME                string ,
-  TIMESEQ                string,
-  ENBID                  int ,
-  MRNAME                 string,
-  CELLID                 int ,
-  MMEUES1APID            int,
-  MMEGROUPID             int,
-  MMECODE                int,
-  MEATIME                string,
-  GRIDCENTERLONGITUDE    string,
-  GRIDCENTERLATITUDE     string,
-  OLDGRIDCENTERLONGITUDE string,
-  OLDGRIDCENTERLATITUDE  string,
-  KPI1                   int,
-  KPI2                   int,
-  KPI3                   int,
-  KPI4                   int,
-  KPI5                   int,
-  KPI6                   int,
-  KPI7                   int,
-  KPI8                   int,
-  KPI9                   int,
-  KPI10                  int,
-  KPI11                  int,
-  KPI12                  int,
-  KPI13                  int,
-  KPI14                  int,
-  KPI15                  int,
-  KPI16                  int,
-  KPI17                  int,
-  KPI18                  int,
-  KPI19                  int,
-  KPI20                  int,
-  KPI21                  int,
-  KPI22                  int,
-  KPI23                  int,
-  KPI24                  int,
-  KPI25                  int,
-  KPI26                  int,
-  KPI27                  int,
-  KPI28                  int,
-  KPI29                  int,
-  OID                    int
-)PARTITIONED BY (
-  dt string,
-  h string)
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','  ;
-
 
 
 drop table lte_mro_disturb_pretreate60 ;
 CREATE TABLE lte_mro_disturb_pretreate60(
-  id bigint,
   starttime string,
   endtime string,
   timeseq bigint,
@@ -218,7 +162,6 @@ ROW FORMAT DELIMITED
 
 drop table lte_mrs_dlbestrow_ana60;
 CREATE TABLE lte_mrs_dlbestrow_ana60(
-  id bigint, 
   starttime string, 
   endtime string, 
   timeseq bigint, 
@@ -263,7 +206,6 @@ ROW FORMAT DELIMITED
 drop table LTE_MRO_JOINUSER_ANA60;
 create table LTE_MRO_JOINUSER_ANA60
 (
-  ID                 bigint,
   STARTTIME          string,
   ENDTIME            string,
   TIMESEQ            bigint,
@@ -291,7 +233,6 @@ ROW FORMAT DELIMITED
 drop table LTE_MRS_OVERCOVER_ANA60;
 create table LTE_MRS_OVERCOVER_ANA60
 (
-  ID                             bigint,
   STARTTIME                      string,
   ENDTIME                        string,
   TIMESEQ                        bigint,
@@ -619,7 +560,6 @@ ROW FORMAT DELIMITED
 drop table if exists LTE_MRO_DISTURB_SEC;
  create table LTE_MRO_DISTURB_SEC
 (
-  ID         int ,
   STARTTIME  string ,
   ENDTIME    string ,
   PERIOD     int ,
@@ -712,7 +652,6 @@ ROW FORMAT DELIMITED
 
 drop table if exists lte_mro_disturb_ana;
 CREATE TABLE lte_mro_disturb_ana(
-  id int, 
   starttime string, 
   endtime string, 
   period int, 
@@ -742,7 +681,6 @@ ROW FORMAT DELIMITED
 
   drop table if exists lte_mro_disturb_mix;
   CREATE TABLE lte_mro_disturb_mix(
-  id int, 
   starttime string, 
   endtime string, 
   period int, 
@@ -775,7 +713,6 @@ ROW FORMAT DELIMITED
 
 drop table if exists lte_mro_adjcover_ana60;
 CREATE TABLE lte_mro_adjcover_ana60(
-  id int, 
   starttime string, 
   endtime string, 
   timeseq int, 
@@ -793,65 +730,10 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop table if exists LTE_MRO_SOURCE_TMP;
-create table LTE_MRO_SOURCE_TMP
-(
-  OBJECTID               int ,
-  VID                    int ,
-  STARTTIME              string ,
-  ENDTIME                string ,
-  TIMESEQ                string,
-  ENBID                  int ,
-  MRNAME                 string,
-  CELLID                 int ,
-  MMEUES1APID            int,
-  MMEGROUPID             int,
-  MMECODE                int,
-  MEATIME                string,
-  GRIDCENTERLONGITUDE    string,
-  GRIDCENTERLATITUDE     string,
-  OLDGRIDCENTERLONGITUDE string,
-  OLDGRIDCENTERLATITUDE  string,
-  KPI1                   int,
-  KPI2                   int,
-  KPI3                   int,
-  KPI4                   int,
-  KPI5                   int,
-  KPI6                   int,
-  KPI7                   int,
-  KPI8                   int,
-  KPI9                   int,
-  KPI10                  int,
-  KPI11                  int,
-  KPI12                  int,
-  KPI13                  int,
-  KPI14                  int,
-  KPI15                  int,
-  KPI16                  int,
-  KPI17                  int,
-  KPI18                  int,
-  KPI19                  int,
-  KPI20                  int,
-  KPI21                  int,
-  KPI22                  int,
-  KPI23                  int,
-  KPI24                  int,
-  KPI25                  int,
-  KPI26                  int,
-  KPI27                  int,
-  KPI28                  int,
-  KPI29                  int,
-  OID                    int
-)PARTITIONED BY ( 
-  dt string, 
-  h string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY ','  ;
 
   drop table if exists LTE_MRO_DISTURB_SEC;
     create table LTE_MRO_DISTURB_SEC
 (
-  ID         int ,
   STARTTIME  string ,
   ENDTIME    string ,
   PERIOD     int ,
