@@ -1,4 +1,4 @@
 # importHbaseData.job
 type=command
-dependencies=NsspAnaly
+dependencies=kpiAnaly
 command=sh /dt/bin/importHbaseData.sh ${ANALY_DATE} ${ANALY_HOUR}

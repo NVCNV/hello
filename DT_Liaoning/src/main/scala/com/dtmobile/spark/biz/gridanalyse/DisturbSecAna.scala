@@ -39,6 +39,19 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
         sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
       }
     }
+
+    val s = 71-cnt
+    for(i <- 0 to s){
+      if(i <= s){
+        sqlSecSrv += s" ,' ' as a${i} "
+        sqlSecAdj += s" ,' ' as a${i} "
+      }
+      /*else{
+        sqlSecSrv += " ' '"
+        sqlSecAdj += " ' '"
+      }*/
+    }
+
     // sqlSecSrv += ",'','','','','','','','','','','','','','','','','','', '','','','','','','','','','','','','','','','','','', '','','','','','',  '','','','','','','','','','','','','','','','','','','','','','','','','','','','',''"
     sqlSecSrv += s" FROM (SELECT t.enbID,t.cellID,t.meaTime,t.kpi1,t.kpi9,t.kpi10 FROM lte_mro_source_ana_tmp t WHERE t.VID = 0 ) s  LEFT JOIN ltecell c ON s.enbID = c.enodebId AND s.CellID = c.cellId WHERE 1=1 GROUP BY s.enbID,s.cellID,c.MmeGroupId,c.Mmeid,c.CellName,s.kpi10,s.kpi9"
     sqlSecAdj += s" FROM lte_mro_source_ana_tmp s,lte2lteadj_pci p WHERE p.eNodeBId =s.enbID AND p.cellID = s.cellId AND p.adjPci = s.kpi12 AND P.ADJFREQ1 = s.kpi11 GROUP BY p.adjENodeBId,p.adjCellId ,p.adjMmeGroupId,p.adjMmeId,p.adjCellName,p.adjpci,p.adjfreq1 "
@@ -48,12 +61,14 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
     sql(s"""alter table lte_mro_disturb_sec add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
            LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
+
     sql(s"""
         ${sqlSecSrv}
       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
     sql(s"""
         ${sqlSecAdj}
       """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
 
   }
 
@@ -107,6 +122,11 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
       }
     }
     pos
+  }
+
+  def main(args: Array[String]) {
+    val fString : String = "-120;-110;-100;-90;-80;-70;-60;";
+    print(fString.split(";").length)
   }
 }
 

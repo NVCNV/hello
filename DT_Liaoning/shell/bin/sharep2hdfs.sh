@@ -7,11 +7,15 @@ mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 ANALY_HOUR=$2
-
+echo "@@@@@@@@@@@@${ANALY_DATE}@@@@@@@@@@@@@"
+echo "@@@@@@@@@@@@${ANALY_HOUR}@@@@@@@@@@@@@"
 HIVE_PATH="hdfs://dtcluster/datang"
 HIVE_TABLES="s1mme_orgn volte_rx s1u_http_orgn volte_sv volte_orgn"
 LOCAL_PATH=/data1/taiyue/TEMP
 echo "`date '+/%y/%m/%d %H:%M:%S'` INFO begin ..."
+if [ ! -d "${LOCAL_PATH}" ]; then
+    sh /dt/bin/sshfs.sh
+fi
 for tableName in ${HIVE_TABLES}
 do
 hdfs dfs -test -e ${HIVE_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}
