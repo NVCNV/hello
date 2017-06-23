@@ -25,7 +25,6 @@ class DisturbAnalysis(ANALY_DATE: String, ANALY_HOUR: String,  period: String, a
       """)
     sql(s"""
            |  SELECT
-           |         '',
            |         '$cal_date' as starttime,
            |         '$cal_date2' as endtime,
            |         ${period} as period,
