@@ -45,7 +45,6 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
     // LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_adjcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR'
     sql(s"""
            |SELECT
-           |       '' as id,
            |        '$cal_date' as starttime,
            |       '$cal_date2' as endtime,
            |       $ANALY_HOUR as timeseq ,
