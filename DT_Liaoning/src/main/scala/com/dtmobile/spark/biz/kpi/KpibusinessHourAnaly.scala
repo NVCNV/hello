@@ -559,7 +559,12 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |sum(Otheryjtdownflow),
        |sum(Otheryjtdowntime),
        |sum(OtheryjtFlow),
-       |sum(OtheryjtTime)
+       |sum(OtheryjtTime),
+       |sum(internetvisits),
+       |sum(miguvisits),
+       |sum(internetbusiness),
+       |sum(migubusiness),
+       |sum(ServiceIMresptimeall)
      """.stripMargin
   val busniessDns=
     s"""
@@ -1109,7 +1114,12 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |0 as Otheryjtdownflow,
        |0 as Otheryjtdowntime,
        |0 as OtheryjtFlow,
-       |0 as OtheryjtTime
+       |0 as OtheryjtTime,
+       |0 as internetvisits,
+       |0 as miguvisits,
+       |0 as internetbusiness,
+       |0 as migubusiness,
+       |0 as ServiceIMresptimeall
      """.stripMargin
   val businesskpi=
     s"""
@@ -1326,7 +1336,6 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 100 then (ProcedureEndTime - ProcedureStartTime)*${onoff} else 0 end)internetTime,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 101 then (ProcedureEndTime - ProcedureStartTime)*${onoff} else 0 end)miguTime,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 then (ProcedureEndTime - ProcedureStartTime) else 0 end)otherTime,
-       |
  |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=1 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then 1 else 0 end)browsesurfresp,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=1 then 1 else 0 end)browsesurfreq,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=1 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then httpfirstrede else 0 end)browsesurfresptimeall,
@@ -1363,18 +1372,18 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=170 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295 then (case when (httplastrede-httpfirstrede)<=10 then httpfirstrede else (httplastrede-httpfirstrede) end) else 0 end)browsetoutiaodowntime,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=170 and uldata is not null and dldata is not null then uldata+dldata else 0 end)browsetoutiaoFlow,
        |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=170 then (ProcedureEndTime - ProcedureStartTime) else 0 end)browsetoutiaoTime,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then 1 else 0 end)browseChromeresp,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 then 1 else 0 end)browseChromereq,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then httpfirstrede else 0 end)browseChromeresptimeall,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then 1 else 0 end)browseChromeshowsucc,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then httplastrede else 0 end)browseChromeshowtimeall,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then dldata else 0 end)browseChromedownflow,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295 then (case when (httplastrede-httpfirstrede)<=10 then httpfirstrede else (httplastrede-httpfirstrede) end) else 0 end)browseChromedowntime,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and uldata is not null and dldata is not null then uldata+dldata else 0 end)browseChromeFlow,
+       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 then (ProcedureEndTime - ProcedureStartTime) else 0 end)browseChromeTime,
        |""".stripMargin
   val businesskpi1=
     s"""
-       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then 1 else 0 end)browseChromeresp,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 then 1 else 0 end)browseChromereq,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httpfirstrede<>0 and  httpfirstrede is not null and httpfirstrede<>4294967295 then httpfirstrede else 0 end)browseChromeresptimeall,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then 1 else 0 end)browseChromeshowsucc,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then httplastrede else 0 end)browseChromeshowtimeall,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede <>0 and  httplastrede  is not null and httplastrede <>4294967295 then dldata else 0 end)browseChromedownflow,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295 then (case when (httplastrede-httpfirstrede)<=10 then httpfirstrede else (httplastrede-httpfirstrede) end) else 0 end)browseChromedowntime,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 and uldata is not null and dldata is not null then uldata+dldata else 0 end)browseChromeFlow,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 15 and appsubtype=7031 then (ProcedureEndTime - ProcedureStartTime) else 0 end)browseChromeTime,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=7152 and httpfirstrede<>0 and httpfirstrede is not null and httpfirstrede<>4294967295 then 1  else 0 end)otherhttpresp,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=7152 then 1  else 0 end)otherhttpreq,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=7152 and httpfirstrede<>0 and httpfirstrede is not null and httpfirstrede<>4294967295 then httpfirstrede  else 0 end)otherhttpresptimeall,
@@ -1440,8 +1449,6 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appsubtype=9 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295  then case when (httplastrede-httpfirstrede)<=10 then httpfirstrede else (httplastrede-httpfirstrede) end  else 0 end)imwechatdowntime,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appsubtype=9 then uldata + dldata  else 0 end)imwechatFlow,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and appsubtype=9 then procedureendtime - procedurestarttime  else 0 end)imwechatTime,
-       |       |
-       | |
  | |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 2 and appsubtype=1 and appstatus=0 then 1  else 0 end)readcmreadsucc,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 2 and appsubtype=1 then 1  else 0 end)readcmreadreq,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 2 and appsubtype=1 and httpfirstrede<>0 and httpfirstrede is not null and httpfirstrede<>4294967295  then httpfirstrede  else 0 end)readcmreadresptimeall,
@@ -1665,7 +1672,12 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=5 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295  then dldata  else 0 end)Otheryjtdownflow,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=5 and httplastrede<>0 and httplastrede is not null and httplastrede<>4294967295  then case when (httplastrede-httpfirstrede)<=10 then httpfirstrede else (httplastrede-httpfirstrede) end  else 0 end)Otheryjtdowntime,
        |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=5 then uldata + dldata  else 0 end)OtheryjtFlow,
-       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=5 then procedureendtime - procedurestarttime  else 0 end)OtheryjtTime
+       |       |sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 21 and appsubtype=5 then procedureendtime - procedurestarttime  else 0 end)OtheryjtTime,
+       |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 100 then 1 else 0 end)internetvisits,
+       |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 101 then 1 else 0 end)miguvisits,
+       |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 100 and uldata is not null and dldata is not null then uldata+dldata else 0 end)internetbusiness,
+       |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 101 and uldata is not null and dldata is not null then uldata+dldata else 0 end)migubusiness,
+       |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and httpfirstrede is not null and httpfirstrede<>0 and httpfirstrede<>4294967295 then httpfirstrede else 0 end)ServiceIMresptimeall
      """.stripMargin
   def analyse(implicit sparkSession: SparkSession): Unit = {
     tacHourAnalyse(sparkSession)
@@ -1810,6 +1822,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |select
          |imsi,
          |msisdn,
+<<<<<<< HEAD
          |$busniessDns
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn
          """.stripMargin

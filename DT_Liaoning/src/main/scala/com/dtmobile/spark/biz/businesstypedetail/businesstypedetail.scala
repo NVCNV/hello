@@ -47,7 +47,7 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
          | when (httplastrede-httpfirstrede)<=10 then httpfirstrede
          | else (httplastrede-httpfirstrede) end) rede,
          | (case when (httpfirstrede is null or httpfirstrede=0 or httpfirstrede=4294967295 ) then 0 else 1 end) recnt
-         | from tb_xdr_ifc_http a) t1
+         | from $SDB.tb_xdr_ifc_http a) t1
          | inner join ltecell t2 on t1.ecgi=t2.cellid
          | where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          | group by

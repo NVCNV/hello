@@ -1,71 +1,163 @@
 package com.dtmobile.spark.biz.gridanalyse
 
 
-import com.dtmobile.util.DBUtil
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{SaveMode, SparkSession}
-import org.apache.spark.storage.StorageLevel
+
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
+import org.apache.spark.sql.SparkSession
+
 /**
   * Created by shenkaili on 17-5-8.
   */
-class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String) {
+class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String,sourceDir:String) {
 
-  var oracle = "jdbc:oracle:thin:@"+ORCAL
+  val oracle:String = "jdbc:oracle:thin:@"+ORCAL
+  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + s"$ANALY_HOUR:00:00"
+
+
+  var currentDate:String= ANALY_DATE
+  val currentHour = ANALY_HOUR.toInt
+  var nextHour = ""
+  if( 0<=currentHour && currentHour<9 ){
+    nextHour = "0"+currentHour.+(1)
+    currentDate=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
+  }else if(currentHour==23){
+    currentDate=getDaysBefore(cal_date)
+    nextHour =  " 00"
+  } else{
+    nextHour =  currentHour.+(1)+""
+    currentDate=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
+  }
+
+  val cal_date2= currentDate+nextHour+":00:00"
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
       InitLteCell(sparkSession)
-   TableUtil(sparkSession)
-    mrfilter(sparkSession)
-    lte2lteadj_f(sparkSession)
-     InDoorAna(sparkSession)
-    mrfilter(sparkSession)
+      TableUtil(sparkSession)
+      mrfilter(sparkSession)
+      lte2lteadj_f(sparkSession)
+      InDoorAna(sparkSession)
   }
     def mrfilter(sparkSession: SparkSession): Unit ={
-      val CellDF = sparkSession.read
+      /*val CellDF = sparkSession.read
         .format("jdbc")
         .option("url", s"$oracle")
         .option("dbtable", "grid_view")
         .option("user", "scott")
         .option("password", "tiger")
         .option("driver", "oracle.jdbc.driver.OracleDriver")
-        .load().createOrReplaceTempView("grid_view")
+        .load().createOrReplaceTempView("grid_view")*/
 //            val t= sparkSession.sql("select * from grid_view2").count()
       import sparkSession.sql
-//      sql(
-//        s"""|SELECT t1.OBJECTID as objectid, t1.VID as vid, t1.STARTTIME as starttime, t1.ENDTIME as endtime, t1.mrtime as timeseq
-//           | , t1.ENBID as enbid, t1.MRNAME as mrname, t1.CELLID as cellid, t1.MMEUES1APID as mmeues1apid, t1.MMEGROUPID as mmegroupid
-//           | , t1.MMECODE as mmecode, t1.MEATIME as meatime, t2.shapeminx as gridcenterlongitude,t2.shapemaxy as gridcenterlatitude, t1.KPI1 as kpi1
-//           | , t1.KPI2 as kpi2, t1.KPI3 as kpi3, t1.KPI4 as kpi4, t1.KPI5 as kpi5, t1.KPI6 as kpi6
-//           | , t1.KPI7 as kpi7, t1.KPI8 as kpi8, t1.KPI9 as kpi9, t1.KPI10 as kpi10, t1.KPI11 as kpi11
-//           | , t1.KPI12 as kpi12, t1.KPI13 as kpi13, t1.KPI14 as kpi14, t1.KPI15 as kpi15, t1.KPI16 as kpi16
-//           | , t1.KPI17 as kpi17, t1.KPI18 as kpi18, t1.KPI19 as kpi19, t1.KPI20 as kpi20, t1.KPI21 as kpi21
-//           | , t1.KPI22 as kpi22, t1.KPI23 as kpi23, t1.KPI24 as kpi24, t1.KPI25 as kpi25, t1.KPI26 as kpi26
-//           | , t1.KPI27 as kpi27, t1.KPI28 as kpi28, t1.KPI29 as kpi29,t2.OBJECTID as OID
-//           |FROM $SDB.lte_mro_source t1 left join grid_view2 t2 WHERE t1.mrname = 'MR.LteScRSRP' and t1.GRIDCENTERLONGITUDE > t2.shapeminx and t1.GRIDCENTERLONGITUDE < t2.shapemaxx
-//           |            and t1.GRIDCENTERLATITUDE > t2.shapeminy
-//           |            and t1.GRIDCENTERLATITUDE < t2.shapemaxy and ((ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x
-//           |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y)   or  (ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x1
-//           |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y1)) and t1.dt="$ANALY_DATE" and t1.h="$ANALY_HOUR"
-//         """.stripMargin).show
+      /*sql(
+        s"""|SELECT t1.OBJECTID as objectid, t1.VID as vid, t1.STARTTIME as starttime, t1.ENDTIME as endtime, t1.mrtime as timeseq
+           | , t1.ENBID as enbid, t1.MRNAME as mrname, t1.CELLID as cellid, t1.MMEUES1APID as mmeues1apid, t1.MMEGROUPID as mmegroupid
+           | , t1.MMECODE as mmecode, t1.MEATIME as meatime, t2.shapeminx as gridcenterlongitude,t2.shapemaxy as gridcenterlatitude, t1.KPI1 as kpi1
+           | , t1.KPI2 as kpi2, t1.KPI3 as kpi3, t1.KPI4 as kpi4, t1.KPI5 as kpi5, t1.KPI6 as kpi6
+           | , t1.KPI7 as kpi7, t1.KPI8 as kpi8, t1.KPI9 as kpi9, t1.KPI10 as kpi10, t1.KPI11 as kpi11
+           | , t1.KPI12 as kpi12, t1.KPI13 as kpi13, t1.KPI14 as kpi14, t1.KPI15 as kpi15, t1.KPI16 as kpi16
+           | , t1.KPI17 as kpi17, t1.KPI18 as kpi18, t1.KPI19 as kpi19, t1.KPI20 as kpi20, t1.KPI21 as kpi21
+           | , t1.KPI22 as kpi22, t1.KPI23 as kpi23, t1.KPI24 as kpi24, t1.KPI25 as kpi25, t1.KPI26 as kpi26
+           | , t1.KPI27 as kpi27, t1.KPI28 as kpi28, t1.KPI29 as kpi29,t2.OBJECTID as OID
+           |FROM $SDB.lte_mro_source t1
+           |left join $DDB.grid_view t2 WHERE t1.mrname = 'MR.LteScRSRP' and t1.GRIDCENTERLONGITUDE > t2.shapeminx and t1.GRIDCENTERLONGITUDE < t2.shapemaxx
+           |            and t1.GRIDCENTERLATITUDE > t2.shapeminy
+           |            and t1.GRIDCENTERLATITUDE < t2.shapemaxy and ((ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x
+           |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y)   or  (ROUND(t1.GRIDCENTERLONGITUDE,2) = t2.x1
+           |            and ROUND(t1.GRIDCENTERLATITUDE,2) =  t2.y1)) and t1.dt="$ANALY_DATE" and t1.h="$ANALY_HOUR"
+         """.stripMargin).show*/
       /* val t = sql(s"""select * from grid_view2 t1 ,(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
             | min(gridcenterlongitude) as minlongitude,min(gridcenterlatitude) as minlatitude
             | from lte_mro_source where dt="20170405" and  h="15")t2 where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
             | t1.shapeminy<t2.maxlongitude and t1.shapemaxy<t2.maxlatitude """.stripMargin)
         print("----------------------"+t+"--------------------------------------")*/
 
-       sql(
-        s"""|select x1.*,x2.OBJECTID from lte_mro_source x1 left join
-            |(select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID from
-            |(select distinct gridcenterlongitude,gridcenterlatitude from lte_mro_source where dt=$ANALY_DATE  and  h=$ANALY_HOUR)s1
-            |,
-            |(select * from grid_view t1 ,(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
-            |min(gridcenterlongitude) as minlongitude,min(gridcenterlatitude) as minlatitude
-            |from lte_mro_source where dt=$ANALY_DATE  and  h=$ANALY_HOUR)t2 where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
-            |t1.shapeminy<t2.maxlongitude and t1.shapemaxy<t2.maxlatitude)s2 where s2.shapeminx <= s1.gridcenterlatitude and s2.shapemaxx>s1.gridcenterlongitude and
-            |s2.shapeminy<s1.gridcenterlongitude and s2.shapemaxy>s1.gridcenterlatitude)x2 on x2.gridcenterlongitude=x1.gridcenterlongitude and x2.gridcenterlatitude=x1.gridcenterlatitude
-            |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
-         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
+    /* sql(
+        s"""|
+            |SELECT x1.OBJECTID as objectid, x1.VID as vid, x1.STARTTIME as starttime, x1.ENDTIME as endtime, x1.mrtime as timeseq
+            |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
+            |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x1.gridcenterlongitude,x1.gridcenterlatitude, x1.KPI1 as kpi1
+            |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
+            |, x1.KPI7 as kpi7, x1.KPI8 as kpi8, x1.KPI9 as kpi9, x1.KPI10 as kpi10, x1.KPI11 as kpi11
+            |, x1.KPI12 as kpi12, x1.KPI13 as kpi13, x1.KPI14 as kpi14, x1.KPI15 as kpi15, x1.KPI16 as kpi16
+            |, x1.KPI17 as kpi17, x1.KPI18 as kpi18, x1.KPI19 as kpi19, x1.KPI20 as kpi20, x1.KPI21 as kpi21
+            |, x1.KPI22 as kpi22, x1.KPI23 as kpi23, x1.KPI24 as kpi24, x1.KPI25 as kpi25, x1.KPI26 as kpi26
+            |, x1.KPI27 as kpi27, x1.KPI28 as kpi28, x1.KPI29 as kpi29,
+            |x2.OBJECTID as OID
+            |from (select a.*,cast(a.gridcenterlongitude*100 as bigint) as lon,cast(a.gridcenterlatitude*100 as bigint) as lat
+            |from $SDB.lte_mro_source a where dt=$ANALY_DATE and h=$ANALY_HOUR) x1
+            |left join $DDB.grid_new x2 on  x1.lon=x2.xx and x1.lat=x2.yy
+            |where (x2.shapeminx <= x1.gridcenterlongitude and x2.shapemaxx>x1.gridcenterlongitude and
+            |x2.shapeminy<x1.gridcenterlatitude
+            |and x2.shapemaxy>x1.gridcenterlatitude) or x2.OBJECTID is NULL
+            |
+         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")*/
+      sql(
+        s"""
+           |
+           |select distinct t.* from
+           |(
+           |select a.*, cast(shapeminx*100 as bigint) as xx,cast(shapeminy*100 as bigint) as yy from $DDB.grid_view a
+           |union
+           |select b.*, cast(shapemaxx*100 as bigint) as xx,cast(shapeminy*100 as bigint) as yy from $DDB.grid_view b
+           |union
+           |select c.*, cast(shapeminx*100 as bigint) as xx,cast(shapemaxy*100 as bigint) as yy from $DDB.grid_view c
+           |union
+           |select d.*, cast(shapemaxx*100 as bigint) as xx,cast(shapemaxy*100 as bigint) as yy from $DDB.grid_view d
+           |) t
+           |
+         """.stripMargin).createOrReplaceTempView("grid_new")
 
+
+      sql(s"""alter table $SDB.lte_mro_source drop if exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
+
+      sql(
+        s"""alter table $SDB.lte_mro_source add  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+           |location 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
+         """.stripMargin)
+
+      sql(
+        s"""
+           |
+           |SELECT x1.OBJECTID as objectid, x1.VID as vid,
+           | '$cal_date' as starttime,
+           | '$cal_date2 as endtime,
+           |from_unixtime(cast(round(mrtime /1000) as bigint),'HH') as timeseq
+           |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
+           |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
+           |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
+           |, x1.KPI7 as kpi7, x1.KPI8 as kpi8, x1.KPI9 as kpi9, x1.KPI10 as kpi10, x1.KPI11 as kpi11
+           |, x1.KPI12 as kpi12, x1.KPI13 as kpi13, x1.KPI14 as kpi14, x1.KPI15 as kpi15, x1.KPI16 as kpi16
+           |, x1.KPI17 as kpi17, x1.KPI18 as kpi18, x1.KPI19 as kpi19, x1.KPI20 as kpi20, x1.KPI21 as kpi21
+           |, x1.KPI22 as kpi22, x1.KPI23 as kpi23, x1.KPI24 as kpi24, x1.KPI25 as kpi25, x1.KPI26 as kpi26
+           |, x1.KPI27 as kpi27, x1.KPI28 as kpi28, x1.KPI29 as kpi29,
+           |x2.OBJECTID as OID
+           |from $SDB.lte_mro_source x1
+           |left join
+           |(
+           |select s1.gridcenterlongitude,s1.gridcenterlatitude,s2.OBJECTID
+           |from
+           |(select distinct gridcenterlongitude,gridcenterlatitude,cast(gridcenterlongitude*100 as bigint) as lon,cast(gridcenterlatitude*100 as bigint) as lat
+           |from $SDB.lte_mro_source
+           |where dt=$ANALY_DATE and h=$ANALY_HOUR)s1  left join
+           |(select * from grid_new t1 ,
+           |(select max(gridcenterlongitude) as maxlongitude,max(gridcenterlatitude) as maxlatitude,
+           |min(gridcenterlongitude) as minlongitude,
+           |min(gridcenterlatitude) as minlatitude
+           |from $SDB.lte_mro_source
+           |where dt=$ANALY_DATE and h=$ANALY_HOUR and gridcenterlatitude>0)t2
+           |where t1.shapeminx >= t2.minlongitude and t1.shapemaxx<t2.maxlongitude and
+           |t1.shapeminy>=t2.minlatitude and t1.shapemaxy<t2.maxlatitude)s2 on s1.lon=s2.xx and s1.lat=s2.yy
+           |where s2.shapeminx <= s1.gridcenterlongitude and s2.shapemaxx>s1.gridcenterlongitude and
+           |s2.shapeminy<s1.gridcenterlatitude
+           |and s2.shapemaxy>s1.gridcenterlatitude)x2
+           |on x2.gridcenterlongitude=x1.gridcenterlongitude
+           |and x2.gridcenterlatitude=x1.gridcenterlatitude
+           |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
+           |where x1.mrname = 'MR.LteScRSRP'
+           |
+         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
 
 
     }
@@ -105,7 +197,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          """.stripMargin).createOrReplaceTempView("Mr_InDoorAna_Temp")
     }
   def InitLteCell(sparkSession: SparkSession): Unit ={
-    val CellDF = sparkSession.read
+    sparkSession.read
       .format("jdbc")
       .option("url", s"$oracle")
       .option("dbtable", "ltecell")
@@ -191,6 +283,15 @@ def TableUtil(sc: SparkSession): Unit ={
 
 }
 
-
+  //获取前一天的日期
+  def getDaysBefore(dt: String):String = {
+    val dateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd")
+    val date = dateFormat.parse(dt)
+    val cal: Calendar = Calendar.getInstance()
+    cal.setTime(date);
+    cal.add(Calendar.DATE, - 1)
+    val yesterday = dateFormat.format(cal.getTime())
+    yesterday
+  }
 
 }

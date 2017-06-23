@@ -77,7 +77,8 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
       """.stripMargin)
     sql(
       s"""
-         |select t.startTime as STARTTIME, t.endTime as ENDTIME, t.timeseq as TIMESEQ,
+         |select
+         |t.startTime as STARTTIME, t.endTime as ENDTIME, t.timeseq as TIMESEQ,
          |t.mmecode as MMEID,t.MMEGROUPID as MMEGROUPID, t.enbid as ENODEBID, t.cellid as CELLID, t.kpi10 as CELLPCI,t.kpi9 as CELLFREQ,t2.cellname as CELLNAME,t2.ADJMMEGROUPID as TMMEGROUPID,t2.ADJMMEID as TMMEID,
          |t2.ADJENODEBID as TENODEBID,t2.adjcellID as TCELLID, t2.adjcellname as TCELLNAME,(case when t.kpi12!= -1 then t.kpi12 else null end) as TCELLPCI,
          |(case when t.kpi11!= -1 then t.kpi11 else null end) as TCELLFREQ,

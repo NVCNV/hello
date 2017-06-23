@@ -45,7 +45,6 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
     // LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_adjcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR'
     sql(s"""
            |SELECT
-           |       '' as id,
            |        '$cal_date' as starttime,
            |       '$cal_date2' as endtime,
            |       $ANALY_HOUR as timeseq ,
@@ -70,7 +69,7 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
            |           CASE
            |            WHEN SIGN(s.kpi1 - ${thrScGoodCoverRSRP}) = 1 THEN 1
            |            ELSE  0 END )
-           |  FROM lte_mro_source_tmp s
+           |  FROM lte_mro_source_ana_tmp s
            |  left join lte2lteadj_pci p
            |    ON p.eNodeBId = s.enbID
            |   AND p.cellID = s.cellId
