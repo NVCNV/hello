@@ -40,7 +40,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
     typedetail.analyse*/
 
 
-    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5))
+    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5),sourceDir)
     val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
     val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
     val disturbMixAna =new DisturbMixAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
@@ -57,9 +57,9 @@ class AnalyJob(args: Array[String]) extends Analyse {
      disturbMixAna.analyse
      disturbSecAna.analyse
      lteMroAdjCoverAna.analyse
-    pCIOptimize.analyse
-    weakcover.analyse
-    gridCover.analyse
+     pCIOptimize.analyse
+     weakcover.analyse
+     gridCover.analyse
 
 
 ////伪基站
