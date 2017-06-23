@@ -159,7 +159,6 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-
 drop table lte_mrs_dlbestrow_ana60;
 CREATE TABLE lte_mrs_dlbestrow_ana60(
   starttime string, 
@@ -258,7 +257,6 @@ create table LTE_MRS_OVERCOVER_ANA60
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
-
 
 
 drop table LTE2LTEADJ_PCI;
