@@ -46,11 +46,11 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
     val s = 71-cnt
     for(i <- 0 to s){
       if(i <= s){
-        sqlSecSrv += " ',' "
-        sqlSecAdj += " ',' "
+        sqlSecSrv += " ' ', "
+        sqlSecAdj += " ' ', "
       }else{
-        sqlSecSrv += ' '
-        sqlSecAdj += ' '
+        sqlSecSrv += " ' '"
+        sqlSecAdj += " ' '"
       }
     }
     sql(s"use $DDB")
