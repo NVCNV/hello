@@ -110,10 +110,10 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          """.stripMargin).createOrReplaceTempView("grid_new")
 
 
-      sql(s"""alter table lte_mro_source drop if exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
+      sql(s"""alter table $SDB.lte_mro_source drop if exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
 
       sql(
-        s"""alter table lte_mro_source add  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+        s"""alter table $SDB.lte_mro_source add  partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
            |location 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
          """.stripMargin)
 
@@ -122,7 +122,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |
            |SELECT x1.OBJECTID as objectid, x1.VID as vid,
            | '$cal_date' as starttime,
-           | '$cal_date2' as endtime,
+           | '$cal_date2 as endtime,
            |from_unixtime(cast(round(mrtime /1000) as bigint),'HH') as timeseq
            |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
            |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
