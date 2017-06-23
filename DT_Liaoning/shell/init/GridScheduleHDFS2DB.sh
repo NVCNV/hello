@@ -23,8 +23,6 @@ sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/lte_mro_overlap_grid_an
 
 sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/grid_ltemrkpi60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 7 2
 
-sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/cell_ltemrkpitemp/dt=${ANALY_DATE}/h=${ANALY_HOUR} 8 2
-
 sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/lte_mro_overlap_b_ana60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 9 2
 
 sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/cell_ltenewmrkpi60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 10 2
