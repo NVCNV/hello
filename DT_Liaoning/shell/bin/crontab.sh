@@ -11,7 +11,7 @@ URL=https://fg03:8443
 USERNAME=azkaban
 PASSWD=azkaban
 PROJECT=Analy
-FLOW=JobAnaly
+FLOW=JobComplete
 KEYSTORE=/opt/app/azkaban/web/conf/keystore
 
 ANALY_DATE=`date +%Y%m%d`
@@ -25,11 +25,12 @@ then
 else
    ANALY_DATE=$CUR_DATE
 fi
+#ANALY_DATE=20170503
+#ANALY_HOUR=14
 HOST=taiyue
 HUSERNAME=datang
 HPASSWD=Datang@12
 PORT=50072
-CMD= /cup/d4/datang/bin/hdfs2local.sh;ls /cup/d4/datang/TEMP/s1mme_orgn/$ANALY_DATE/$ANALY_HOUR
-
-java -jar $JAR $URL $USERNAME $PASSWD $PROJECT $FLOW $PASSWD $KEYSTORE $KEYSTORE $ANALY_DATE $ANALY_HOUR \
-$HOST $HUSERNAME $HPASSWD $PORT $CMD
+CMD_EXEC=" /cup/d4/datang/bin/hdfs2local.sh;ls /cup/d4/datang/TEMP/s1mme_orgn/$ANALY_DATE/$ANALY_HOUR"
+java -jar $JAR $HOST $HUSERNAME $HPASSWD $PORT $CMD_EXEC
+java -jar $JAR $URL $USERNAME $PASSWD $PROJECT $FLOW $PASSWD $KEYSTORE $KEYSTORE ANALY_DATE $ANALY_DATE ANALY_HOUR $ANALY_HOUR
