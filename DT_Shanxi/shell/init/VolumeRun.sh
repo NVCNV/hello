@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ANALY_DATE=$1
 ANALY_HOUR=$2
 SDB=$3
@@ -11,7 +12,6 @@ SOURCEDIR=$7
 
 MAIN_CLASS=com.dtmobile.spark.job.AnalyJob
 JAR=/dt/lib/DT_Shanxi-1.0-SNAPSHOT.jar
-
 
 /opt/app/spark/bin/spark-submit  \
  --class $MAIN_CLASS \

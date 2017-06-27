@@ -11,12 +11,13 @@ export HBASE_CONF_DIR=/opt/app/hbconf
 export HBASE_HOME=/opt/app/hbase
 export SPARK_HOME=/opt/app/spark
 export PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$MAVEN_HOME/bin:$HBASE_HOME/bin:$HBASE_HOME/sbin:$HIVE_HOME/bin:$KYLIN_HOME/bin:$ANT_HOME/bin
+
 mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 
 ./repeat_same_and_updown_checi.sh ${ANALY_DATE}  
-#./bushu/kpiAnalyday.sh ${ANALY_DATE}  shanxikpi2  >> kpiAnaly_day.log 2>&1
+./bushu/kpiAnalyday.sh ${ANALY_DATE} result  >> kpiAnaly_day.log 2>&1
 
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/u4/${ANALY_DATE}/u4* u4 27 2
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/updowntrain/${ANALY_DATE} upordown 29 2 

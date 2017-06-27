@@ -50,6 +50,7 @@ hdfs dfs -rm -R -skipTrash ${s1mme_allday}
 hdfs dfs -mkdir -p ${s1mme_allday}
 hdfs dfs -rm -R -skipTrash ${u2_allday}
 hdfs dfs -mkdir -p ${u2_allday}
+hdfs fs -rm -R -skipTrash ${u4_2_output}
 
 rm -rf ${local_path_ralation_u2_u3}
 mkdir -p ${local_path_ralation_u2_u3}
