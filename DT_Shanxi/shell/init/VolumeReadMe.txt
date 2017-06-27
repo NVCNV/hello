@@ -48,7 +48,6 @@
    2.3.4 ScheduleHDFS2DB_day.sh     为调用sqoop脚本，每天调用一次，用于将容量的小时级分析数据导入Oracle，须传入三个参数，第一个为日期，第二个为hive结果表数据库，第三个为oracle地址
       示例： sh ScheduleHDFS2DB_day.sh 20170427 result 172.30.4.159:1521:hadoop
 
-
 3、操作步骤：
    3.1、首先建hive表，hive建表脚本需要指定数据库，例如：sh VolumeAnalyseInitTable.sh shanxi
    3.2、然后将DT_Shanxi-1.0-SNAPSHOT.jar包放入/dt/lib目录下面，将DT_Core-1.0-SNAPSHOT.jar、DT_Spark-1.0-SNAPSHOT.jar 放入spark安装目录（/opt/app/spark/jars)下
