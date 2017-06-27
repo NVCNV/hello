@@ -25,6 +25,7 @@
 	   （2）、repeat_addpartion.sh 需传入日期 小时 数据库（下面建表传入的第一个数据库）
 	   （3）、kpiAnaly.sh 需传入日期 小时 结果库（下面建表传入的第一个数据库）结果库   （还需将gridrru.csv放入 grid_rru 表目录下）
 	   （4）、hdfs2db.sh 需传入日期 小时
+	   （5）、cellMrFilter.sh 需传入日期 小时 原始数据hive库 结果hive库 原始数据路径
       2.1.2 bin 目录下repeat_analy_day.sh为天级分析调度脚本（每天调度一次），需传入一个参数 日期
             此脚本里面调用了其他的脚本分别为：
 	    （1）、repeat_same_and_updown_checi.sh 需传入日期
