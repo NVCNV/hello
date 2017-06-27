@@ -57,3 +57,6 @@ echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_cell_ana_base60 15 2
 echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_grid_ana_base60 mr_gt_grid_ana_base60 33 4"
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_grid_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_grid_ana_base60 33 2
+
+#lte_cellmr_source
+./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/lte_cellmr_source/dt=${ANALY_DATE}/h=${ANALY_HOUR} lte_cellmr_source 37 2
