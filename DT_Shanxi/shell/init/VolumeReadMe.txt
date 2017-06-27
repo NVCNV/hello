@@ -28,7 +28,7 @@
 	   （5）、cellMrFilter.sh 需传入日期 小时 原始数据hive库 结果hive库 原始数据路径
       2.1.2 bin 目录下repeat_analy_day.sh为天级分析调度脚本（每天调度一次），需传入一个参数 日期
             此脚本里面调用了其他的脚本分别为：
-	    （1）、repeat_same_and_updown_checi.sh 需传入日期
+	    （1）、repeat_same_and_updown_chci.sh 需传入日期
 	    （2）、kpiAnalyday.sh 需传入日期  数据库（下面建表传入的第一个数据库）
 	    （3）、hdfs2db.sh 需传入日期 小时
       2.1.3 bin 目录下hdfs2db.sh为sqoop脚本（不需要单独调用，已集成到其他脚本）
