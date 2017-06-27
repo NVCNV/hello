@@ -37,18 +37,18 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
         max = null2Zero(Integer.parseInt(getSplitString(fString,fDelimiter,i)))
         sqlSecSrv += " ,sum( CASE WHEN s.kpi1 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
         sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
-//      }
+      }
     }
 
     val s = 71-cnt
     for(i <- 0 to 71){
-      if(i <= s){
-        sqlSecSrv += s" ,'' as a${i} "
-        sqlSecAdj += s" ,'' as a${i} "
+      if(i <= 71){
+        sqlSecSrv += s" ,0 as a${i} "
+        sqlSecAdj += s" ,0 as a${i} "
       }
       /*else{
-        sqlSecSrv += " ' '"
-        sqlSecAdj += " ' '"
+        sqlSecSrv += " ''"
+        sqlSecAdj += " ''"
       }*/
     }
 
