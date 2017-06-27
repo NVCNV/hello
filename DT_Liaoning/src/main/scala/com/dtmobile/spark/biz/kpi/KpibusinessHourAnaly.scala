@@ -1692,7 +1692,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table tac_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+           LOCATION 'hdfs://dtcluster$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """
       )
     val http=sql(
@@ -1723,7 +1723,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
              |tactmp
              |group by tac
            """.stripMargin
-        ).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -1731,7 +1731,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     sql(s"use $DDB")
     sql(
       s"""alter table cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     val http=sql(
       s"""
@@ -1761,7 +1761,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
           |ecgitmp
           |group by ecgi
         """.stripMargin
-     ).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+     ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def spHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -1769,7 +1769,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     sql(s"use $DDB")
     sql(
       s"""alter table sp_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     val http=sql(
       s"""
@@ -1798,7 +1798,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |sptmp
          |group by sp
        """.stripMargin)
-      .write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def ueHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -1806,7 +1806,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     sql(s"use $DDB")
     sql(
       s"""alter table ue_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     val http= sql(
       s"""
@@ -1840,7 +1840,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
           |imsi,
           |msisdn
         """.stripMargin)
-      .write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def sgwHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -1848,7 +1848,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     sql(s"use $DDB")
     sql(
       s"""alter table sgw_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     val http=sql(
       s"""
@@ -1876,7 +1876,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from
          |sgwtmp
          |group by sgwipaddr
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def imsicellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -1884,7 +1884,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
     sql(s"use $DDB")
     sql(
       s"""alter table imsi_cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-         LOCATION 'hdfs://dtcluster/$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
+         LOCATION 'hdfs://dtcluster$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
        """.stripMargin)
     val http=sql(
       s"""
