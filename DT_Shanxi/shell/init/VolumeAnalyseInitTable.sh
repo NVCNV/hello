@@ -7699,7 +7699,7 @@ voltevdtimey             bigint,
   ATTACHX                bigint,
   ATTACHY                bigint,
 voltesucc                bigint,
-srvccsuccS1              bigint,
+srvccsuccS1              bigint
 )
 PARTITIONED BY (
   dt string,
@@ -7759,7 +7759,7 @@ voltevdtimey             bigint,
   ATTACHX                bigint,
   ATTACHY                bigint,
 voltesucc                bigint,
-srvccsuccS1              bigint,  )
+srvccsuccS1              bigint)
 PARTITIONED BY (
   dt string)
 ROW FORMAT DELIMITED
@@ -7779,9 +7779,9 @@ CREATE TABLE volte_gt_user_ana_base60(
   VOLTEVDATT            bigint,
   VOLTETIME             bigint,
   VOLTEMCTIME           bigint,
-  voltemctimey,         bigint,
+  voltemctimey         bigint,
   VOLTEVDTIME           bigint,
-  voltevdtimey,         bigint,
+  voltevdtimey        bigint,
   VOLTEMCHANDOVER       bigint,
   VOLTEANSWER           bigint,
   VOLTEVDHANDOVER       bigint,
@@ -7841,9 +7841,9 @@ CREATE TABLE volte_gt_user_ana_baseday(
   VOLTEVDATT            bigint,
   VOLTETIME             bigint,
   VOLTEMCTIME           bigint,
-  voltemctimey,         bigint,
+  voltemctimey        bigint,
   VOLTEVDTIME           bigint,
-  voltevdtimey,         bigint,
+  voltevdtimey        bigint,
   VOLTEMCHANDOVER       bigint,
   VOLTEANSWER           bigint,
   VOLTEVDHANDOVER       bigint,
