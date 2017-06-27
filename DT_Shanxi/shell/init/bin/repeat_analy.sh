@@ -39,7 +39,7 @@ mkdir /dt/bin/sqoop_log
 ./repeat_volteTrain.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
 ./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} result init >> job_logs.log 2>&1
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} result  init >> job_logs.log 2>&1
-
+sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} init result datang2
 
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR} tb_xdr_ifc_gmmwmgmimjisc_new 19 2 >> /dt/bin/sqoop_log/mw_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
 ./hdfs2db.sh hdfs://dtcluster/datang2/output/xdrnew/tb_xdr_ifc_s1mme/${ANALY_DATE}/${ANALY_HOUR} tb_xdr_ifc_s1mme_new 20 2 >> /dt/bin/sqoop_log/s1mme_${ANALY_DATE}_${ANALY_HOUR}_logs.log 2>&1
