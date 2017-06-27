@@ -1,7 +1,5 @@
 #!/bin/bash
 # Run it every hour.
-my_path="$(cd "$(dirname "$0")"; pwd)"
-cd $my_path
 jar_file="/dt/lib/dt_mobile.jar"
 
 # date
@@ -40,7 +38,7 @@ u2_allday=${volteTrainAlalyse_output}/u2_allday/${ANALY_DATE}
 local_path_ralation_u2_u3=/home/hadoop/relationOfu23
 local_path_upordown=/home/hadoop/upordown_all
 
-s1mme_new_output=${xdr_new_output}/s1mme/${ANALY_DATE}
+s1mme_new_output=${xdr_new_output}/tb_xdr_ifc_s1mme/${ANALY_DATE}
 u2_output=${volteTrainAlalyse_output}/u2/${ANALY_DATE}
 upordown_for_checi=${volteTrainAlalyse_output}/upordown.csv
 
@@ -50,17 +48,23 @@ hdfs dfs -rm -R -skipTrash ${s1mme_allday}
 hdfs dfs -mkdir -p ${s1mme_allday}
 hdfs dfs -rm -R -skipTrash ${u2_allday}
 hdfs dfs -mkdir -p ${u2_allday}
-hdfs fs -rm -R -skipTrash ${u4_2_output}
+hdfs dfs -rm -R -skipTrash ${u4_2_output}
+hdfs dfs -mkdir -p ${u4_2_output}
+hdfs dfs -rm -R -skipTrash ${u4_1_output}
+hdfs dfs -mkdir -p ${u4_1_output}
+
+
+
 
 rm -rf ${local_path_ralation_u2_u3}
 mkdir -p ${local_path_ralation_u2_u3}
 
 for (( i=0;i<=23;i++  ))
 do
-if [ $i -lt 10 ]; then
-j=`printf "%02d" "$i"`
+if [ ${i} -lt 10 ]; then
+j=`printf "%02d" "${i}"`
 else
-j=$i
+j=${i}
 fi
 
 # process data of s1mme whole day.
@@ -148,11 +152,14 @@ ${u3_2_output}/23 \
 ${u4_1_output}/u3ImsiMapping-r-00000 \
 ${u4_2_output}
 
+
+
+
 # UpOrDown
 updowntrain_ouput=/datang2/output/updowntrain/${ANALY_DATE}
 reducers=15
 second_t=100
-hadoop fs -rm -r $updowntrain_ouput
+hdfs dfs -rm -R -skipTrash ${updowntrain_ouput}
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.upordown.job.UpDownAnalysisJob \
 ${u2_allday} \
 ${s1mme_allday} \
@@ -165,7 +172,7 @@ ${second_t} \
 ${reducers}
 
 rm -rf ${local_path_upordown}
-rm -rf -skipTrash ${upordown_for_checi}
+hdfs dfs -rm -R -skipTrash ${upordown_for_checi}
 hdfs dfs -get ${updowntrain_ouput} ${local_path_upordown}
 cat ${local_path_upordown}/* > /home/hadoop/upordown.csv
 hdfs dfs -put /home/hadoop/upordown.csv ${upordown_for_checi}  
@@ -176,5 +183,5 @@ trainstationtimes=/datang2/parameter/stationTimes.txt
 size=10
 trainiden_output=/datang2/output/trainiden/${ANALY_DATE}
 hdfs dfs -rm -R ${trainiden_output}
-hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output}/u4* ${upordown_for_checi} ${trainstations} $trainstationtimes $size ${trainiden_output}
+hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output}/u4* ${upordown_for_checi} ${trainstations} ${trainstationtimes} ${size} ${trainiden_output}
 
