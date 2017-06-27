@@ -26,7 +26,7 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
 
     sql(s"use $DDB")
     sql(s"""alter table business_type_detail add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-    LOCATION 'hdfs://dtcluster/$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
+    LOCATION 'hdfs://dtcluster$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR'""")
  /*
     sql(
       s"""
@@ -52,6 +52,6 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
          | where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          | group by
          | t2.city,t2.REGION,t1.apptype, t1.appsubtype
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }

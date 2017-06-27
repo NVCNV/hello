@@ -88,7 +88,9 @@ VOLTE_CELLMR=cellid,meatime,xdrid,rip
 #numberiden=imsi,xdrid,cellid,upordown,groupname,intime,outtime,instation,outstation,sorttime
 numberiden=trainnumber,upordown,groupname
 
-if [ $COL_NUM = 1 ] 
+lte_cellmr_source='ObjectID,startTime,endTime,eNBID,mrName,cellID,meaTime,kpi1,kpi2,kpi3,kpi4,kpi5,kpi6,kpi7,kpi8,kpi9,kpi10,kpi11,kpi12,kpi13,kpi14,kpi15,kpi16,kpi17,kpi18,kpi19,kpi20,kpi21,kpi22,kpi23,kpi24,kpi25,kpi26,kpi27,kpi28,length,City,Interface，XDRID,RAT'
+
+if [ $COL_NUM = 1 ]
 then
    COLS=$KPI_IMSI_COLS
 elif [ $COL_NUM = 2 ]; then
@@ -159,8 +161,10 @@ elif [ $COL_NUM = 34 ]; then
    COLS=$mr_gt_grid_ana_baseday
 elif [ $COL_NUM = 35 ]; then
    COLS=$numberiden
-else 
+elif [ $COL_NUM = 36 ]; then
    COLS=$MR_IMSI_COLS
+else
+    COLS=$lte_cellmr_source
 fi
 /opt/app/sqoop/bin/sqoop export --connect $URL \
 --username $USERNAME --password tiger \

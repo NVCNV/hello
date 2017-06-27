@@ -14,6 +14,56 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+--20170627新增
+drop table lte_cellmr_source;
+create table lte_cellmr_source(
+ObjectID        string,
+startTime       string,
+endTime         string,
+eNBID           bigint,
+mrName          string,
+cellID          bigint,
+meaTime         string,
+kpi1            bigint,
+kpi2            bigint,
+kpi3            bigint,
+kpi4            bigint,
+kpi5            bigint,
+kpi6            bigint,
+kpi7            bigint,
+kpi8            bigint,
+kpi9            bigint,
+kpi10           bigint,
+kpi11           bigint,
+kpi12           bigint,
+kpi13           bigint,
+kpi14           bigint,
+kpi15           bigint,
+kpi16           bigint,
+kpi17           bigint,
+kpi18           bigint,
+kpi19           bigint,
+kpi20           bigint,
+kpi21           bigint,
+kpi22           bigint,
+kpi23           bigint,
+kpi24           bigint,
+kpi25           bigint,
+kpi26           bigint,
+kpi27           bigint,
+kpi28           bigint,
+length          bigint,
+City            string,
+Interface       int,
+XDRID           string,
+RAT             int
+)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ',';
+
 --业务占比表
 drop table business_type_detail;
 create EXTERNAL table business_type_detail(
