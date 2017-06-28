@@ -20,3 +20,6 @@ MASTER=spark://$MASTERIP:7077
  --executor-memory 4G \
  --executor-cores 2 \
  $JAR $ANALY_DATE $ANALY_HOUR $SDB $DDB $MASTER $ORACL $PATH1 $VERSINCONTROL
+
+
+
