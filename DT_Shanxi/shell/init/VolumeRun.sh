@@ -17,4 +17,4 @@ JAR=/dt/lib/DT_Shanxi-1.0-SNAPSHOT.jar
  --class $MAIN_CLASS \
  --executor-memory 4G \
  --executor-cores 2 \
- $JAR $ANALY_DATE $ANALY_HOUR $SDB $DDB $MASTER $OracleUrl $SOURCEDIR 
+ $JAR $ANALY_DATE $ANALY_HOUR $SDB $DDB $MASTER $OracleUrl $SOURCEDIR
