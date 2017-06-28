@@ -49,9 +49,7 @@ hdfs dfs -mkdir -p ${s1mme_allday}
 hdfs dfs -rm -R -skipTrash ${u2_allday}
 hdfs dfs -mkdir -p ${u2_allday}
 hdfs dfs -rm -R -skipTrash ${u4_2_output}
-hdfs dfs -mkdir -p ${u4_2_output}
 hdfs dfs -rm -R -skipTrash ${u4_1_output}
-hdfs dfs -mkdir -p ${u4_1_output}
 
 
 
