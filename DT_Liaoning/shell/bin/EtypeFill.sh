@@ -23,7 +23,6 @@ TB_XDR_IFC_X2=${DDL_SVR}/tb_xdr_ifc_x2/dt=${ANALY_DATE}/h=${ANALY_HOUR}/*
 ETYPE_OUT=${SOURCE_SVR}/ETYPE_OUT
 
 
-
 hdfs dfs -rm -R -skipTrash ${ETYPE_OUT}
 
 hadoop jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}

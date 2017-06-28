@@ -128,3 +128,4 @@ hdfs dfs -rm -R -skipTrash /datang/FILTER/${ANALY_DATE}${DEL_HOUR}
 echo "get data end!------------------------------------------"
 echo "`date '+/%y/%m/%d %H:%M:%S'` INFO done ,exit..."
 exit
+
