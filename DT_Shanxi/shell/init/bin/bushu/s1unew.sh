@@ -1,9 +1,9 @@
 #!/bin/sh
 ANALY_DATE=$1
 ANALY_HOUR=$2
-#用户名原始表数据库
+#锟矫伙拷锟斤拷原始锟斤拷锟斤拷锟捷匡拷
 DB=$3
-#高铁用户信息表数据库
+#锟斤拷锟斤拷锟矫伙拷锟斤拷息锟斤拷锟斤拷锟捷匡拷
 DEFAULT=$4
 hive<<EOF
 set hive.exec.parallel=true;

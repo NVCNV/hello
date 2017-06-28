@@ -269,7 +269,7 @@ WHERE dt="$ANALY_DATE" and h="$ANALY_HOUR"
                   imsi,msisdn,ECGI,eupordown"
 
 
-#excel sheetÃû£ºVOLTE_Rx½Ó¿ÚÐ¡Çø»ã×Ü
+#excel sheetï¿½ï¿½ï¿½ï¿½VOLTE_Rxï¿½Ó¿ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #volterxsql="(select imsi,msisdn,ECGI,(eupordown)dir_state,0 as voltemcsucc, 0 as voltemcatt, 0 as voltevdsucc, 0 as voltevdatt, 0 as voltetime, 0 as voltemctime, 0 as voltevdtime, 
 #count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 0 and AbortCause in (0, 1, 2, 4) then 1 end) voltemchandover, 0 as volteanswer, 
 #count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 1 and AbortCause in (0, 1, 2, 4) then 1 end) voltevdhandover, 0 as voltevdanswer,

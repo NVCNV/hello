@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 range=10000
 imsirange=8
 step=5000
@@ -15,10 +16,10 @@ hadoop fs -rm -r $u3_1_output
 hadoop fs -rm -r $u3_2_output
 hadoop fs -rm -r $u4_1_output
 hadoop fs -rm -r $u4_2_output
-hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU1_1Job $UU_newÊä³öÂ·¾¶ $u1_output $range $imsirange $step
+hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU1_1Job $UU_newï¿½ï¿½ï¿½Â·ï¿½ï¿½ $u1_output $range $imsirange $step
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU2_1Job $u1_output $u2_1_output
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU2_2Job $u1_output $u2_1_output/u1ImsiMapping-r-00000 $u2_2_output
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU3_1Job $u2_2_output $u3_1_output
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU3_2Job $u2_2_output $u3_1_output/u2Mapping-r-00000 $u3_2_output
-hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_1Job 24Ð¡Ê±u3Êý¾Ý $u4_1_output
-hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_2Job $u3_2_output 24Ð¡Ê±u3Êý¾Ý $u4_1_output $u4_2_output
+hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_1Job 24Ð¡Ê±u3ï¿½ï¿½ï¿½ï¿½ $u4_1_output
+hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_2Job $u3_2_output 24Ð¡Ê±u3ï¿½ï¿½ï¿½ï¿½ $u4_1_output $u4_2_output
