@@ -2,6 +2,7 @@
 ANALY_DATE=$1
 ANALY_HOUR=$2
 
+
 #HQL
 hive<<EOF
 use dcl;

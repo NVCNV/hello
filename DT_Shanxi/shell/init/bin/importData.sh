@@ -18,3 +18,4 @@ sh hdfs2db.sh /datang/output/business/VOLTE_GT_BUSI_USER* VOLTE_GT_BUSI_USER_dat
 sh hdfs2db.sh /datang/output/business/COMM_USER_DATA* COMM_USER_DATA 10 1
 sh hdfs2db.sh /datang/output/free/VOLTE_GT_FREE_USER* VOLTE_GT_FREE_USER_data 30 1
 sh hdfs2db.sh /datang/output/xdrnew/mw/volte_gtuser_data* volte_gtuser_data 28 1
+

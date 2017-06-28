@@ -29,3 +29,4 @@ do
 #./hdfs2db.sh hdfs://dtcluster/datang2/output/business/${ANALY_DATE}/${ANALY_HOUR}/COMM_USER_DATA* comm_user_data 10 2  
 ./hdfs2db.sh hdfs://dtcluster/datang2/cellMR/${ANALY_DATE}/${ANALY_HOUR} VOLTE_CELLMR_DATA 32 2
 done 
+

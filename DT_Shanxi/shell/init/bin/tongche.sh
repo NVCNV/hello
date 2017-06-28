@@ -23,3 +23,4 @@ hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU3_2Job $u2_2_output $u3_1_output/u2Mapping-r-00000 $u3_2_output
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_1Job 24Сʱu3���� $u4_1_output
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU4_2Job $u3_2_output 24Сʱu3���� $u4_1_output $u4_2_output
+

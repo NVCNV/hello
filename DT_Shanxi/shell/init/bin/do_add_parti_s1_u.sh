@@ -10,3 +10,4 @@ fi
 
 ./add_partition_for_s1_u.sh 20170105 ${j}  datang
 done
+

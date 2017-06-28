@@ -78,3 +78,4 @@ sum(model3diststrox)model3diststrox,
 sum(model3diststrox)model3diststroy
 from $MRSQL group by imsi,msisdn,cellid,rruid,gridid,dir_state;
 EOF
+

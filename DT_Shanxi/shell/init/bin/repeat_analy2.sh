@@ -19,6 +19,7 @@ ANALY_DATE=$1
 ANALY_HOUR=$2
 
 
+
 ./repeat_volteTrain.sh ${ANALY_DATE} ${ANALY_HOUR} 
 ./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} shanxikpi2
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} shanxikpi2 ddl_for_kpi

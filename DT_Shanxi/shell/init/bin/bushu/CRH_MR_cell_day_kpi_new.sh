@@ -19,3 +19,4 @@ WHERE dt="$ANALY_DATE"
 group by cellid,dir_state;
 EOF
 
+

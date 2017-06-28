@@ -18,3 +18,4 @@
 ./kpiAnaly.sh 20170105 21 shanxikpi2 ddl_for_kpi
 ./kpiAnaly.sh 20170105 22 shanxikpi2 ddl_for_kpi
 ./kpiAnaly.sh 20170105 23 shanxikpi2 ddl_for_kpi
+

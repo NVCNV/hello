@@ -36,3 +36,4 @@ echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}/mr_gt_cell_ana_bas
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}/mr_gt_cell_ana_baseday/${ANALY_DATE} mr_gt_cell_ana_baseday 16 2 >>  /dt/bin/sqoop_log/mr_gt_user_${ANALY_DATE}/${ANALY_HOUR}_logs.log 2>&1
 echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}/mr_gt_cell_ana_baseday mr_gt_cell_ana_base60 34 4"
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}/mr_gt_cell_ana_baseday/${ANALY_DATE}/${ANALY_HOUR} mr_gt_cell_ana_base60 34 2 >>  /dt/bin/sqoop_log/mr_gt_cell_${ANALY_DATE}/${ANALY_HOUR}_logs.log 2>&1
+

@@ -140,3 +140,4 @@ hdfs dfs -rm -R ${trainiden_output}
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output} $updowntrain_ouput/part-r-00000 ${trainstations} $trainstationtimes $size ${trainiden_output}
 
 
+

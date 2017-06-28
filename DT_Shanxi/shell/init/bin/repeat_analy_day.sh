@@ -16,6 +16,7 @@ mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 
+
 ./repeat_same_and_updown_checi.sh ${ANALY_DATE}  
 ./bushu/kpiAnalyday.sh ${ANALY_DATE} result  >> kpiAnaly_day.log 2>&1
 

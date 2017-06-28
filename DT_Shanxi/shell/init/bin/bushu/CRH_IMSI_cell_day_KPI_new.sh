@@ -27,3 +27,4 @@ where dt="$ANALY_DATE"
 group by imsi,msisdn,cellid,dir_state;
 EOF
 
+

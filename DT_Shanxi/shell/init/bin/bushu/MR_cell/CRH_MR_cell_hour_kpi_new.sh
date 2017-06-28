@@ -151,3 +151,4 @@ from
 )t3
 group by cellid,dir_state;
 EOF
+

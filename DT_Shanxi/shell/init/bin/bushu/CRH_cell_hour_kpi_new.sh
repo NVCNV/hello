@@ -302,3 +302,4 @@ from
 ) t7
 group by cellid,dir_state;
 EOF
+

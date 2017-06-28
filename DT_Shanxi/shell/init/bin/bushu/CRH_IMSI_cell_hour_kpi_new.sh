@@ -303,3 +303,4 @@ from
 ) t7
 group by imsi,msisdn,cellid,dir_state;
 EOF
+

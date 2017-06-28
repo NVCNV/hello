@@ -48,6 +48,7 @@ location "/${DB_PATH}/tb_xdr_ifc_p2p/${ANALY_DATE}/${ANALY_HOUR}";
 alter table tb_xdr_ifc_s1u_rtcomm drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_s1u_rtcomm add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") 
 location "/${DB_PATH}/tb_xdr_ifc_rtcomm/${ANALY_DATE}/${ANALY_HOUR}";
- 
+
+
 EOF
 

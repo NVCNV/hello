@@ -20,3 +20,4 @@ kpi006,kpi007,kpi008,kpi015,kpi016,kpi027,kpi028, kpi071,kpi072,kpi079,kpi075
 from kpi_mid_imsi_cell_hour
 where dt="$ANALY_DATE" and h="$ANALY_HOUR";
 EOF
+

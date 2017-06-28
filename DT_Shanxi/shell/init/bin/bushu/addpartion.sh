@@ -75,7 +75,4 @@ alter table mro_kpi_mid_imsi_cell_grid_hour add partition(dt="$ANALY_DATE",h="$A
 alter table mro_kpi_mid_imsi_cell_grid_day drop partition(dt="$ANALY_DATE");
 alter table mro_kpi_mid_imsi_cell_grid_day add partition(dt="$ANALY_DATE");
 
-
-
- 
 EOF

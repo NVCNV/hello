@@ -9,6 +9,7 @@ SOURCEDATABASE=$5
 
 hive<<EOF
 
+
 alter table ${INITDATABASE}.lte_mro_source add if not exists partition(dt="${ANALY_DATE}",h="${ANALY_HOUR}")
 location "/${SOURCEDATABASE}/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}" ;
 

@@ -14,6 +14,7 @@ export PATH=$PATH:$JAVA_HOME/bin:$SCALA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/s
 mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 
+
 ANALY_DATE=`date +%Y%m%d`
 ANALY_HOUR="`date -d ' -2 hour' +%H`"
 

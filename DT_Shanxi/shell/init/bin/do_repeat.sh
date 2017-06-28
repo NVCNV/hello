@@ -15,3 +15,4 @@ echo "22 now .."
 echo "23 now......"
 ./repeat_analy.sh ${DATE} 23
 
+

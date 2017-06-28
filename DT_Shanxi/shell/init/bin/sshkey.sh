@@ -64,3 +64,4 @@ echo "scp all nodes finished..."
 # delete intermediate files
 rm -rf /$homename/.ssh/*.key
 echo "all configuration finished..."
+

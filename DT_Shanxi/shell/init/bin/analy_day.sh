@@ -28,4 +28,5 @@ fi
 echo $ANALY_DATE
 echo $ANALY_HOUR
 
-./bushu/kpiAnalyday.sh ${ANALY_DATE}  shanxikpi ddl >> kpiAnaly_day.log 2>&1 
+./bushu/kpiAnalyday.sh ${ANALY_DATE}  shanxikpi ddl >> kpiAnaly_day.log 2>&1
+

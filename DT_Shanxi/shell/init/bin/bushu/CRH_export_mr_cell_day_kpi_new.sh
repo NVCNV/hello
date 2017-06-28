@@ -14,3 +14,4 @@ from mro_kpi_mid_cell_day
 where dt="$ANALY_DATE";
 EOF
 exit 0
+

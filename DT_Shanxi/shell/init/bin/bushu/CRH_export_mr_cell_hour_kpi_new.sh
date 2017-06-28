@@ -14,3 +14,4 @@ select cellid,ttime,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,k
 from mro_kpi_mid_cell_hour
 where dt="$ANALY_DATE" and h="$ANALY_HOUR";
 EOF
+

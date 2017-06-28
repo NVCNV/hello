@@ -40,3 +40,4 @@ echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_
 echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_baseday mr_gt_cell_ana_base60 34 2"
 ./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_grid_ana_baseday/dt=${ANALY_DATE} mr_gt_grid_ana_baseday 34 2
 
+

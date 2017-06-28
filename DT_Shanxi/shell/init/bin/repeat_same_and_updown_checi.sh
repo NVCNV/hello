@@ -183,3 +183,4 @@ trainiden_output=/datang2/output/trainiden/${ANALY_DATE}
 hdfs dfs -rm -R ${trainiden_output}
 hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output}/u4* ${upordown_for_checi} ${trainstations} ${trainstationtimes} ${size} ${trainiden_output}
 
+

@@ -689,5 +689,4 @@ t.LENGTH
 ,t.TRACKER
 ,g.dir_state from ${DEFAULT}.tb_xdr_ifc_s1u_p2p t inner join volte_gt_busi_user_data g on t.imsi=g.imsi WHERE t.dt="$ANALY_DATE" and t.h="$ANALY_HOUR" and g.dt="$ANALY_DATE" and g.h="$ANALY_HOUR" ;
 
-
 EOF

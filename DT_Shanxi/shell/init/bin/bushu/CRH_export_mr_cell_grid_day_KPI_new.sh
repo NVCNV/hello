@@ -12,3 +12,4 @@ select ttime,cellid,rruid,gridid,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kp
 from mro_kpi_mid_cell_grid_day
 where dt="$ANALY_DATE";
 EOF
+

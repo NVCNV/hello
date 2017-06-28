@@ -73,3 +73,4 @@ EOF
 echo "hdfs dfs -cp /datang2/output/xdrnew/mw/${ANALY_DATE}/${ANALY_HOUR}/tb* /user/hive/warehouse/${DB}.db/tb_xdr_ifc_gmmwmgmimjisc_new/dt=${ANALY_DATE}/h=${ANALY_HOUR}"
 hdfs dfs -cp /datang2/output/xdrnew/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}/tb* /user/hive/warehouse/${DB}.db/tb_xdr_ifc_gmmwmgmimjisc_new/dt=${ANALY_DATE}/h=${ANALY_HOUR}/
 hdfs dfs -cp /datang2/output/business/${ANALY_DATE}/${ANALY_HOUR}/VOLTE* /user/hive/warehouse/${DB}.db/volte_gt_busi_user_data/dt=${ANALY_DATE}/h=${ANALY_HOUR}/
+

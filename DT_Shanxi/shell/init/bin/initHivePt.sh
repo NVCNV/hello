@@ -36,3 +36,4 @@ alter table tb_xdr_ifc_mw drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_mw add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") 
 location "/datang/TB_XDR_IFC_MW/${ANALY_DATE}/${ANALY_HOUR}";
 EOF
+
