@@ -21,4 +21,3 @@ sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/gt_pulse_cell_base60/d
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/gt_pulse_detail_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 7 2
 
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/gt_pulse_load_balence60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 33 2
-
