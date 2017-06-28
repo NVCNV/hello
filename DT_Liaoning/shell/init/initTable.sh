@@ -1,5 +1,6 @@
 #!/bin/bash
 #明细数据库
+
 DDLDB=$1
 DB_PATH=$2
 #缓存数据库

@@ -48,6 +48,5 @@ alter table lte_mrs_dlbestrow_ana60 add partition(dt=${ANALY_DATE},h=${ANALY_HOU
 
 alter table LTE_MRO_JOINUSER_ANA60 drop if exists partition(dt=${ANALY_DATE},h=${ANALY_HOUR});
 alter table LTE_MRO_JOINUSER_ANA60 add partition(dt=${ANALY_DATE},h=${ANALY_HOUR});
-
 EOF
 exit 0

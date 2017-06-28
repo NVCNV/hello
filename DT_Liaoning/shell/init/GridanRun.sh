@@ -10,7 +10,6 @@ SOURCEDIR=$7
 #MASTER=spark://172.30.4.189:7077
 
 
-
 MAIN_CLASS=com.dtmobile.spark.job.AnalyJob
 JAR=/dt/bin/DT_Liaoning-1.0-SNAPSHOT.jar
 

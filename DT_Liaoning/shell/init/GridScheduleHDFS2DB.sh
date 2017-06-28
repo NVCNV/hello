@@ -1,5 +1,4 @@
 #!/bin/bash
-
 export HADOOP_CONF_DIR=/opt/app/hdconf
 
 ANALY_DATE=$1

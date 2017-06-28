@@ -18,7 +18,6 @@
 
 
 
-
 二、发布文件说明：
 （1）DT_Liaoning-1.0-SNAPSHOT.jar 为任务jar包
 （2）GridanInitTable.sh 为hive建表语句

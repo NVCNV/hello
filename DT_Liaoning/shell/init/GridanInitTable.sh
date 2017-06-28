@@ -1116,6 +1116,5 @@ create table LTE_MRO_SOURCE_TMP
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
-
 EOF
 exit 0
