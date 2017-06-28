@@ -28,3 +28,4 @@ hdfs dfs -rm -R -skipTrash ${ETYPE_OUT}
 hadoop jar ${JAR_FILE} ${ETYPE_MAIN}  ${VOLTE_RX} ${VOLTE_ORGN} ${S1MME_ORGN} ${TB_XDR_IFC_UU} ${TB_XDR_IFC_X2} ${ETYPE_OUT}
 
 
+

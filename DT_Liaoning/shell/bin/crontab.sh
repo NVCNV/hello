@@ -29,7 +29,7 @@ HOST=taiyue
 HUSERNAME=datang
 HPASSWD=Datang@12
 PORT=50072
-CMD= /cup/d4/datang/bin/hdfs2local.sh;ls /cup/d4/datang/TEMP/s1mme_orgn/$ANALY_DATE/$ANALY_HOUR
+CMD=/cup/d4/datang/bin/hdfs2local.sh;ls /cup/d4/datang/TEMP/s1mme_orgn/$ANALY_DATE/$ANALY_HOUR
 
 java -jar $JAR $URL $USERNAME $PASSWD $PROJECT $FLOW $PASSWD $KEYSTORE $KEYSTORE $ANALY_DATE $ANALY_HOUR \
 $HOST $HUSERNAME $HPASSWD $PORT $CMD

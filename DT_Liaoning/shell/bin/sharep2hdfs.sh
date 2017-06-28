@@ -27,3 +27,4 @@ rm -rf ${LOCAL_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}
 done
 echo "`date '+/%y/%m/%d %H:%M:%S'` INFO done ,exit..."
 echo "Success!"
+
