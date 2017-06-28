@@ -575,7 +575,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table tac_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/tac_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/tac_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -584,7 +584,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
            |tac,
            |$kpibusinessday
            |from tac_hour_http where dt="$ANALY_DATE" group by tac
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/tac_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tac_day_http/dt=$ANALY_DATE")
 
   }
 
@@ -592,7 +592,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table cell_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/cell_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/cell_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -601,7 +601,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |cellid,
          |$kpibusinessday
          |from cell_hour_http where dt="$ANALY_DATE" group by cellid
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/cell_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_day_http/dt=$ANALY_DATE")
 
   }
 
@@ -609,7 +609,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table sp_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/sp_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/sp_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -618,14 +618,14 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |appserveripipv4,
          |$kpibusinessday
          |from sp_hour_http where dt="$ANALY_DATE" group by appserveripipv4
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/sp_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_day_http/dt=$ANALY_DATE")
   }
 
   def ueDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table ue_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/ue_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/ue_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -635,14 +635,14 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |msisdn,
          |$kpibusinessday
          |from ue_hour_http where dt="$ANALY_DATE" group by imsi,msisdn
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/ue_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/ue_day_http/dt=$ANALY_DATE")
   }
 
   def sgwDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table sgw_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/sgw_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/sgw_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -651,14 +651,14 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |sgwipaddr,
          |$kpibusinessday
          |from sgw_hour_http where dt="$ANALY_DATE" group by sgwipaddr
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/sgw_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_day_http/dt=$ANALY_DATE")
   }
 
   def imsicellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table imsi_cell_day_http add if not exists partition(dt=$ANALY_DATE)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE'
+           LOCATION 'hdfs://dtcluster$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE'
       """)
     sql(
       s"""
@@ -669,7 +669,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |cellid,
          |$kpibusinessday
          |from imsi_cell_hour_http where dt="$ANALY_DATE" group by imsi,msisdn,cellid
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"/$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE")
   }
 
 }
