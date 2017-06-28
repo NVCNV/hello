@@ -14,6 +14,7 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+
 --20170627新增
 drop table lte_cellmr_source;
 create table lte_cellmr_source(

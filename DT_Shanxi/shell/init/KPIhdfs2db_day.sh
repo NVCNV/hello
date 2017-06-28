@@ -6,6 +6,7 @@ OracleADDR=$3
 VAADDR=$4
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
+
 #echo"sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_baseday/dt=${ANALY_DATE} 40 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_baseday/dt=${ANALY_DATE} 40 2 &
 

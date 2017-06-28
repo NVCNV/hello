@@ -7,6 +7,7 @@ OracleADDR=$4
 VAADDR=$5
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
+
 #Kpi Hour To Oracle
 #echo"sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 35 2"
 #sh VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 35 2 &

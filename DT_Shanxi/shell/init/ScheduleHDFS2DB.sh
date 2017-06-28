@@ -9,6 +9,7 @@ OracleADDR=$4
 VAADDR=$5
 DIR=hdfs://dtcluster/user/hive/warehouse/${DATABASE}.db
 
+
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/volte_user_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} 2 2
 
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/gt_pulse_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} 4 2

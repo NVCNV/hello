@@ -10,6 +10,7 @@ PATH1=$7
 VERSINCONTROL=$8
 
 
+
 echo "ANALY_DATE:ANALY_HOUR:MASTERIP:SDB:DDB:ORACL:PATH"
 MAIN_CLASS=com.dtmobile.spark.job.AnalyJob
 JAR=/dt/lib/DT_shanxiUserKpi-1.0-SNAPSHOT.jar
