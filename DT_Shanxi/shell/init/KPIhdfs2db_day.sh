@@ -30,4 +30,3 @@ sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/ue_day_http/dt=${ANALY
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/imsi_cell_day_http/dt=${ANALY_DATE} 21 2
 
 sh ${VAADDR}/VolumeAnalyseHDFS2db.sh ${OracleADDR} ${DIR}/sgw_day_http/dt=${ANALY_DATE} 23 2
-
