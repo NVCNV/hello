@@ -948,11 +948,6 @@ ROW FORMAT DELIMITED
 LOCATION
   'hdfs://dtcluster/${SOURCEDIR}/LTE_MRO_SOURCE' ;
 
-
-
-
-
-
 EOF
 
 exit 0

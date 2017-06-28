@@ -34,3 +34,4 @@ sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/lte_mro_disturb_ana/dt=
 sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/lte_mro_disturb_mix/dt=${ANALY_DATE}/h=${ANALY_HOUR} 13 2
 
 sh ${SCRIPT_ADDR}/GridanHDFS2db.sh ${ORACLE_ADDR} ${DIR}/lte_mro_adjcover_ana60/dt=${ANALY_DATE}/h=${ANALY_HOUR} 14 2
+

@@ -75,7 +75,3 @@ FROM grid m;
 
 
 
- 
-
-
-
