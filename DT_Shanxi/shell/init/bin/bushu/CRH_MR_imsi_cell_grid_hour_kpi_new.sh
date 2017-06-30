@@ -65,7 +65,7 @@ insert into mro_kpi_mid_imsi_cell_grid_hour partition(dt="$ANALY_DATE",h="$ANALY
 kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
 )
 select "$CAL_DATE",imsi,msisdn,cellid,rruid,gridid,dir_state,sum(avgrsrpx),sum(commy),sum(avgrsrqx),sum(ltecoverratex),sum(weakcoverratex),
-sum(case when overlapcoverratey>3 THEN 1 else 0 end)overlapcoverratex,
+sum(case when overlapcoverratex>3 THEN 1 else 0 end)overlapcoverratex,
 sum(overlapcoverratey),
 max(greatest(updiststroxvalue1,updiststroxvalue2,updiststroxvalue3,updiststroxvalue4,updiststroxvalue5,updiststroxvalue6,updiststroxvalue7,updiststroxvalue8,
 updiststroxvalue9,updiststroxvalue10))updiststromax,
