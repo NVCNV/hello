@@ -12,7 +12,7 @@ sum(case when MRNAME='MR.LteScRSRP' AND VID=1 AND KPI1 is not NULL AND Eventtype
 sum(case when MRNAME='MR.LteScRSRP' AND VID=1 AND KPI3 is not NULL AND Eventtype='PERIOD' then KPI3*0.5-20 else 0 end)avgrsrqx,
 sum(case when MRNAME='MR.LteScRSRP' AND VID=1 AND KPI1 is not NULL AND (KPI1-141)>-110 AND Eventtype='PERIOD' THEN 1 else 0 end)ltecoverratex,
 sum(case when MRNAME='MR.LteScRSRP' AND VID=1 AND KPI1 is not NULL AND (KPI1-141)<=-110 AND Eventtype='PERIOD' THEN 1 else 0 end)weakcoverratex,
-sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not NULL AND KPI2 is not NULL and (kpi1-141)>-110 then 1 else 0 end)overlapcoverratex,
+sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not NULL AND KPI2 is not NULL and (kpi1-141)>-110 and abs(kpi1-kpi6)=6 then 1 else 0 end)overlapcoverratex,
 sum(case when MRNAME='MR.LteScRSRP' AND VID=1 AND KPI1 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)overlapcoverratey,
 MAX(case when MRNAME='MR.LteScRSRP' AND KPI8 is not NULL THEN KPI8-11 else NULL end)upsigrateavgmax,
 sum(case when MRNAME='MR.LteScRSRP' AND KPI8 is not NULL THEN KPI8-11 else 0 end)upsigrateavgx,
