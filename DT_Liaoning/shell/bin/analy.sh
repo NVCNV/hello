@@ -15,6 +15,7 @@ mkdir -p  /appfs/hadoopfile/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}/
 mkdir -p  /appfs/hadoopfile/TB_XDR_IFC_UU/${ANALY_DATE}/${ANALY_HOUR}/
 mkdir -p  /appfs/hadoopfile/TB_XDR_IFC_X2/${ANALY_DATE}/${ANALY_HOUR}/
 
+
 hdfs dfs -get /datang/volte_orgn/20170227/08/*     /data1/taiyue/TEMP/volte_orgn/${ANALY_DATE}/${ANALY_HOUR}/
 hdfs dfs -get /datang/volte_rx/20170227/08/*       /data1/taiyue/TEMP/volte_rx/${ANALY_DATE}/${ANALY_HOUR}/
 hdfs dfs -get /datang/volte_sv/20170227/08/*       /data1/taiyue/TEMP/volte_sv/${ANALY_DATE}/${ANALY_HOUR}/
