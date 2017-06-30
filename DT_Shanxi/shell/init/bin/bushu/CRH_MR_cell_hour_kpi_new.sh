@@ -86,7 +86,7 @@ sum(case when MRNAME='MR.LteScRIP0' AND KPI2 is not NULL THEN 1 else 0 end)updis
 
 
 ltemr_new="select cellid,dir_state,sum(avgrsrpx)avgrsrpx,sum(commy)commy,sum(avgrsrqx)avgrsrqx,sum(ltecoverratex)ltecoverratex,sum(weakcoverratex)weakcoverratex,
-sum(case when overlapcoverratex>3 THEN 1 else 0 end)overlapcoverratex,
+sum(case when overlapcoverratex>=3 THEN 1 else 0 end)overlapcoverratex,
 sum(overlapcoverratey)overlapcoverratey,
 0 as updiststromax,
 0 as updiststrox,
