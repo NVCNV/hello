@@ -82,7 +82,7 @@ hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_sgs/${ANALY_DATE}/${ANALY_HOUR}
 hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}
 hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_s1mme/${ANALY_DATE}/${ANALY_HOUR}
 hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/out/${ANALY_DATE}/${ANALY_HOUR}
+hdfs dfs -rm -R $xdr_new_output/out/${ANALY_DATE}
 
 
 new_out=$xdr_new_output
@@ -95,8 +95,8 @@ hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output $
 hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $s1mme_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
 hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $lte_mro_source $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
 hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sgs_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+#hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
 
 wait
 
