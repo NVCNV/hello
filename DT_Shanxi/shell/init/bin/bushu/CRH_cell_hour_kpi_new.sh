@@ -105,16 +105,16 @@ sum(case when ProcedureType=5 and interface=14 and ServiceType=0 and callduratio
 sum(case when ProcedureType=5 and interface=14 and ServiceType=1 and callduration<>4294967295 then callduration/100 else 0 end)voltevdtime,
 sum(case when ProcedureType=5 and interface=14 and ServiceType=1 and callduration<>4294967295 then 1 else 0 end)voltevdtimey,
 0 as voltemchandover,
-sum(case when ProcedureType=5 and ServiceType=0 and Answertime is not null then 1 else 0 end)volteanswer,
+sum(case when interface=14 and ProcedureType=5 and ServiceType=0 and Answertime is not null then 1 else 0 end)volteanswer,
 0 as voltevdhandover,
-sum(case when ProcedureType=5 and ServiceType=1 and Answertime is not null then 1 else 0 end)voltevdanswer,
+sum(case when interface=14 and ProcedureType=5 and ServiceType=1 and Answertime is not null then 1 else 0 end)voltevdanswer,
 0 as srvccsucc,0 as srvccatt,0 as srvcctime,0 as lteswsucc,0 as lteswatt,0 as srqatt ,
 0 as srqsucc ,0 as tauatt  ,0 as tausucc,0 as rrcrebuild,0 as rrcsucc,0 as rrcreq,
 sum(case when ProcedureType=1 and interface=14 then 1 else 0 end)imsiregatt,
 sum(case when ProcedureType=1 and interface=14 and ProcedureStatus=0 then 1 else 0 end)imsiregsucc,
 0 as wirelessdrop,0 as wireless,0 as eabdrop,0 as eab,0 as eabs1swx,0 as eabs1swy,0 as s1tox2swx,0 as s1tox2swy,0 as enbx2swx,0 as enbx2swy,
 0 as uuenbswx,0 as uuenbswy,0 as uuenbinx,0 as uuenbiny,0 as swx,0 as swy,0 as attachx,0 as attachy,
-sum(case when ProcedureType=5 and alertingtime is not null then 1 else 0 end)voltesucc,
+sum(case when interface=14 and ProcedureType=5 and alertingtime is not null then 1 else 0 end)voltesucc,
 0 as srvccsuccS1
           from tb_xdr_ifc_gmmwmgmimjisc_new
          where callside=0 and dt="$ANALY_DATE" and h="$ANALY_HOUR"
@@ -134,16 +134,16 @@ sum(case when ProcedureType=5 and interface=14 and ServiceType=0 and callduratio
 sum(case when ProcedureType=5 and interface=14 and ServiceType=1 and callduration<>4294967295 then callduration/100 else 0 end)voltevdtime,
 sum(case when ProcedureType=5 and interface=14 and ServiceType=1 and callduration<>4294967295 then 1 else 0 end)voltevdtimey,
 0 as voltemchandover,
-sum(case when ProcedureType=5 and ServiceType=0 and Answertime is not null then 1 else 0 end)volteanswer,
+sum(case when interface=14 and ProcedureType=5 and ServiceType=0 and Answertime is not null then 1 else 0 end)volteanswer,
 0 as voltevdhandover,
-sum(case when ProcedureType=5 and ServiceType=1 and Answertime is not null then 1 else 0 end)voltevdanswer,
+sum(case when interface=14 and ProcedureType=5 and ServiceType=1 and Answertime is not null then 1 else 0 end)voltevdanswer,
 0 as srvccsucc,0 as srvccatt,0 as srvcctime,0 as lteswsucc,0 as lteswatt,0 as srqatt ,
 0 as srqsucc ,0 as tauatt  ,0 as tausucc,0 as rrcrebuild,0 as rrcsucc,0 as rrcreq,
 sum(case when ProcedureType=1 and interface=14 then 1 else 0 end)imsiregatt,
 sum(case when ProcedureType=1 and interface=14 and ProcedureStatus=0 then 1 else 0 end)imsiregsucc,
 0 as wirelessdrop,0 as wireless,0 as eabdrop,0 as eab,0 as eabs1swx,0 as eabs1swy,0 as s1tox2swx,0 as s1tox2swy,0 as enbx2swx,0 as enbx2swy,
 0 as uuenbswx,0 as uuenbswy,0 as uuenbinx,0 as uuenbiny,0 as swx,0 as swy,0 as attachx,0 as attachy,
-sum(case when ProcedureType=5 and alertingtime is not null then 1 else 0 end)voltesucc,
+sum(case when interface=14 and ProcedureType=5 and alertingtime is not null then 1 else 0 end)voltesucc,
 0 as srvccsuccS1
           from tb_xdr_ifc_gmmwmgmimjisc_new
        where callside=1 and dt="$ANALY_DATE" and h="$ANALY_HOUR"
