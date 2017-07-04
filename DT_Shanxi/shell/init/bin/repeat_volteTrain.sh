@@ -88,15 +88,22 @@ hdfs dfs -rm -R $xdr_new_output/out/${ANALY_DATE}
 new_out=$xdr_new_output
 HighSpeedUserAnalyseJob=cn.com.dtmobile.hadoop.biz.train.job.highspeeduser.HighSpeedUserAnalyseJob
 
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $x2_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}  &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $gx_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sv_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $s1mme_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $lte_mro_source $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sgs_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
+echo "------------------------x2_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $x2_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------gx_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $gx_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------sv_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sv_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "-----------------------mw_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------s1mme_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $s1mme_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------mro_source_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $lte_mro_source $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------sgs_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sgs_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------uu_new_JOB------------------"
 hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
-#hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
 
 wait
 
