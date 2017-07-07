@@ -20,5 +20,5 @@ ANALY_DATE=$1
 ./repeat_same_and_updown_checi.sh ${ANALY_DATE}  
 ./bushu/kpiAnalyday.sh ${ANALY_DATE} result  >> kpiAnaly_day.log 2>&1
 
-./hdfs2db.sh hdfs://dtcluster/datang2/output/u4/${ANALY_DATE}/u4* u4 27 2
-./hdfs2db.sh hdfs://dtcluster/datang2/output/updowntrain/${ANALY_DATE} upordown 29 2 
+#日期 Oracle数据库
+sh HightSpeedUserToOracle_day.sh ${ANALY_DATE} hadoop
