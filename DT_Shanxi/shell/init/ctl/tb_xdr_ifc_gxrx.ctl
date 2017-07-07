@@ -1,0 +1,47 @@
+LOAD DATA
+characterset UTF8
+APPEND INTO TABLE tb_xdr_ifc_gxrx_new
+FIELDS TERMINATED BY ','
+trailing nullcols
+(
+length,
+city,
+interface,
+xdrid,
+rat,
+imsi,
+imei,
+msisdn,
+proceduretype,
+procedurestarttime,
+procedureendtime,
+icid,
+originrealm,
+destinationrealm,
+originhost,
+destinationhost,
+sgsnsgwsigip,
+afappid,
+ccrequesttype,
+rxrequesttype,
+mediatype,
+abortcause,
+resultcode,
+experimentalresultcode,
+sessionreleasecause,
+rangetime date "yyyy-mm-dd hh24:mi:ss",
+etype "decode(:etype,'\n',null, :etype) number",
+gridid,
+slong,
+slat,
+dlong,
+dlat,
+distance,
+espeed,
+elong,
+elat,
+falurecause,
+flag,
+beforeflag,
+eupordown
+)
