@@ -4,15 +4,17 @@ export LD_LIBRARY_PATH=$ORACLE_HOME/lib
 export PATH=$PATH:$LD_LIBRARY_PATH
 
 TAKING_DATE=$1
+HIVEDB=$2
+ORACLEDB=$3
 mypath="$("$(dirname; "$0")";pwd)"
 cd $mypath
 
-HDFS_ADDR='hdfs://dtcluster/user/hive/warehouse/result.db'
+HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
 LOCAL_ADDR='/dt/NewData'
-ORACLE_ADDR='userid=scott/tiger@hadoop'
+ORACLE_ADDR="userid=scott/tiger@${ORACLEDB}"
 LOG_ADDR='/dt/sqllog'
 CTL_ADDR='/dt/ctl'
-HIVE_TBLES='gt_freq_baseday gt_balence_baseday gt_shorttimelen_baseday gt_overtimelen_baseday gt_commusermore_baseday gt_highattach_baseday'
+HIVE_TBLES='tac_day_http cell_day_http sp_day_http ue_day_http imsi_cell_day_http sgw_day_http'
 
 rm -rf ${LOCAL_ADDR}/${TAKING_DATE}
 mkdir ${LOCAL_ADDR}/${TAKING_DATE}

@@ -5,10 +5,11 @@ export PATH=$PATH:$LD_LIBRARY_PATH
 
 TAKING_DATE=$1
 TAKING_HOUR=$2
+HIVEDB=$3
 mypath="$("$(dirname; "$0")";pwd)"
 cd $mypath
 
-HDFS_ADDR='hdfs://dtcluster/user/hive/warehouse/result.db'
+HDFS_ADDR='hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db'
 LOCAL_ADDR='/dt/NewData'
 ORACLE_ADDR='userid=scott/tiger@hadoop'
 LOG_ADDR='/dt/sqllog'
