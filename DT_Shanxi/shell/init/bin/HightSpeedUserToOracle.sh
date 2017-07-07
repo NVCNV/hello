@@ -1,10 +1,10 @@
 #!/bin/bash
 TAKING_DATE=$1
 TAKING_HOUR=$2
-
+DAPATH=$3
 HDFS_ADDR=" hdfs://dtcluster/datang2/output"
 
-DB_ADDR="userid=scott/tiger@hadoop"
+DB_ADDR="userid=scott/tiger@${DAPATH}"
 
 
 
