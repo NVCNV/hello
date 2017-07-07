@@ -117,7 +117,7 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |
        |select
        |(case when minutes >= 10 then concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
-       |       else concat('${cal_date}','',$ANALY_HOUR,':0',minutes,':','00')
+       |       else concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
        |       end) ttime,
        |'$ANALY_HOUR' hours,
        |b.minutes,b.cellid,b.imsi,b.imei,(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
