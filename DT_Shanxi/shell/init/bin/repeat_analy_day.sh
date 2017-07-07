@@ -21,4 +21,4 @@ ANALY_DATE=$1
 ./bushu/kpiAnalyday.sh ${ANALY_DATE} result  >> kpiAnaly_day.log 2>&1
 
 #日期 Oracle数据库
-sh HightSpeedUserToOracle_day.sh ${ANALY_DATE} hadoop
+sh HightSpeedUserToOracle_day.sh ${ANALY_DATE} hadoop >> Speed_day_toORacle.log
