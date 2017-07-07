@@ -5,8 +5,8 @@ cd $my_path
 jar_file="/dt/lib/dt_mobile.jar"
 
 # date
-ANALY_DATE=$1
-ANALY_HOUR=$2
+ANALY_DATE=20170427
+ANALY_HOUR=12
 
 # free
 user_distinguish_S1mmeXdr="cn.com.dtmobile.hadoop.biz.train.job.highspeeduser.VolteTrainS1mmeJob"
@@ -157,7 +157,7 @@ hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU
 cellMR_main=cn.com.dtmobile.hadoop.biz.exception.job.CellMR
 mw=${xdr_new_output}/mw/${ANALY_DATE}/${ANALY_HOUR}
 mw_xdr=${mw}/tb*
-cellMR=/datang2/cellMR/${ANALY_DATE}/${ANALY_HOUR}
+cellMR=/datang2/output/cellMR/${ANALY_DATE}/${ANALY_HOUR}
 hadoop fs -rm -R ${cellMR}
 
 echo "c------------------------CellMR------------------------"
