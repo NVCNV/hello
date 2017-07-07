@@ -13,7 +13,7 @@ LOCAL_ADDR='/dt/NewData'
 ORACLE_ADDR='userid=scott/tiger@hadoop'
 LOG_ADDR='/dt/sqllog'
 CTL_ADDR='/dt/ctl'
-HIVE_TBLES='t_xdr_event_msg business_type_detail tac_hour_http cell_hour_http sp_hour_http ue_hour_http imsi_cell_hour_http sgw_hour_http zc_city_data'
+HIVE_TBLES='t_xdr_event_msg business_type_detail tac_hour_http cell_hour_http sp_hour_http ue_hour_http imsi_cell_hour_http sgw_hour_http zc_city_data lte_cellmr_source'
 
 rm -rf ${LOCAL_ADDR}/${TAKING_DATE}
 mkdir ${LOCAL_ADDR}/${TAKING_DATE}
