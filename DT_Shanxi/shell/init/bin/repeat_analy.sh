@@ -42,5 +42,7 @@ mkdir /dt/bin/sqoop_log
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} result  init >> job_logs.log 2>&1
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} init result datang2 >>  job_logs.log 2>&1
 
-sh HightSpeedUserToOracle.sh ${ANALY_DATE} ${ANALY_HOUR}
+
+# 日期 小时 Oracle数据库
+sh HightSpeedUserToOracle.sh ${ANALY_DATE} ${ANALY_HOUR} hadoop >> HighSpeed_to_oracle.log
 
