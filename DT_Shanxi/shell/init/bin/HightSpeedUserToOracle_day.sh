@@ -23,5 +23,4 @@ echo "------->hdfs dfs -getmerge ${HDFS_ADDR}/updowntrain/${TAKING_DATE}/* ${LOC
 hdfs dfs -getmerge ${HDFS_ADDR}/updowntrain/${TAKING_DATE}/* ${LOCALDIR}/${TAKING_DATE}/upordown.dat
 mkdir -p /dt/sqlldrLog/updowntrain/${TAKING_DATE}/
 sqlldr ${DB_ADDR} control=${CTLDIR}/updowntrain.ctl data=${LOCALDIR}/${TAKING_DATE}/upordown.dat log=/dt/sqlldrLog/updowntrain/${TAKING_DATE}
-
 exit 0
