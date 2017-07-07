@@ -1,15 +1,14 @@
 #!/bin/bash
 TAKING_DATE=$1
 TAKING_HOUR=$2
-
+DAPATH=$3
 HDFS_ADDR=" hdfs://dtcluster/datang2/output"
 
-DB_ADDR="userid=scott/tiger@hadoop"
+DB_ADDR="userid=scott/tiger@${DAPATH}"
 
 
 
 NEW_TABLES="tb_xdr_ifc_mw tb_xdr_ifc_gxrx tb_xdr_ifc_x2 tb_xdr_ifc_sv lte_mro_source tb_xdr_ifc_uu tb_xdr_ifc_s1mme volte_gtuser_data tb_xdr_ifc_sgs"
-
 
 
 LOCALDIR="/dt/NewData"
