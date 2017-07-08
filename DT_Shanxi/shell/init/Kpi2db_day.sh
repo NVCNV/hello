@@ -6,7 +6,7 @@ ORACLEDB=$3
 
 
 HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
-LOCAL_ADDR='/dt/NewData'
+LOCAL_ADDR='/dt/tmpdata'
 ORACLE_ADDR="userid=scott/tiger@${ORACLEDB}"
 LOG_ADDR='/dt/sqllog'
 CTL_ADDR='/dt/ctl'
