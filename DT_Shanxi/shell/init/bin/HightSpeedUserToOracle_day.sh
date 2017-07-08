@@ -1,22 +1,21 @@
 #!/bin/bash
 TAKING_DATE=$1
-TAKING_HOUR=$2
-
+DBPATH=$2
 HDFS_ADDR=" hdfs://dtcluster/datang2/output"
 
-DB_ADDR="userid=scott/tiger@hadoop"
+DB_ADDR="userid=scott/tiger@${DBPATH}"
 
-LOCALDIR="/dt/NewData"
+LOCALDIR="/dt/tmpdata"
 CTLDIR="/dt/ctl"
 
 
 rm -rf ${LOCALDIR}/$TAKING_DATE
-#mkdir ${LOCALDIR}/$TAKING_DATE
+mkdir ${LOCALDIR}/$TAKING_DATE
 
 
 echo "------->hdfs dfs -getmerge ${HDFS_ADDR}/u4/${TAKING_DATE}/u4*  ${LOCALDIR}/${TAKING_DATE}/u4"
 hdfs dfs -getmerge ${HDFS_ADDR}/u4/${TAKING_DATE}/u4*  ${LOCALDIR}/${TAKING_DATE}/u4.dat
-mkdir -p dt/sqlldrLog/u4/${TAKING_DATE}/
+mkdir -p /dt/sqlldrLog/u4/${TAKING_DATE}/
 sqlldr ${DB_ADDR} control=${CTLDIR}/u4.ctl data=${LOCALDIR}/${TAKING_DATE}/u4.dat log=/dt/sqlldrLog/u4/${TAKING_DATE}
 
 echo "------->hdfs dfs -getmerge ${HDFS_ADDR}/updowntrain/${TAKING_DATE}/* ${LOCALDIR}/${TAKING_DATE}/upordown"
