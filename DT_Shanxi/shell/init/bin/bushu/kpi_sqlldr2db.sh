@@ -1,16 +1,14 @@
 #!/bin/bash
-export ORALCE_HOME=/opt/oracle
-export LD_LIBRARY_PATH=$ORACLE_HOME/lib
-export PATH=$PATH:$LD_LIBRARY_PATH
+
 
 TAKING_DATE=$1
 TAKING_HOUR=$2
 mypath="$("$(dirname; "$0")";pwd)"
 cd $mypath
 
-HDFS_ADDR='hdfs://dtcluster/user/hive/warehouse/result.db'
+HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/result.db"
 LOCAL_ADDR='/dt/NewData'
-ORACLE_ADDR='userid=scott/tiger@hadoop'
+ORACLE_ADDR="userid=scott/tiger@hadoop"
 LOG_ADDR='/dt/sqllog'
 CTL_ADDR='/dt/ctl'
 HIVE_TBLES='volte_gt_user_ana_base60 volte_gt_cell_ana_base60 mr_gt_user_ana_base60 mr_gt_cell_ana_base60 mr_gt_cell_ana_base60'

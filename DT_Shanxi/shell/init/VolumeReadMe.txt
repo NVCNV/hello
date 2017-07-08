@@ -30,8 +30,8 @@
             此脚本里面调用了其他的脚本分别为：
 	    （1）、repeat_same_and_updown_chci.sh 需传入日期
 	    （2）、kpiAnalyday.sh 需传入日期  数据库（下面建表传入的第一个数据库）
-	    （3）、hdfs2db.sh 需传入日期 小时
-      2.1.3 bin 目录下hdfs2db.sh为sqoop脚本（不需要单独调用，已集成到其他脚本）
+	  
+      
    2.2 jar包说明：
     2.2.2 dt_mobile.jar 为高铁用户识别、上下车、车次识别、同车任务jar包，放入/dt/lib下面；
     2.2.2 DT_Shanxi-1.0-SNAPSHOT.jar 为容量任务jar包，放入 /dt/lib目录下；

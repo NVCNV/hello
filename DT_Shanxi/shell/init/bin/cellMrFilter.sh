@@ -13,7 +13,8 @@ hive<<EOF
 alter table ${INITDATABASE}.lte_mro_source add if not exists partition(dt="${ANALY_DATE}",h="${ANALY_HOUR}")
 location "/${SOURCEDATABASE}/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}" ;
 
-
+alter table  ${RESULTDATABASE}.lte_cellmr_source drop if exists  partition(dt="${ANALY_DATE}",h="${ANALY_HOUR}");
+alter table ${RESULTDATABASE}.lte_cellmr_source set serdeproperties('serialization.null.format' = '');
 
 insert into ${RESULTDATABASE}.lte_cellmr_source  partition(dt="${ANALY_DATE}",h="${ANALY_HOUR}")
 select

@@ -1,14 +1,10 @@
 #!/bin/bash
-export ORALCE_HOME=/opt/oracle
-export LD_LIBRARY_PATH=$ORACLE_HOME/lib
-export PATH=$PATH:$LD_LIBRARY_PATH
 
 TAKING_DATE=$1
 TAKING_HOUR=$2
 HIVEDB=$3
 ORACLEDB=$4
-mypath="$("$(dirname; "$0")";pwd)"
-cd $mypath
+
 
 HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
 LOCAL_ADDR='/dt/NewData'
