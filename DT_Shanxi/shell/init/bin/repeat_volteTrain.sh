@@ -5,8 +5,8 @@ cd $my_path
 jar_file="/dt/lib/dt_mobile.jar"
 
 # date
-ANALY_DATE=20170427
-ANALY_HOUR=12
+ANALY_DATE=$1
+ANALY_HOUR=$2
 
 # free
 user_distinguish_S1mmeXdr="cn.com.dtmobile.hadoop.biz.train.job.highspeeduser.VolteTrainS1mmeJob"
