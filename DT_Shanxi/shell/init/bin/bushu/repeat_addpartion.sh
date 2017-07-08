@@ -32,6 +32,7 @@ alter table tb_xdr_ifc_s1mme_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
 alter table tb_xdr_ifc_gxrx_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_gxrx_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}";
 
+alter table volte_gt_user_ana_base60 set serdeproperties('serialization.null.format'='');
 
 alter table tb_xdr_ifc_gmmwmgmimjisc_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_gmmwmgmimjisc_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}";
