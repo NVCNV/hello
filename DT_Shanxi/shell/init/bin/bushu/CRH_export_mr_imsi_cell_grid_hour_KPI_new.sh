@@ -14,3 +14,5 @@ select ttime,imsi,msisdn,cellid,rruid,gridid,dir_state,kpi001,kpi002,kpi003,kpi0
 from mro_kpi_mid_imsi_cell_grid_hour
 where dt="$ANALY_DATE" and h="$ANALY_HOUR";
 EOF
+
+exit 0
