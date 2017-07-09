@@ -5,6 +5,7 @@ DB=$3
 hive<<EOF
 set mapreduce.map.memory.mb=4096;set mapreduce.reduce.memory.mb=8192;set mapreduce.map.java.opts=-Xmx3482m;set mapreduce.reduce.java.opts=-Xmx6963m;
 USE ${DB};
+alter table mr_gt_user_ana_base60 set serdeproperties('serialization.null.format' = '');
 alter table mr_gt_user_ana_base60 drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table mr_gt_user_ana_base60 add partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 insert into mr_gt_user_ana_base60 partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
