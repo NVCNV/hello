@@ -5,12 +5,12 @@ TAKING_HOUR=$2
 HIVEDB=$3
 
 
-HDFS_ADDR='hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db'
-LOCAL_ADDR='/dt/tmpdata'
-ORACLE_ADDR='userid=scott/tiger@hadoop'
-LOG_ADDR='/dt/sqllog'
-CTL_ADDR='/dt/ctl'
-HIVE_TBLES='volte_user_data gt_pulse_detail gt_pulse_cell_min gt_pulse_cell_base60 gt_pulse_detail_base60 gt_pulse_load_balence60'
+HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
+LOCAL_ADDR="/dt/tmpdata"
+ORACLE_ADDR="userid=scott/tiger@hadoop"
+LOG_ADDR="/dt/sqllog"
+CTL_ADDR="/dt/ctl"
+HIVE_TBLES="volte_user_data gt_pulse_detail gt_pulse_cell_min gt_pulse_cell_base60 gt_pulse_detail_base60 gt_pulse_load_balence60"
 
 rm -rf ${LOCAL_ADDR}/${TAKING_DATE}
 mkdir ${LOCAL_ADDR}/${TAKING_DATE}
@@ -23,3 +23,4 @@ do
 	echo "load ${LOCAL_ADDR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}.dat to  oralce ${tableName}"
 	sqlldr ${ORACLE_ADDR} control=${CTL_ADDR}/${tableName}.ctl data=${LOCAL_ADDR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}.dat log=${LOG_ADDR}/${tableName}/${TAKING_DATE}/${TAKING_HOUR}/${TAKING_DATE}_${TAKING_HOUR}.log
 done
+exit 0

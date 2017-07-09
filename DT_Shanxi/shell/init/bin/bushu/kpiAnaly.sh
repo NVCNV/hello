@@ -46,6 +46,6 @@ echo "CRH_export_mr_cell_hour_kpi_new.sh"
 echo "CRH_export_mr_imsi_cell_grid_hour_KPI_new.sh"
 ./CRH_export_mr_imsi_cell_grid_hour_KPI_new.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} ${DEFAULTDB} &
 
-
+wait
 #日期 时间 hive结果数据库  Oracle数据库
 sh kpi_sqlldr2db.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} hadoop   >> kpi_hour_toOracle.log
