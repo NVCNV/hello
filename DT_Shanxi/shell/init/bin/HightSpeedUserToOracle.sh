@@ -69,6 +69,11 @@ hdfs dfs -getmerge ${HDFS_ADDR}/cellMR/${TAKING_DATE}/${TAKING_HOUR}/* ${LOCALDI
 mkdir -p /dt/sqlldrLog/cellMR/${TAKING_DATE}
 sqlldr ${DB_ADDR} control=${CTLDIR}/cellMR.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/cellMR log=/dt/sqlldrLog/cellMR/${TAKING_DATE}/${TAKING_HOUR}
 
+echo "------->hdfs dfs -getmerge ${HDFS_ADDR}/free/${TAKING_DATE}/${TAKING_HOUR}/COMM_USER_DATA* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/cellMR"
+hdfs dfs -getmerge ${HDFS_ADDR}/free/${TAKING_DATE}/${TAKING_HOUR}/COMM_USER_DATA* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/COMM_USER_DATA.dat
+mkdir -p /dt/sqlldrLog/COMM_USER_DATA/${TAKING_DATE}
+sqlldr ${DB_ADDR} control=${CTLDIR}/COMM_USER_DATA.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/COMM_USER_DATA log=/dt/sqlldrLog/COMM_USER_DATA/${TAKING_DATE}/${TAKING_HOUR}
+
 
 echo "----------------------------HighSpeedUser Data To Oracle Successful.....----------------------"
 
