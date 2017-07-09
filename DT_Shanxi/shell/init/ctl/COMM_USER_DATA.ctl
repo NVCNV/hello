@@ -6,7 +6,6 @@ trailing nullcols
 (
 imsi,
 cellid,
-targetcellid,
 proceduretype,
 procedurestatus,
 rangetime date "yyyy-mm-dd hh24:mi:ss",
@@ -16,7 +15,5 @@ procedurestarttime,
 procedureendtime,
 enbid,
 targetenbid,
-dir_state,
-seqnum,
-ispub
+dir_state
 )
