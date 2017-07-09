@@ -39,8 +39,9 @@ mkdir /dt/bin/sqoop_log
 
 ./repeat_volteTrain.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
 ./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} result init >> job_logs.log 2>&1
-./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} result  init >> job_logs.log 2>&1
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} init result datang2 >>  job_logs.log 2>&1
+./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} result  init >> job_logs.log 2>&1
+
 
 
 # 日期 小时 Oracle数据库
