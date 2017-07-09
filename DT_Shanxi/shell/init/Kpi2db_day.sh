@@ -6,11 +6,11 @@ ORACLEDB=$3
 
 
 HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
-LOCAL_ADDR='/dt/tmpdata'
+LOCAL_ADDR="/dt/tmpdata"
 ORACLE_ADDR="userid=scott/tiger@${ORACLEDB}"
-LOG_ADDR='/dt/sqllog'
-CTL_ADDR='/dt/ctl'
-HIVE_TBLES='tac_day_http cell_day_http sp_day_http ue_day_http imsi_cell_day_http sgw_day_http'
+LOG_ADDR="/dt/sqllog"
+CTL_ADDR="/dt/ctl"
+HIVE_TBLES="tac_day_http cell_day_http sp_day_http ue_day_http imsi_cell_day_http sgw_day_http"
 
 rm -rf ${LOCAL_ADDR}/${TAKING_DATE}
 mkdir ${LOCAL_ADDR}/${TAKING_DATE}
