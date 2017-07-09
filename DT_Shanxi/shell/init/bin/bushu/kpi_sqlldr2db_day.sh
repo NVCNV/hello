@@ -21,3 +21,4 @@ do
 	echo "load ${LOCAL_ADDR}/${TAKING_DATE}/${tableName}.dat to  oralce ${tableName}"
 	sqlldr ${ORACLE_ADDR} control=${CTL_ADDR}/${tableName}.ctl data=${LOCAL_ADDR}/${TAKING_DATE}/${tableName}.dat log=${LOG_ADDR}/${tableName}/${TAKING_DATE}/${TAKING_DATE}.log
 done
+exit 0
