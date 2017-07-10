@@ -114,19 +114,25 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
 
   sql(
     s"""
-       |
+       |select distinct ttime,hours,minutes,cellid,imsi,imei,gtuser_flag,volteuser_flag,sub_pulse_mark from (
        |select
        |(case when minutes >= 10 then concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
        |       else concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
        |       end) ttime,
        |'$ANALY_HOUR' hours,
-       |b.minutes,b.cellid,b.imsi,b.imei,(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
+       |b.minutes,
+       |b.cellid,
+       |b.imsi,
+       |b.imei,
+       |(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
        |(case when (d.imsi is not null) then 1 else 0 end) volteuser_flag,
-       |b.minutes+1 sub_pulse_mark from
-       |(select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
-       |left join volte_gtuser_data c on b.imsi=c.imsi
+       |b.minutes+1 sub_pulse_mark
+       |from (select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
+       |left join (select distinct imsi,cellid,RANGETIME from volte_gtuser_data) c on b.imsi=c.imsi
        |left join volte_user_data d on b.imsi=d.imsi
-       |order by minutes desc
+       |
+       |order by minutes desc) b
+       |
      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_pulse_detail/dt=$ANALY_DATE/h=$ANALY_HOUR""")
 
 }
