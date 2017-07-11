@@ -3,11 +3,11 @@
 TAKING_DATE=$1
 TAKING_HOUR=$2
 HIVEDB=$3
-
+ORACLEDB=$4
 
 HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
 LOCAL_ADDR="/dt/tmpdata"
-ORACLE_ADDR="userid=scott/tiger@hadoop"
+ORACLE_ADDR="userid=scott/tiger@${ORACLEDB}"
 LOG_ADDR="/dt/sqllog"
 CTL_ADDR="/dt/ctl"
 HIVE_TBLES="volte_user_data gt_pulse_detail gt_pulse_cell_min gt_pulse_cell_base60 gt_pulse_detail_base60 gt_pulse_load_balence60"
