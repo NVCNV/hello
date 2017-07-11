@@ -1,9 +1,9 @@
 #!/bin/bash
 TAKING_DATE=$1
-DBPATH=$2
+ORACLEDB=$2
 HDFS_ADDR=" hdfs://dtcluster/datang2/output"
 
-DB_ADDR="userid=scott/tiger@${DBPATH}"
+DB_ADDR="userid=scott/tiger@${ORACLEDB}"
 
 LOCALDIR="/dt/tmpdata"
 CTLDIR="/dt/ctl"
