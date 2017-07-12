@@ -152,7 +152,12 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |(case when httpstate>=500 then "1"
           |when ((t2.pagedelay>$SPSvBrowsedelay or t2.pagespeed<$SPSvBrowsedownv) and APPTYPE=15) or ((t2.videodelay>$SPSvVideodelay or t2.videospeed<$SPSvVideodownv) and APPTYPE=5) or ((t2.videodelay>$SPSvlnstantmessagedelay or t2.videospeed<$SPSvInstantmessagedownv) and APPTYPE=1) then "1"
           |when ((t3.pagedelay>$SGWSvBrowsedelay or t3.pagespeed<$SGWSvBrowsedownv) and APPTYPE=15) or ((t3.videodelay>$SGWSvVideodelay or t3.videospeed<$SGWSvVideodownv) and APPTYPE=5) or ((t3.videodelay>$SGWSvlnstantmessagedelay or t3.videospeed<$SGWSvInstantmessagedownv) and APPTYPE=1) then "2"
-          |when(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t5.cnt>0 then "3"
+          |when(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and
+          |(case when (t1.procedurestarttime>unix_timestamp(t2.create_time)*1000 and t1.procedureendtime<unix_timestamp(t2.clear_time)*1000) or
+          |(t1.procedurestarttime<unix_timestamp(t2.create_time)*1000 and t1.procedureendtime<unix_timestamp(t2.clear_time)*1000) or
+          |(t1.procedurestarttime>unix_timestamp(t2.create_time)*1000 and t1.procedureendtime>unix_timestamp(t2.clear_time)*1000)
+          |(t1.procedurestarttime<unix_timestamp(t2.create_time)*1000 and t1.procedureendtime>unix_timestamp(t2.clear_time)*1000)
+          |then 1 else 0 end)>0 then "3"
           |when ((!(t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) and (!(t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) and (!(t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t6.cnt>0 then "4"
           |when t9.cnt<=0 and (t11.ltecover<0.99 or t11.upsinr<-3)  then "4"
           |when t9.cnt<=0 and !(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1))then
