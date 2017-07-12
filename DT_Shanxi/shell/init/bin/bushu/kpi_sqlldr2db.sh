@@ -10,7 +10,7 @@ LOCAL_ADDR="/dt/tmpdata"
 ORACLE_ADDR="userid=scott/tiger@${ORACLEDB}"
 LOG_ADDR="/dt/sqllog"
 CTL_ADDR="/dt/ctl"
-HIVE_TBLES="volte_gt_user_ana_base60 volte_gt_cell_ana_base60 mr_gt_user_ana_base60 mr_gt_cell_ana_base60 mr_gt_grid_ana_baseday lte_cellmr_source"
+HIVE_TBLES="volte_gt_user_ana_base60 volte_gt_cell_ana_base60 mr_gt_user_ana_base60 mr_gt_cell_ana_base60 mr_gt_grid_ana_base60 lte_cellmr_source"
 
 rm -rf ${LOCAL_ADDR}/${TAKING_DATE}
 mkdir ${LOCAL_ADDR}/${TAKING_DATE}
