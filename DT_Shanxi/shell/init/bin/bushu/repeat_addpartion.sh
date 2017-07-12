@@ -7,12 +7,24 @@ INITDB=$4
 
 hive<<EOF
 USE ${DB};
+
+alter table volte_gt_user_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_cell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_user_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gtcell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_user_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_cell_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_user_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_baseday set serdeproperties('serialization.null.format' = '');
+
+
 alter table lte_mro_source_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table lte_mro_source_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/lte_mro_source/${ANALY_DATE}/${ANALY_HOUR}";
 
 alter table ${INITDB}.lte_mro_source drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table ${INITDB}.lte_mro_source add partition(dt="$ANALY_DATE",h="$ANALY_HOUR")location "/datang2/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}";
-
 
 alter table tb_xdr_ifc_uu_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_uu_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/tb_xdr_ifc_uu/${ANALY_DATE}/${ANALY_HOUR}";
@@ -31,7 +43,6 @@ alter table tb_xdr_ifc_s1mme_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
 
 alter table tb_xdr_ifc_gxrx_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_gxrx_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}";
-
 
 alter table tb_xdr_ifc_gmmwmgmimjisc_new drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table tb_xdr_ifc_gmmwmgmimjisc_new add partition(dt="$ANALY_DATE",h="$ANALY_HOUR") location "/datang2/output/xdrnew/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}";

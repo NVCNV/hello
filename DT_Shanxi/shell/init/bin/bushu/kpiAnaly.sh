@@ -46,18 +46,6 @@ echo "CRH_export_mr_cell_hour_kpi_new.sh"
 echo "CRH_export_mr_imsi_cell_grid_hour_KPI_new.sh"
 ./CRH_export_mr_imsi_cell_grid_hour_KPI_new.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} ${DEFAULTDB} &
 
-wait  
-echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_user_ana_base60 volte_gt_user_ana_base60 13 4"
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} volte_gt_user_ana_base60 13 2 
-echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_cell_ana_base60 volte_gt_cell_ana_base6 11 4"
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/volte_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} volte_gt_cell_ana_base60 11 2
-echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_user_ana_base60 mr_gt_user_ana_base60 17 4"
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_user_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_user_ana_base60 17 2
-echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_base60 mr_gt_cell_ana_base60 15 4"
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_cell_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_cell_ana_base60 15 2
-echo "./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_grid_ana_base60 mr_gt_grid_ana_base60 33 4"
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/mr_gt_grid_ana_base60/dt=${ANALY_DATE}/h=${ANALY_HOUR} mr_gt_grid_ana_base60 33 2
-
-
-#lte_cellmr_source
-./hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${DB}.db/lte_cellmr_source/dt=${ANALY_DATE}/h=${ANALY_HOUR} lte_cellmr_source 37 2
+wait
+#日期 时间 hive结果数据库  Oracle数据库
+sh kpi_sqlldr2db.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} hadoop   >> kpi_hour_toOracle.log

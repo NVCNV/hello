@@ -75,4 +75,19 @@ alter table mro_kpi_mid_imsi_cell_grid_hour add partition(dt="$ANALY_DATE",h="$A
 alter table mro_kpi_mid_imsi_cell_grid_day drop partition(dt="$ANALY_DATE");
 alter table mro_kpi_mid_imsi_cell_grid_day add partition(dt="$ANALY_DATE");
 
+
+
+alter table volte_gt_user_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_cell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_user_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table mr_gtcell_ana_base60 set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_user_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table volte_gt_cell_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_user_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_baseday  set serdeproperties('serialization.null.format' = '');
+alter table mr_gt_cell_ana_baseday set serdeproperties('serialization.null.format' = '');
+
+
+
 EOF

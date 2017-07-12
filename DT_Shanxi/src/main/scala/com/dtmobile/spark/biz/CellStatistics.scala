@@ -13,7 +13,7 @@ class CellStatistics(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: S
 
 def cellStatistics(sparkSession: SparkSession): Unit ={
   import sparkSession.sql
-  //todo 数据库
+
   sql(
     s"""alter table $SDB.tb_xdr_ifc_uu add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
          LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_UU/$ANALY_DATE/$ANALY_HOUR'
@@ -26,10 +26,10 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |IMEI,
        |CELLID,
        |RANGETIME,
-       |minute(RANGETIME)  minutes
+       |(case when minute(RANGETIME)<10 then concat('0',minute(RANGETIME)) else minute(RANGETIME) end) minutes
        | from  $SDB.tb_xdr_ifc_uu  where dt="$ANALY_DATE" and h="$ANALY_HOUR" and IMSI!=''
      """.stripMargin)
-  //todo 修改数据库
+
   sql(
     s"""alter table $SDB.lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
          LOCATION 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
@@ -46,7 +46,6 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        | where dt="$ANALY_DATE" and h="$ANALY_HOUR" and MRNAME = 'MR.LteScRSRP' and IMSI!=''
      """.stripMargin)
 
-  //todo 修改分区
   sql(
     s"""
        |select
@@ -114,19 +113,25 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
 
   sql(
     s"""
-       |
+       |select distinct ttime,hours,minutes,cellid,imsi,imei,gtuser_flag,volteuser_flag,sub_pulse_mark from (
        |select
        |(case when minutes >= 10 then concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
-       |       else concat('${cal_date}','',$ANALY_HOUR,':0',minutes,':','00')
+       |       else concat('${cal_date}','',$ANALY_HOUR,':',minutes,':','00')
        |       end) ttime,
        |'$ANALY_HOUR' hours,
-       |b.minutes,b.cellid,b.imsi,b.imei,(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
+       |b.minutes,
+       |b.cellid,
+       |b.imsi,
+       |b.imei,
+       |(case when (c.imsi is not null) then 1 else 0 end) gtuser_flag,
        |(case when (d.imsi is not null) then 1 else 0 end) volteuser_flag,
-       |b.minutes+1 sub_pulse_mark from
-       |(select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
-       |left join volte_gtuser_data c on b.imsi=c.imsi
+       |b.minutes+1 sub_pulse_mark
+       |from (select distinct minutes,cellid,imsi,imei from temp_uu_ueMr a ) b
+       |left join (select distinct imsi,cellid,RANGETIME from volte_gtuser_data) c on b.imsi=c.imsi
        |left join volte_user_data d on b.imsi=d.imsi
-       |order by minutes desc
+       |
+       |order by minutes desc) b
+       |
      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"""$warhouseDir/gt_pulse_detail/dt=$ANALY_DATE/h=$ANALY_HOUR""")
 
 }

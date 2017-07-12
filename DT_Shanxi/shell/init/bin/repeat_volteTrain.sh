@@ -71,35 +71,6 @@ hdfs dfs -cp /datang2/output/free/${ANALY_DATE}/${ANALY_HOUR}/VOLTE_*  /datang2/
 
 echo "eight new tables"
 
-
-
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_x2/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_uu/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/lte_mro_source/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/volte_gtuser_data/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_sgs/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_s1mme/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}
-hdfs dfs -rm -R $xdr_new_output/out/${ANALY_DATE}/${ANALY_HOUR}
-
-
-new_out=$xdr_new_output
-HighSpeedUserAnalyseJob=cn.com.dtmobile.hadoop.biz.train.job.highspeeduser.HighSpeedUserAnalyseJob
-
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $x2_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}  &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $gx_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sv_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $s1mme_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $lte_mro_source $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sgs_table $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${new_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR} &
-
-wait
-
 x2_out=${xdr_new_output}/tb_xdr_ifc_x2/${ANALY_DATE}/${ANALY_HOUR}
 gxrx_out=${xdr_new_output}/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}
 sv_xdr_out=${xdr_new_output}/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}
@@ -108,6 +79,49 @@ sgs_out=${xdr_new_output}/tb_xdr_ifc_sgs/${ANALY_DATE}/${ANALY_HOUR}
 uu_out=${xdr_new_output}/tb_xdr_ifc_uu/${ANALY_DATE}/${ANALY_HOUR}
 s1mme_new_output=${xdr_new_output}/tb_xdr_ifc_s1mme/${ANALY_DATE}/${ANALY_HOUR}
 mw_out=${xdr_new_output}/tb_xdr_ifc_mw/${ANALY_DATE}/${ANALY_HOUR}
+gt_user=${xdr_new_output}/volte_gtuser_data/${ANALY_DATE}/${ANALY_HOUR}
+
+
+
+
+hdfs dfs -rm -R ${x2_out}
+hdfs dfs -rm -R ${gxrx_out}
+hdfs dfs -rm -R ${sv_xdr_out}
+hdfs dfs -rm -R ${ltemrosource_out}
+hdfs dfs -rm -R ${sgs_out}
+hdfs dfs -rm -R ${uu_out}
+hdfs dfs -rm -R ${s1mme_new_output}
+hdfs dfs -rm -R ${mw_out}
+hdfs dfs -rm -R ${gt_user}
+
+
+
+
+HighSpeedUserAnalyseJob=cn.com.dtmobile.hadoop.biz.train.job.highspeeduser.HighSpeedUserAnalyseJob
+
+echo "------------------------x2_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $x2_table $bus_loc_mark_output ${x2_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------gx_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $gx_table $bus_loc_mark_output ${gxrx_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------sv_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sv_table $bus_loc_mark_output ${sv_xdr_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "-----------------------mw_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output ${mw_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "-----------------------gtuser_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $mw_table $bus_loc_mark_output ${gt_user} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------s1mme_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $s1mme_table $bus_loc_mark_output ${s1mme_new_output} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------mro_source_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $lte_mro_source $bus_loc_mark_output ${ltemrosource_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------sgs_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $sgs_table $bus_loc_mark_output ${sgs_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+echo "------------------------uu_new_JOB------------------"
+hadoop jar ${jar_file} $HighSpeedUserAnalyseJob $volteTrainAlalyse_business_input $bus_loc_mark_output ${uu_out} $public $process $grid $ht_sw_distance $distance_center ${ANALY_DATE} ${ANALY_HOUR}
+
+
+wait
+
+
 
 
 range=10000
@@ -143,7 +157,7 @@ hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.trainsame.TrainSameU
 cellMR_main=cn.com.dtmobile.hadoop.biz.exception.job.CellMR
 mw=${xdr_new_output}/mw/${ANALY_DATE}/${ANALY_HOUR}
 mw_xdr=${mw}/tb*
-cellMR=/datang2/cellMR/${ANALY_DATE}/${ANALY_HOUR}
+cellMR=/datang2/output/cellMR/${ANALY_DATE}/${ANALY_HOUR}
 hadoop fs -rm -R ${cellMR}
 
 echo "c------------------------CellMR------------------------"
@@ -159,7 +173,7 @@ hadoop jar ${jar_file} \
 ${user_home_main} \
 ${volteTrainAlalyse_business_output}/VOLTE_GT_BUSI* \
 ${volteTrainAlalyse_free_output}/VOLTE_GT_FREE*  \
-$xdr_new_output/volte_gtuser_data/${ANALY_DATE}/${ANALY_HOUR}  \
+${xdr_new_output}/volte_gtuser_data/${ANALY_DATE}/${ANALY_HOUR}  \
 ${user_home_out} \
 ${phone_number}
 
