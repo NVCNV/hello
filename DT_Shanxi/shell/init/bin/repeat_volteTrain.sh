@@ -73,7 +73,7 @@ echo "eight new tables"
 
 x2_out=${xdr_new_output}/tb_xdr_ifc_x2/${ANALY_DATE}/${ANALY_HOUR}
 gxrx_out=${xdr_new_output}/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}
-sv_xdr_out=$${xdr_new_output}/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}
+sv_xdr_out=${xdr_new_output}/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}
 ltemrosource_out=${xdr_new_output}/lte_mro_source/${ANALY_DATE}/${ANALY_HOUR}
 sgs_out=${xdr_new_output}/tb_xdr_ifc_sgs/${ANALY_DATE}/${ANALY_HOUR}
 uu_out=${xdr_new_output}/tb_xdr_ifc_uu/${ANALY_DATE}/${ANALY_HOUR}

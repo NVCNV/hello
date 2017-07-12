@@ -13,7 +13,7 @@ class CellStatistics(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: S
 
 def cellStatistics(sparkSession: SparkSession): Unit ={
   import sparkSession.sql
-  //todo 数据库
+
   sql(
     s"""alter table $SDB.tb_xdr_ifc_uu add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
          LOCATION 'hdfs://dtcluster/$sourceDir/TB_XDR_IFC_UU/$ANALY_DATE/$ANALY_HOUR'
@@ -26,10 +26,10 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        |IMEI,
        |CELLID,
        |RANGETIME,
-       |minute(RANGETIME)  minutes
+       |(case when minute(RANGETIME)<10 then concat('0',minute(RANGETIME)) else minute(RANGETIME) end) minutes
        | from  $SDB.tb_xdr_ifc_uu  where dt="$ANALY_DATE" and h="$ANALY_HOUR" and IMSI!=''
      """.stripMargin)
-  //todo 修改数据库
+
   sql(
     s"""alter table $SDB.lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
          LOCATION 'hdfs://dtcluster/$sourceDir/LTE_MRO_SOURCE/$ANALY_DATE/$ANALY_HOUR'
@@ -46,7 +46,6 @@ def cellStatistics(sparkSession: SparkSession): Unit ={
        | where dt="$ANALY_DATE" and h="$ANALY_HOUR" and MRNAME = 'MR.LteScRSRP' and IMSI!=''
      """.stripMargin)
 
-  //todo 修改分区
   sql(
     s"""
        |select
