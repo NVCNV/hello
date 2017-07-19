@@ -6,6 +6,7 @@ trailing nullcols
 (
 imsi,
 cellid,
+targetcellid,
 proceduretype,
 procedurestatus,
 rangetime date "yyyy-mm-dd hh24:mi:ss",
