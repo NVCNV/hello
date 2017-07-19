@@ -2,6 +2,9 @@ package com.dtmobile.spark.biz.businessexception
 
 
 
+
+import java.util
+
 import com.dtmobile.util.DBUtil
 import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
@@ -10,6 +13,8 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
 
   val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
+  val START_TIME=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR)
+  val END_TIME=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + (String.valueOf(ANALY_HOUR).toInt-1).toString
     def analyse(implicit sparkSession: SparkSession): Unit = {
       exceptionAnalyse(sparkSession)
 
@@ -18,6 +23,15 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
    def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
 
      val threshold= new DBUtil(s"jdbc:oracle:thin:@$ORCAL")
+     var oracle = "jdbc:oracle:thin:@"+ORCAL
+  val CellDF = sparkSession.read
+  .format("jdbc")
+  .option("url", s"$oracle")
+  .option("dbtable", s"(select create_time,clear_time,cell_id,enb_id from fm_alarm_picked_forselect t where t.create_time >= to_date('$START_TIME', 'yyyy-MM-dd HH24') and t.create_time < to_date('$END_TIME', 'yyyy-MM-dd HH24'))t1")
+  .option("user", "scott")
+  .option("password", "tiger")
+  .option("driver", "oracle.jdbc.driver.OracleDriver")
+  .load().createOrReplaceTempView("warnningtable")
      val map= threshold.select()
 
      var XDRthreshold01:Int=5000
@@ -138,10 +152,14 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |(case when httpstate>=500 then "1"
           |when ((t2.pagedelay>$SPSvBrowsedelay or t2.pagespeed<$SPSvBrowsedownv) and APPTYPE=15) or ((t2.videodelay>$SPSvVideodelay or t2.videospeed<$SPSvVideodownv) and APPTYPE=5) or ((t2.videodelay>$SPSvlnstantmessagedelay or t2.videospeed<$SPSvInstantmessagedownv) and APPTYPE=1) then "1"
           |when ((t3.pagedelay>$SGWSvBrowsedelay or t3.pagespeed<$SGWSvBrowsedownv) and APPTYPE=15) or ((t3.videodelay>$SGWSvVideodelay or t3.videospeed<$SGWSvVideodownv) and APPTYPE=5) or ((t3.videodelay>$SGWSvlnstantmessagedelay or t3.videospeed<$SGWSvInstantmessagedownv) and APPTYPE=1) then "2"
-          |
-          |when(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t5.cnt>0 then "3"
-          |when (((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t5.cnt<=0 and t6.cnt>0 then "4"
-          |when t9.cnt<=0 and (((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) then "4"
+          |when(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and
+          |(case when (t1.procedurestarttime>unix_timestamp(t5.create_time)*1000 and t1.procedureendtime<unix_timestamp(t5.clear_time)*1000) or
+          |(t1.procedurestarttime<unix_timestamp(t5.create_time)*1000 and t1.procedureendtime<unix_timestamp(t5.clear_time)*1000) or
+          |(t1.procedurestarttime>unix_timestamp(t5.create_time)*1000 and t1.procedureendtime>unix_timestamp(t5.clear_time)*1000) or
+          |(t1.procedurestarttime<unix_timestamp(t5.create_time)*1000 and t1.procedureendtime>unix_timestamp(t5.clear_time)*1000)
+          |then 1 else 0 end)>0 then "3"
+          |when ((!(t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) and (!(t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) and (!(t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1)) and t6.cnt>0 then "4"
+          |when t9.cnt<=0 and (t11.ltecover<0.99 or t11.upsinr<-3)  then "4"
           |when t9.cnt<=0 and !(((t4.pagedelay>$cellSvBrowsedelay or t4.pagespeed<$cellSvBrowsedownv) and APPTYPE=15) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=5) or ((t4.videodelay>$cellSvVideodelay or t4.videospeed<$cellSvVideodownv) and APPTYPE=1))then
           |(case when ((t8.pagedelay>$tagendSvBrowsedelay or t8.pagespeed<$tagendSvBrowsedownv) and APPTYPE=15) or ((t8.videodelay>$tagendSvVideodelay or t8.videospeed<$tagendSvVideodownv) and APPTYPE=5) or ((t8.videodelay>$tagendSvlnstantmessagedelay or t8.videospeed<$tagendSvInstantmessagedownv) and APPTYPE=1) then "5"
           |when ((t7.pagedelay>$UESvBrowsedelay or t7.pagespeed<$UESvBrowsedownv) and APPTYPE=15) or ((t7.videodelay>$UESvVideodelay or t7.videospeed<$UESvVideodownv) and APPTYPE=5) or ((t7.videodelay>$UESvlnstantmessagedelay or t7.videospeed<$UESvInstantmessagedownv) and APPTYPE=1) then "6"
@@ -181,24 +199,26 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06})
           |)
           |)t1
-          |left join (select appserveripipv4 as sp,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sp_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t2
+          |left join (select appserveripipv4 as sp,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sp_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" ) t2
           |on t1.appserveripipv4=t2.sp
-          |left join (select sgwipaddr as sgw,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sgw_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by sgwipaddr,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t3
+          |left join (select sgwipaddr as sgw,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sgw_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR") t3
           |on t1.sgwipaddr=t3.sgw
-          |left join (select cellid,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from cell_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by cellid,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t4
+          |left join (select cellid,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from cell_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR") t4
           |on t1.ecgi=t4.cellid
-          |left join (select cellid,count(1) cnt from warnningtable where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by cellid) t5
-          |on t1.ecgi=t5.cellid
+          |left join warnningtable t5
+          |on (cast(t1.ecgi/256 as int)=t5.enb_id)
           |left join (select imsi as im,count(1) cnt from lte_mro_source where dt="$ANALY_DATE" and h="$ANALY_HOUR" and (kpi1<-110 or kpi8<-3)and kpi1 is not null and kpi8 is not null group by imsi) t6
           |on t1.imsi=t6.im
-          |left join (select imsi as im,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from ue_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t7
+          |left join (select imsi as im,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from ue_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR") t7
           |on t1.imsi=t7.im
-          |left join (select tac,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from tac_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by tac,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t8
+          |left join (select tac,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from tac_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" ) t8
           |on substring(t1.tac,1,8)=t8.tac
           |left join (select imsi as im,count(1) cnt from lte_mro_source where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi) t9
           |on t1.imsi=t9.im
           |left join ltecell t10
           |on t1.ecgi=t10.cellid
+          |left join (select cellid,(ltecoverratex/commy)ltecover,(upsigrateavgx/upsigrateavgy)upsinr from mr_gt_cell_ana_base60 where dt="$ANALY_DATE" and h="$ANALY_HOUR") t11
+          |on t1.ecgi=t11.cellid
           |) t100
 
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
