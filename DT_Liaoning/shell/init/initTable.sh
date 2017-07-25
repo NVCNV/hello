@@ -1,10 +1,10 @@
 #!/bin/bash
-#明细数据库
+#原始数据库
 DDLDB=$1
+#原始数据路径
 DB_PATH=$2
-#缓存数据库
+#结果数据库
 DCLDB=$3
-DCL_PATH=$4
 export NLS_LANG="AMERICAN_AMERICA.UTF8"
 
 #HQL
