@@ -131,8 +131,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          | x2.BEARER14STATUS,
          | x2.BEARER15ID,
          | x2.BEARER15STATUS,
-         | x2.RANGETIME,
-         | 0
+         | x2.RANGETIME
          |FROM
          | $SDB.tb_Xdr_ifc_x2 x2
          |LEFT OUTER JOIN (
@@ -253,8 +252,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          | UU.BEARER14STATUS,
          | UU.BEARER15ID,
          | UU.BEARER15STATUS,
-         | UU.RANGETIME,
-         | 0
+         | UU.RANGETIME
          |FROM
          | $SDB.TB_XDR_IFC_UU UU
          |LEFT OUTER JOIN (
