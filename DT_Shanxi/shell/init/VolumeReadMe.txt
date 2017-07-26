@@ -16,7 +16,8 @@
 	4.12     负载均衡效果差小区天级表
 2、发布文件说明：
    2.1 高铁原有功能说明
-      公参目录为公参数据 放入hdfs上面，目录为：/datang2/parameter
+      本版本导数据使用sqlloder，安装及配置放入见下方附录；
+      公参目录为公参数据 放入hdfs上面，目录为：/datang2/parameter；
       gt_balence_pair目录为负载均衡公参，放入/user/hive/warehouse/(下面建表传入的第一个数据库).db/gt_balence_pair下。
       bin 目录为脚本目录，放在/dt目录下(需保证所有脚本具有可执行权限 chmod +x repeat_analy.sh  )
       2.1.1 bin 目录下repeat_analy.sh为小时级分析调度脚本（每小时调度一次），需传入两个参数  日期 小时
@@ -24,29 +25,32 @@
 	   （1）、repeat_volteTrain.sh 需传入日期 小时
 	   （2）、repeat_addpartion.sh 需传入日期 小时 数据库（下面建表传入的第一个数据库）
 	   （3）、kpiAnaly.sh 需传入日期 小时 结果库（下面建表传入的第一个数据库）结果库   （还需将gridrru.csv放入 grid_rru 表目录下）
-	   （4）、hdfs2db.sh 需传入日期 小时
-	   （5）、cellMrFilter.sh 需传入日期 小时 原始数据hive库 结果hive库 原始数据路径
+	   （4）、cellMrFilter.sh 需传入日期 小时 原始数据hive库 结果hive库 原始数据路径
+     注意：
+         a、执行此版本前，请修改repeat_addpartion.sh 传入的参数，分别为：日期 小时 hive结果数据库 hive原始数据库
+	 b、修改cellMrFilter.sh传入的参数，日期 小时 hive原始数据库 hive结果数据库  原始数据路径
+	 c、修改kpiAnaly.sh传入的参数，日期 小时  hive结果数据库 hive原始数据库
+         d、修改HightSpeedUserToOracle.sh传入的参数，日期 小时 要导入数据的oracle库例如：morpho0707（无须填写ip及端口号）
       2.1.2 bin 目录下repeat_analy_day.sh为天级分析调度脚本（每天调度一次），需传入一个参数 日期
             此脚本里面调用了其他的脚本分别为：
-	    （1）、repeat_same_and_updown_chci.sh 需传入日期
+	    （1）、repeat_same_and_updown_chci.sh 需传入日期(需修改)
 	    （2）、kpiAnalyday.sh 需传入日期  数据库（下面建表传入的第一个数据库）
-	  
-      
+	    （3）、HightSpeedUserToOracle_day.sh 需传入日期 要导入数据的oracle库 例如：morpho0707
+	     
    2.2 jar包说明：
     2.2.2 dt_mobile.jar 为高铁用户识别、上下车、车次识别、同车任务jar包，放入/dt/lib下面；
     2.2.2 DT_Shanxi-1.0-SNAPSHOT.jar 为容量任务jar包，放入 /dt/lib目录下；
     2.2.3 DT_Core-1.0-SNAPSHOT.jar、DT_Spark-1.0-SNAPSHOT.jar 这两个jar包为辅助jar包，放入spark安装目录（/opt/app/spark/jars)下；
-
    2.3 脚本说明
    2.3.1 VolumeAnalyseInitTable.sh 为hive建表语句，执行时须传入两个参数，第一个参数为数据库名称（如果不存在，可自动创建），
        第二个 参数为hive外部表要使用的路径，即山西原始数据所在路径,第三个为原始表所在数据库，第四个为原始数据所在的路径。
        例如： sh VolumeAnalyseInitTable.sh shanxi datang2 default datang2
-   2.3.2 VolumeAnalyseHDFS2db.sh 为sqoop脚本，用于hdfs导入Oracle数据库，此脚本主要用来被其他脚本调用。
-   2.3.3 ScheduleHDFS2DB.sh 为调用sqoop脚本，每小时调用一次，用于将容量的小时级分析数据导入Oracle，
-       须传入四个参数，第一个为日期，第二个为小时，第三个为hive结果表数据库，第四个为oracle地址
-       示例：sh ScheduleHDFS2DB.sh 20170427 12 result 172.30.4.159:1521:hadoop
-   2.3.4 ScheduleHDFS2DB_day.sh     为调用sqoop脚本，每天调用一次，用于将容量的小时级分析数据导入Oracle，须传入三个参数，第一个为日期，第二个为hive结果表数据库，第三个为oracle地址
-      示例： sh ScheduleHDFS2DB_day.sh 20170427 result 172.30.4.159:1521:hadoop
+   2.3.2 Volume2db_hour.sh 为容量导数据脚本，每小时调用一次，用于将容量的小时级分析数据导入Oracle，
+       须传入四个参数，第一个为日期，第二个为小时，第三个为hive结果表数据库，第四个为oracle库
+       示例：sh Volume2db_hour.sh 20170427 12 shanxi0628 morpho0707
+       注意：由于容量部分分析结果需要往前一个小时补数据，故导数据脚本要延迟两个小时执行！
+   2.3.4 Volume2db_day.sh     为调用导数据脚本，每天调用一次，用于将容量的小时级分析数据导入Oracle，须传入三个参数，第一个为日期，第二个为hive结果表数据库，第三个为oracle地址
+      示例： sh Volume2db_day.sh 20170427 shanxi0628 morpho0707
 
 3、操作步骤：
    3.1、首先建hive表，hive建表脚本需要指定数据库，例如：sh VolumeAnalyseInitTable.sh shanxi
@@ -56,9 +60,9 @@
    3.3.2执行VolumeRun.sh调度脚本，完成高铁系统容量功能
     日期 小时  源数据库  目标数据库  master地址 数据库地址   数据存放路径
      示例：sh VolumeRun.sh   20170227 09 shanxi shanxi spark://172.30.4.189:7077 172.30.4.159:1521/umv602 datang
-   3.4、每小时分析任务完成后，要执行ScheduleHDFS2DB.sh 将小时分析数据导入Oracle数据库
-   3.5、执行repeat_analy_day.sh完成天级车次、上下车、u4任务（sqoop脚本已集成，自动导数据）
-   3.6、执行ScheduleHDFS2DB_day.sh 将容量天级分析数据导入Oracle数据库
+   3.4、每小时分析任务完成后，要执行Volume2db_hour.sh 将小时分析数据导入Oracle数据库
+   3.5、执行repeat_analy_day.sh完成天级车次、上下车、u4任务（导数据脚本已集成，自动导数据）
+   3.6、执行Volume2db_day.sh 将容量天级分析数据导入Oracle数据库
 
  4、用到Oracle中的工参表包括：
 
@@ -97,7 +101,7 @@
 1.4、业务类型占比分析实现
 
 2、发布文件说明：
-    2.1 把shell放在/dt目录下
+    2.1 把shell,ctl放在/dt目录下
    2.2 DT_shanxiUserKpi-1.0-SNAPSHOT.jar 为任务jar包，放入 /dt/lib目录下；
    2.3 先创建database(create databases xxxx),VolumeAnalyseInitTable.sh 为hive建表语句，执行时须传入两个参数，第一个参数为数据库名称（如果不存在，可自动创建），
        第二个 参数为hive外部表要使用的路径，即山西原始数据所在路径。
@@ -148,3 +152,35 @@ business_type_detail
 
 注意事项：
 该版本信令面KPI统计功能暂时不提交！！
+
+
+附录：
+
+1、将Sqlloder安装包上传到服务器；
+2、解压安装包到/opt/app
+3、修改/opt/app/sqlloder/oracle/network/admin目录下tnsnames.ora文件
+添加：
+	Oracle数据库 =
+	  (DESCRIPTION =
+	    (ADDRESS_LIST =
+	      (ADDRESS = (PROTOCOL = TCP)(HOST = Oracle ip地址)(PORT = 端口号))
+	    )
+	    (CONNECT_DATA =
+	      (SERVICE_NAME = Oracle数据库)
+	    )
+	  )
+示例：
+morpho0707 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 172.30.4.159)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = morpho0707)
+    )
+  )
+
+4、配置环境变量（根据自己sqlloder安装目录配置）
+export ORACLE_HOME=/opt/app/sqlloder/oracle
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib
+5、输入sqlldr 命令，如果出现帮助文档，则安装成功
