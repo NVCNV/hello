@@ -15,6 +15,53 @@ CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
 
+--20170726带无线分析流程信令面异常事件
+DROP TABLE IF EXISTS EXCEPTION_ANALYSIS;
+CREATE TABLE IF NOT EXISTS EXCEPTION_ANALYSIS(
+event_name    string,
+procedurestarttime   bigint,
+imsi   string,
+proceduretype    int,
+etype    int,
+cellid    bigint,
+targetcellid    bigint,
+falurecause     string,
+celltype     string,
+cellregion     string,
+cellkey     string,
+interface   int,
+prointerface   string,
+rangetime  string,
+elong      double,
+elat      double,
+eupordown   int,
+exceptioncode   string,
+xdrid   string,
+excertiontype    string,
+interfacetype   string,
+exceptionstarttime    string,
+exceptionxdrid    string,
+cellrsrp       double,
+rip       double,
+targetcellrip      double,
+phr      double,
+upsinr      double,
+highestcellid   bigint,
+highestcellrsrp        double,
+secondcellid   bigint,
+secondcellrsrp       double,
+thirdcellid   bigint,
+thirdcellrsrp       double,
+actualrange       double,
+equivalentdistance       double,
+modelthreeactualrange       double,
+modelthreeequivdistance       double)
+PARTITIONED BY (
+  DT STRING,
+  H STRING)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ',';
+
 --20170627新增
 drop table lte_cellmr_source;
 create table lte_cellmr_source(
