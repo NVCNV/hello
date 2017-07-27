@@ -1,6 +1,7 @@
 package com.dtmobile.spark.biz.gridanalyse
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.SaveMode
 
 /**
   * Created by shenkaili on 17-5-2.
@@ -34,8 +35,8 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
 
   var AdjStrongDisturbRateThreshold :BigDecimal= 0.05*100
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
 
     val t = sql("select operator,value from ltepci_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
 
@@ -99,21 +100,21 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |group by t.startTime, t.endTime, t.timeseq,t.mmecode,t.MMEGROUPID, t.enbid, t.cellid,t.kpi10,
          |t.kpi9,t2.cellname,t2.ADJMMEGROUPID,t2.ADJMMEID,
          |t2.ADJENODEBID,t2.adjcellID, t2.adjcellname, t.kpi11, t.kpi12
-       """.stripMargin).createOrReplaceTempView("LTE_MRS_OVERCOVER_TEMP")
-    sparkSession.sql(
+       """.stripMargin).registerTempTable("LTE_MRS_OVERCOVER_TEMP")
+    HiveContext.sql(
       s"""select s1.STARTTIME,s1.ENDTIME,s1.TIMESEQ,s1.MMEGROUPID,s1.MMEID,s1.ENODEBID,s1.CELLID,s2.tcellid,s1.TCELLPCI,
          |s1.TCELLFREQ,s1.RSRPDIFABS,s1.RSRPDifCount,
          |s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERE,
          |s1.overlapDisturbRSRPDIF,s1.adjeffectRSRPCount,s1.CELLFREQ,s1.CELLNAME,s1.TMMEGROUPID,
          |s1.TMMEID,s2.tenbid,s1.TCELLNAME,s1.disturbMrNum,s1.disturbAvalableNum
          |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
-//    sparkSession.sql(
+        """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+//    HiveContext.sql(
 //      s"""select s1.STARTTIME, s1.ENDTIME, s1.TIMESEQ, s1.MMEID, s1.ENODEBID, s1.CELLID, s1.CELLPCI,s1.CELLFREQ,s1.CELLNAME,
 //         |s1.TMMEGROUPID,s1.TMMEID,s2.tenbid,s2.tcellid, s1.TCELLNAME,s1.TCELLPCI, s1.TCELLFREQ,
 //         |s1.RSRPDIFABS ,s1.RSRPDifCount, s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERENCEINTENS,
 //         |s1.overlapDisturbRSRPDIFCount,s1.adjeffectRSRPCount,s1.disturbMrNum,s1.disturbAvalableNum
 //         |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
-//        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+//        """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }

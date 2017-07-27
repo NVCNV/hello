@@ -1,18 +1,19 @@
 package com.dtmobile.spark.biz.nssp
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
 
 
 /**
   * NsspAnaly
   *
   * @author heyongjin
-  * @create 2017/03/02 10:36
+  * @ create 2017/03/02 10:36
   *
   **/
 class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String) {
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     //原始表初始化
     sql(s"use $SDB")
     sql(
@@ -34,7 +35,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(
       s"""
          |alter table tb_xdr_ifc_gxrx add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-         |location "/$localStr/volte_rx/${ANALY_DATE}/${ANALY_HOUR}"
+         |location "/$localStr/volte_rx/$ANALY_DATE/$ANALY_HOUR"
        """.stripMargin)
     sql(
       s"""
@@ -188,7 +189,8 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          | x2.dt='$ANALY_DATE' and x2.h='$ANALY_HOUR' and
          | x2.PROCEDUREENDTIME - S1.PROCEDUREENDTIME <= 600000
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .csv(s"$warhouseDir/tb_xdr_ifc_x2/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .format("com.databricks.spark.csv")
+      .option("header", "false").save(s"$warhouseDir/tb_xdr_ifc_x2/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
@@ -310,7 +312,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          | UU.dt='$ANALY_DATE' and UU.h='$ANALY_HOUR' and
          | UU.PROCEDUREENDTIME - S1.PROCEDUREENDTIME <= 600000
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .csv(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
@@ -476,7 +478,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          | lte.dt='$ANALY_DATE' and lte.h='$ANALY_HOUR' and
          | lte.MRTIME - S1.PROCEDUREENDTIME <= 600000
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .csv(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
@@ -591,7 +593,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |$SDB.lte_mro_source
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0'
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
 

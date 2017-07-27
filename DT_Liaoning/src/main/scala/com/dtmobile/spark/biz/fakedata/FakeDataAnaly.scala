@@ -1,7 +1,10 @@
 package com.dtmobile.spark.biz.fakedata
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
-import java.sql.{Connection, DriverManager, ResultSet,Statement}
+
+import java.sql.{Connection, DriverManager, ResultSet, Statement}
+
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
 
 /**
   * Created by weiyaqin on 2017/5/2.
@@ -21,8 +24,8 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
     }
   }
 
-  def notifyFakeInfos(implicit sparkSession: SparkSession):Unit = {
-    import sparkSession.sql
+  def notifyFakeInfos(implicit HiveContext: HiveContext):Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
 
     //获取电话号码信息
@@ -81,15 +84,15 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
     }
   }
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
 
-    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+    HiveContext.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
       .option("dbtable", "ltecell")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().createOrReplaceTempView("ltecell")
+      .load().registerTempTable("ltecell")
 
     sql(s"use $DDB")
 
@@ -104,7 +107,7 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
          | from $SDB.lte_mro_source t left join tb_cell_distance c on t.cellid = c.cellid and t.kpi12 = c.pci and t.kpi11 = c.freq1
          | where t.dt="$ANALY_DATE" and t.h="$ANALY_HOUR"
          | and t.mrname = 'MR.LteScRSRP' and t.kpi2 - t.kpi1 >= 0 and t.kpi2 >= 0 and  t.eventtype <> 'PERIOD'
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv")  .option("header", "false").save(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
 */
 ///*
     sql(
@@ -117,7 +120,7 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
          | and a.dt="$ANALY_DATE" and a.h="$ANALY_HOUR" and a.mrname = 'MR.LteScRSRP'
          | and a.kpi2 - a.kpi1 >= 0 and a.kpi2 >= 0 and a.eventtype <> 'PERIOD') t
          | left join tb_cell_distance c on t.cellid = c.cellid and t.kpi12 = c.pci and t.kpi11 = c.freq1
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv")  .option("header", "false").save(s"$warhouseDir/tb_fake_data_temp/dt=$ANALY_DATE/h=$ANALY_HOUR")
 //*/
     //    insert into tb_fake_data (starttime,endtime,freq1,pci,cellnum,sessionnum,lon,lat,numcount)
     sql(s"""alter table tb_fake_data drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
@@ -135,7 +138,7 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
          | where (t.adjcellid is  null or t.adjcellid > 2) and kpi11 is not null
          | and t.dt="$ANALY_DATE" and t.h="$ANALY_HOUR"
          | group by starttime,endtime, kpi11, kpi12  having count(*) >=150 and count(distinct t.cellid) >=10 )
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv")  .option("header", "false").save(s"$warhouseDir/tb_fake_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     //insert  /*+append*/   into tb_fake_effcell
     sql(s"""alter table tb_fake_effcell drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
@@ -152,8 +155,8 @@ class FakeDataAnaly(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: Stri
          | group by starttime,endtime, kpi11, kpi12 , cellid
          | ) tb
          | right join tb_fake_data c on tb.freq1 = c.freq1 and tb.pci = c.pci and tb.starttime=c.starttime
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tb_fake_effcell/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv")  .option("header", "false").save(s"$warhouseDir/tb_fake_effcell/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
-    notifyFakeInfos(sparkSession) //短信通知
+    notifyFakeInfos(HiveContext) //短信通知
   }
 }

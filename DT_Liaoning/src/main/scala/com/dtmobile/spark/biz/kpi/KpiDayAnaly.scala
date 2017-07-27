@@ -1,6 +1,8 @@
 package com.dtmobile.spark.biz.kpi
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
+
 
 /**
   * Created by zhoudehu on 2017/3/21/0021.
@@ -10,15 +12,15 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6)+ " " +  "00:00:00"
 
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    imsiCellDayAnalyse(sparkSession)
-    cellDayAnalyse(sparkSession)
-    mrImsiDayAnalyse(sparkSession)
-    mrCellDayAnalyse(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    imsiCellDayAnalyse(HiveContext)
+    cellDayAnalyse(HiveContext)
+    mrImsiDayAnalyse(HiveContext)
+    mrCellDayAnalyse(HiveContext)
   }
 
-  def imsiCellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def imsiCellDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_user_ana_baseday add if not exists partition(dt=$ANALY_DATE)")
     sql(
@@ -83,11 +85,11 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |  imei,
          |	msisdn,
          |	CELLID
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_user_ana_baseday/dt=$ANALY_DATE")
   }
 
-  def cellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def cellDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_cell_ana_baseday add if not exists partition(dt=$ANALY_DATE)")
     sql(
@@ -147,11 +149,11 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |where dt=$ANALY_DATE
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_cell_ana_baseday/dt=$ANALY_DATE")
   }
 
-  def mrImsiDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def mrImsiDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table mr_gt_user_ana_baseday add if not exists partition(dt=$ANALY_DATE)")
     sql(
@@ -195,12 +197,12 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |  dir_state,
          |  elong,
          |  elat
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_user_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_user_ana_baseday/dt=$ANALY_DATE")
   }
 
-  def mrCellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
+  def mrCellDayAnalyse(implicit HiveContext: HiveContext): Unit = {
 //    val CAL_DATE = ANALY_DATE + " " + ANALY_HOUR + "00:00"
-    import sparkSession.sql
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table mr_gt_cell_ana_baseday add if not exists partition(dt=$ANALY_DATE)")
     sql(
@@ -230,7 +232,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |GROUP BY
          |	cellid,
          | dir_state
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_cell_ana_baseday/dt=$ANALY_DATE")
   }
 
 

@@ -1,7 +1,8 @@
 package com.dtmobile.spark.biz.gridanalyse
 
 import com.dtmobile.spark.biz.gridanalyse.Init
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.SaveMode
 
 import scala.util.control.Breaks._
 
@@ -12,11 +13,11 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR.toInt+1) + ":00:00"
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    lteMroAdjCoverAna(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    lteMroAdjCoverAna(HiveContext)
   }
-  def lteMroAdjCoverAna(sparkSession: SparkSession): Unit ={
-    import sparkSession.sql
+  def lteMroAdjCoverAna(HiveContext: HiveContext): Unit ={
+    import HiveContext.sql
 
     var sqlSecSrv : String =s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'";
     var sqlSecAdj : String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'";

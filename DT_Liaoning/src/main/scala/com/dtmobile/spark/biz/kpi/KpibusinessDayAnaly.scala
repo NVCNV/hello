@@ -1,6 +1,8 @@
 package com.dtmobile.spark.biz.kpi
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
+
 
 /**
   * Created by shenkaili on 17-3-31.
@@ -562,17 +564,17 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
        |sum(migubusiness),
        |sum(ServiceIMresptimeall)
      """.stripMargin
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    tacDayAnalyse(sparkSession)
-    cellDayAnalyse(sparkSession)
-    spDayAnalyse(sparkSession)
-    ueDayAnalyse(sparkSession)
-    sgwDayAnalyse(sparkSession)
-    imsicellDayAnalyse(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    tacDayAnalyse(HiveContext)
+    cellDayAnalyse(HiveContext)
+    spDayAnalyse(HiveContext)
+    ueDayAnalyse(HiveContext)
+    sgwDayAnalyse(HiveContext)
+    imsicellDayAnalyse(HiveContext)
   }
 
-  def tacDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def tacDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table tac_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/tac_day_http/dt=$ANALY_DATE'
@@ -584,12 +586,12 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
            |tac,
            |$kpibusinessday
            |from tac_hour_http where dt="$ANALY_DATE" group by tac
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tac_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/tac_day_http/dt=$ANALY_DATE")
 
   }
 
-  def cellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def cellDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table cell_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/cell_day_http/dt=$ANALY_DATE'
@@ -601,12 +603,12 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |cellid,
          |$kpibusinessday
          |from cell_hour_http where dt="$ANALY_DATE" group by cellid
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/cell_day_http/dt=$ANALY_DATE")
 
   }
 
-  def spDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def spDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table sp_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/sp_day_http/dt=$ANALY_DATE'
@@ -618,11 +620,11 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |appserveripipv4,
          |$kpibusinessday
          |from sp_hour_http where dt="$ANALY_DATE" group by appserveripipv4
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/sp_day_http/dt=$ANALY_DATE")
   }
 
-  def ueDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def ueDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table ue_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/ue_day_http/dt=$ANALY_DATE'
@@ -635,11 +637,11 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |msisdn,
          |$kpibusinessday
          |from ue_hour_http where dt="$ANALY_DATE" group by imsi,msisdn
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/ue_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/ue_day_http/dt=$ANALY_DATE")
   }
 
-  def sgwDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def sgwDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table sgw_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/sgw_day_http/dt=$ANALY_DATE'
@@ -651,11 +653,11 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |sgwipaddr,
          |$kpibusinessday
          |from sgw_hour_http where dt="$ANALY_DATE" group by sgwipaddr
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/sgw_day_http/dt=$ANALY_DATE")
   }
 
-  def imsicellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def imsicellDayAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table imsi_cell_day_http add if not exists partition(dt=$ANALY_DATE)
            LOCATION 'hdfs://dtcluster/$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE'
@@ -669,7 +671,7 @@ class KpibusinessDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseD
          |cellid,
          |$kpibusinessday
          |from imsi_cell_hour_http where dt="$ANALY_DATE" group by imsi,msisdn,cellid
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/imsi_cell_day_http/dt=$ANALY_DATE")
   }
 
 }

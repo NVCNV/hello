@@ -1,6 +1,7 @@
 package com.dtmobile.spark.biz.businesstypedetail
 
-import  org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
 /**
   * Created by shenkaili on 17-4-13.
   */
@@ -9,15 +10,15 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
 
   val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    typedetailAnalyse(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    typedetailAnalyse(HiveContext)
 
   }
 
-  def typedetailAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def typedetailAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
 
-//    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+//    HiveContext.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
 //      .option("dbtable", "ltecell")
 //      .option("user", "scott")
 //      .option("password", "tiger")
@@ -35,7 +36,7 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
          |where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          |group by
          |t1.city,t2.REGION,t1.ecgi,t1.apptype, t1.appsubtype
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
 */
     sql(
       s"""
@@ -52,6 +53,6 @@ class businesstypedetail (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB
          | where dt="$ANALY_DATE" and h="$ANALY_HOUR"
          | group by
          | t2.city,t2.REGION,t1.apptype, t1.appsubtype
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/business_type_detail/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
