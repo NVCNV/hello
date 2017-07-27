@@ -1,10 +1,9 @@
 #!/bin/bash
 DB=$1
-DBPATH=$2
-WAREHOUSE="user/hive/warehouse/$DBPATH.db"
+WAREHOUSE="user/hive/warehouse/${DB}.db"
 
 hive<<EOF
-use $DB;
+use ${DB};
 drop table tac_hour_http;
 CREATE EXTERNAL TABLE tac_hour_http(
 time                        string,
