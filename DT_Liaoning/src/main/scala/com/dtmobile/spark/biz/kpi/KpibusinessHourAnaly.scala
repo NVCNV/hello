@@ -1,6 +1,7 @@
 package com.dtmobile.spark.biz.kpi
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.{HiveContext, SaveMode}
 
 /**
   * Created by shenkaili on 17-3-31.
@@ -1679,17 +1680,17 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
        |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 101 and uldata is not null and dldata is not null then uldata+dldata else 0 end)migubusiness,
        |       sum(case when Interface = 11 and APPTYPECODE = 103 and APPTYPE = 1 and httpfirstrede is not null and httpfirstrede<>0 and httpfirstrede<>4294967295 then httpfirstrede else 0 end)ServiceIMresptimeall
      """.stripMargin
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    tacHourAnalyse(sparkSession)
-    cellHourAnalyse(sparkSession)
-    spHourAnalyse(sparkSession)
-    ueHourAnalyse(sparkSession)
-    sgwHourAnalyse(sparkSession)
-    imsicellHourAnalyse(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+    tacHourAnalyse(HiveContext)
+    cellHourAnalyse(HiveContext)
+    spHourAnalyse(HiveContext)
+    ueHourAnalyse(HiveContext)
+    sgwHourAnalyse(HiveContext)
+    imsicellHourAnalyse(HiveContext)
   }
 
-  def tacHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def tacHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"""alter table tac_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
            LOCATION 'hdfs://dtcluster/$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
@@ -1712,7 +1713,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
            |$SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imei
          """.stripMargin
       )
-    http.union(dns).createOrReplaceTempView("tactmp")
+    http.unionAll(dns).registerTempTable("tactmp")
         sql(
           s"""
              |select
@@ -1723,11 +1724,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
              |tactmp
              |group by tac
            """.stripMargin
-        ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        ).write.mode(SaveMode.Overwrite).format("com.databricks.spark.format("com.databricks.spark.csv").option("header", "false").save").option("header", "false").save(s"$warhouseDir/tac_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def cellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(
       s"""alter table cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -1750,7 +1751,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by ecgi
          """.stripMargin
     )
-    http.union(dns).createOrReplaceTempView("ecgitmp")
+    http.unionAll(dns).registerTempTable("ecgitmp")
      sql(
        s"""
           |select
@@ -1761,11 +1762,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
           |ecgitmp
           |group by ecgi
         """.stripMargin
-     ).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+     ).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def spHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def spHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(
       s"""alter table sp_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -1787,7 +1788,8 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4
          """.stripMargin
     )
-      http.union(dns).createOrReplaceTempView("sptmp")
+      http.unionAll(dns).registerTempTable("sptmp")
+    
     sql(
       s"""
          |select
@@ -1798,11 +1800,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |sptmp
          |group by sp
        """.stripMargin)
-      .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/sp_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def ueHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def ueHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(
       s"""alter table ue_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -1827,7 +1829,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn
          """.stripMargin
     )
-    http.union(dns).createOrReplaceTempView("uetmp")
+    http.unionAll(dns).registerTempTable("uetmp")
       sql(
         s"""
           |select
@@ -1841,11 +1843,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
           |imsi,
           |msisdn
         """.stripMargin)
-      .write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/ue_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def sgwHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def sgwHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(
       s"""alter table sgw_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -1867,7 +1869,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by sgwipaddr
          """.stripMargin
     )
-      http.union(dns).createOrReplaceTempView("sgwtmp")
+      http.unionAll(dns).registerTempTable("sgwtmp")
     sql(
       s"""
          |select
@@ -1877,11 +1879,11 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from
          |sgwtmp
          |group by sgwipaddr
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/sgw_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def imsicellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def imsicellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(
       s"""alter table imsi_cell_hour_http add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -1908,7 +1910,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |from $SDB.tb_xdr_ifc_dns where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by imsi,msisdn,ecgi
          """.stripMargin
     )
-    http.union(dns).createOrReplaceTempView("imsicelltmp")
+    http.unionAll(dns).registerTempTable("imsicelltmp")
     sql(
       s"""
          |select
@@ -1922,7 +1924,7 @@ class KpibusinessHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, 
          |group by imsi,
          |msisdn,
          |ecgi
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/imsi_cell_hour_http/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }

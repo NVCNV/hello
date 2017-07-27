@@ -1,6 +1,9 @@
 package com.dtmobile.spark.biz.kpi
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.hive.HiveContext
+
+
 /**
   * KpiHourAnaly
   *
@@ -24,15 +27,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   var timetr=100
 
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-      imsiCellHourAnalyse(sparkSession)
-      cellHourAnalyse(sparkSession)
-      mrCellHourAnalyse(sparkSession)
-      mrImsiHourAnalyse(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+      imsiCellHourAnalyse(HiveContext)
+      cellHourAnalyse(HiveContext)
+      mrCellHourAnalyse(HiveContext)
+      mrImsiHourAnalyse(HiveContext)
 
   }
 
-  def imsiCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
+  def imsiCellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
     if(onoff==1){
       procedurestatussuccess = 0
       ServiceTypeaudio=0
@@ -41,7 +44,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
       callsedediacalled=1
     }
 
-    import sparkSession.sql
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
 
@@ -1165,7 +1168,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	CELLID
        """.stripMargin)
 
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.unionAll(x2).unionAll(sv).unionAll(voltesip).unionAll(voltesip0).unionAll(voltesip1).unionAll(s1mme).unionAll(s1mmeHandOver).registerTempTable("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -1225,11 +1228,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |group by imsi,
          |	msisdn,
          |	CELLID
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def cellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_cell_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     val uu = sql(
@@ -2311,7 +2314,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	CELLID
        """.stripMargin)
 
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.unionAll(x2).unionAll(sv).unionAll(voltesip).unionAll(voltesip0).unionAll(voltesip1).unionAll(s1mme).unionAll(s1mmeHandOver).registerTempTable("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -2368,11 +2371,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	temp_kpi
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def mrImsiHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def mrImsiHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     sql(s"use $DDB")
     sql(s"alter table mr_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(
@@ -2743,7 +2746,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	imsi,
          |	msisdn,
          |	xdrid
-       """.stripMargin).createOrReplaceTempView("temp_kpi")
+       """.stripMargin).registerTempTable("temp_kpi")
+
     sql(
       s"""
          |SELECT
@@ -2804,11 +2808,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	imsi,
          |	msisdn
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def mrCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
-    import sparkSession.sql
+  def mrCellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+    import HiveContext.sql
     val CAL_DATE = ANALY_DATE + " " + ANALY_HOUR + "00:00"
     sql(s"use $DDB")
     sql(s"alter table mr_gt_cell_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
@@ -3177,7 +3181,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	CELLID,
          |	xdrid
-       """.stripMargin).createOrReplaceTempView("temp_kpi")
+       """.stripMargin).registerTempTable("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -3230,7 +3234,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	temp_kpi
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }

@@ -5,7 +5,10 @@ package com.dtmobile.spark.biz.gridanalyse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.hive.HiveContext
+
+
+
 
 /**
   * Created by shenkaili on 17-5-8.
@@ -32,24 +35,24 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
 
   val cal_date2= currentDate+nextHour+":00:00"
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-      InitLteCell(sparkSession)
-      TableUtil(sparkSession)
-      mrfilter(sparkSession)
-      lte2lteadj_f(sparkSession)
-      InDoorAna(sparkSession)
+  def analyse(implicit HiveContext: HiveContext): Unit = {
+      InitLteCell(HiveContext)
+      TableUtil(HiveContext)
+      mrfilter(HiveContext)
+      lte2lteadj_f(HiveContext)
+      InDoorAna(HiveContext)
   }
-    def mrfilter(sparkSession: SparkSession): Unit ={
-      /*val CellDF = sparkSession.read
+    def mrfilter(HiveContext: HiveContext): Unit ={
+      /*val CellDF = HiveContext.read
         .format("jdbc")
         .option("url", s"$oracle")
         .option("dbtable", "grid_view")
         .option("user", "scott")
         .option("password", "tiger")
         .option("driver", "oracle.jdbc.driver.OracleDriver")
-        .load().createOrReplaceTempView("grid_view")*/
-//            val t= sparkSession.sql("select * from grid_view2").count()
-      import sparkSession.sql
+        .load().registerTempTable("grid_view")*/
+//            val t= HiveContext.sql("select * from grid_view2").count()
+      import HiveContext.sql
       /*sql(
         s"""|SELECT t1.OBJECTID as objectid, t1.VID as vid, t1.STARTTIME as starttime, t1.ENDTIME as endtime, t1.mrtime as timeseq
            | , t1.ENBID as enbid, t1.MRNAME as mrname, t1.CELLID as cellid, t1.MMEUES1APID as mmeues1apid, t1.MMEGROUPID as mmegroupid
@@ -92,7 +95,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
             |x2.shapeminy<x1.gridcenterlatitude
             |and x2.shapemaxy>x1.gridcenterlatitude) or x2.OBJECTID is NULL
             |
-         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")*/
+         """.stripMargin).registerTempTable("lte_mro_source_ana_tmp")*/
       sql(
         s"""
            |
@@ -107,7 +110,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |select d.*, cast(shapemaxx*100 as bigint) as xx,cast(shapemaxy*100 as bigint) as yy from $DDB.grid_view d
            |) t
            |
-         """.stripMargin).createOrReplaceTempView("grid_new")
+         """.stripMargin).registerTempTable("grid_new")
 
 
       sql(s"""alter table $SDB.lte_mro_source drop if exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")""")
@@ -157,13 +160,13 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |and x1.dt=$ANALY_DATE and x1.h=$ANALY_HOUR
            |where x1.mrname = 'MR.LteScRSRP'
            |
-         """.stripMargin).createOrReplaceTempView("lte_mro_source_ana_tmp")
+         """.stripMargin).registerTempTable("lte_mro_source_ana_tmp")
 
 
     }
 
-   def lte2lteadj_f(sparkSession: SparkSession): Unit ={
-      import sparkSession.sql
+   def lte2lteadj_f(HiveContext: HiveContext): Unit ={
+      import HiveContext.sql
       sql(
         s"""
            |SELECT a.mmeGroupId as mmegroupid, a.mmeId as mmeid, a.eNodeBId as enodebid,a.cellId, a.cellName as cellname
@@ -174,11 +177,11 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            | AND a.eNodeBId = c1.eNodeBId
            | AND a.adjCellId = c2.cellId
            | AND a.adjENodeBId = c2.eNodeBId
-         """.stripMargin).createOrReplaceTempView("lte2lteadj_pci")
+         """.stripMargin).registerTempTable("lte2lteadj_pci")
     }
 
-    def InDoorAna(sparkSession: SparkSession): Unit ={
-      import sparkSession.sql
+    def InDoorAna(HiveContext: HiveContext): Unit ={
+      import HiveContext.sql
       sql(
         s"""
            |SELECT MMEUES1APID, enbID, CELLID, MrCount, VARI_TA
@@ -194,35 +197,35 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |  AND vid = 0
            | GROUP BY t.enbID, t.cellid, t.mmeues1apId
            | )t1
-         """.stripMargin).createOrReplaceTempView("Mr_InDoorAna_Temp")
+         """.stripMargin).registerTempTable("Mr_InDoorAna_Temp")
     }
-  def InitLteCell(sparkSession: SparkSession): Unit ={
-    sparkSession.read
+  def InitLteCell(HiveContext: HiveContext): Unit ={
+    HiveContext.read
       .format("jdbc")
       .option("url", s"$oracle")
       .option("dbtable", "ltecell")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().createOrReplaceTempView("ltecell")
-   /* sparkSession.sql("select * from ltecell").show()*/
+      .load().registerTempTable("ltecell")
+   /* HiveContext.sql("select * from ltecell").show()*/
   }
 
-def TableUtil(sc: SparkSession): Unit ={
+def TableUtil(sc: HiveContext): Unit ={
 
   sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","lte2lteadj")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("lte2lteadj")
+    .load().registerTempTable("lte2lteadj")
 
   sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","ltecover_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("ltecover_degree_condition")
+    .load().registerTempTable("ltecover_degree_condition")
 
 
    sc.read.format("jdbc").option("url", s"$oracle")
@@ -230,35 +233,35 @@ def TableUtil(sc: SparkSession): Unit ={
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("LTEDISTURB_DEGREE_CONDITION")
+    .load().registerTempTable("LTEDISTURB_DEGREE_CONDITION")
 
   sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","ltemrsegment_config")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("ltemrsegment_config")
+    .load().registerTempTable("ltemrsegment_config")
 
   sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","ltemrsegment_type")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("ltemrsegment_type")
+    .load().registerTempTable("ltemrsegment_type")
 
   sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","lteadjcell_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("lteadjcell_degree_condition")
+    .load().registerTempTable("lteadjcell_degree_condition")
 
    sc.read.format("jdbc").option("url", s"$oracle")
     .option("dbtable","ltepci_degree_condition")
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("ltepci_degree_condition")
+    .load().registerTempTable("ltepci_degree_condition")
 
 
   sc.read.format("jdbc").option("url", s"$oracle")
@@ -266,7 +269,7 @@ def TableUtil(sc: SparkSession): Unit ={
     .option("user", "scott")
     .option("password", "tiger")
     .option("driver", "oracle.jdbc.driver.OracleDriver")
-    .load().createOrReplaceTempView("ltepci_degree_condition")
+    .load().registerTempTable("ltepci_degree_condition")
 
   sc.sql(
     s"""
@@ -279,7 +282,7 @@ def TableUtil(sc: SparkSession): Unit ={
        |from LTECell t,ltecell a where t.cellid!=a.cellid and t.freq1=a.freq1 and t.pci=a.pci
        |)
        |) where rank = 1
-     """.stripMargin).createOrReplaceTempView("fill_tenbid_tcellid")
+     """.stripMargin).registerTempTable("fill_tenbid_tcellid")
 
 }
 

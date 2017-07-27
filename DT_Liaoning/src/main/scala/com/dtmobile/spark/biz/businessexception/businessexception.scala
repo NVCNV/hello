@@ -3,19 +3,20 @@ package com.dtmobile.spark.biz.businessexception
 
 
 import com.dtmobile.util.DBUtil
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.SaveMode
 /**
   * Created by shenkaili on 17-4-1.
   */
 class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
 
   val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-    def analyse(implicit sparkSession: SparkSession): Unit = {
-      exceptionAnalyse(sparkSession)
+    def analyse(implicit HiveContext: HiveContext): Unit = {
+      exceptionAnalyse(HiveContext)
 
     }
 
-   def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
+   def exceptionAnalyse(implicit HiveContext: HiveContext): Unit = {
 
      val threshold= new DBUtil(s"jdbc:oracle:thin:@$ORCAL")
      val map= threshold.select()
@@ -118,7 +119,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
      }
 
 
-     import sparkSession.sql
+     import HiveContext.sql
      sql(s"use $DDB")
      sql(
        s"""alter table t_xdr_event_msg add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
@@ -200,7 +201,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |on t1.ecgi=t10.cellid
           |) t100
 
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 
      sql(
@@ -221,7 +222,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |where t.dt=$ANALY_DATE and t.h=$ANALY_HOUR
           |group by t.cellid,t.etype,t.city)t2
           |where t2.speed >$tiemdelay/100 or t2.delay>$vsdelay/100 or t2.inst>$timeandvsdelay/100
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 

@@ -1,6 +1,7 @@
 package com.dtmobile.spark.biz.gridanalyse
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.SaveMode
 
 /**
   * Created by zhoudehu on 2017/5/9/0009.
@@ -44,8 +45,8 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
 
 //    val genDisPreRsrpDifSeqSql=GenDisPreRsrpDifSeqSql
 
-  def analyse(implicit sparkSession: SparkSession): Unit= {
-    import sparkSession.sql
+  def analyse(implicit HiveContext: HiveContext): Unit= {
+    import HiveContext.sql
     val genDisPreRsrpDifSeqValueSql = GenDisPreRsrpDifSeqValueSql("t.kpi1","t.kpi2")
     val t = sql("select operator,value from ltepci_degree_condition where field = 'cellrsrpcoverth'").collectAsList()
     val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getAs("value")
@@ -74,7 +75,7 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
                       |        group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid, t2.cellname,t2.adjenodebid,
                       |        t2.adjcellID, t2.adjcellname,t.kpi11, t.kpi12,t.kpi9, t.kpi10""".stripMargin
 
-    sql(selectSql).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_pretreate60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+    sql(selectSql).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mro_disturb_pretreate60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
   }
 
