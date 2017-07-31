@@ -4,6 +4,7 @@ mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 DB=$2
+ORACLE_NAME=$3
 echo $DB
 
 echo "CRH_cell_day_KPI_new.sh ${ANALY_DATE} ${DB}"
@@ -31,5 +32,5 @@ echo "CRH_export_mr_imsi_cell_grid_day_KPI_new.sh"
 wait
 
 # 日期 hive结果数据库 oracle数据库
-sh kpi_sqlldr2db_day.sh ${ANALY_DATE} ${DB} hadoop  >> kpi_day_toOracle.log
+sh kpi_sqlldr2db_day.sh ${ANALY_DATE} ${DB} ${ORACLE_NAME}  >> kpi_day_toOracle.log
 
