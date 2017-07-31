@@ -6,6 +6,7 @@ ANALY_DATE=$1
 ANALY_HOUR=$2
 DB=$3
 DEFAULTDB=$4
+ORACLE_NAME=$5
 #echo "cell_day_KPI_new.sh ${ANALY_DATE} ${ANALY_HOUR}"
 #./cell_day_KPI_new.sh ${ANALY_DATE} ${ANALY_HOUR} &
 echo "CRH_cell_hour_kpi_new.sh ${ANALY_DATE} ${ANALY_HOUR}"
@@ -48,4 +49,4 @@ echo "CRH_export_mr_imsi_cell_grid_hour_KPI_new.sh"
 
 wait
 #日期 时间 hive结果数据库  Oracle数据库
-sh kpi_sqlldr2db.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} hadoop   >> kpi_hour_toOracle.log
+sh kpi_sqlldr2db.sh ${ANALY_DATE} ${ANALY_HOUR} ${DB} ${ORACLE_NAME}   >> kpi_hour_toOracle.log
