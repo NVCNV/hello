@@ -43,8 +43,6 @@ echo ${ANALY_HOUR}
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} ${INIT_PATH} ${RESULT_PATH} ${SOURCE_PATH} >>  job_logs.log 2>&1
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} ${ORACLE_NAME} >> job_logs.log 2>&1
 
-
-
 # 日期 小时 Oracle数据库
 sh HightSpeedUserToOracle.sh ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} >> HighSpeed_to_oracle.log
 
