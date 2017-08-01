@@ -2,12 +2,19 @@
 #此脚本如非自动调度,先执行其他ANALY_HOUR的数据,最后再执行ANALY_HOUR=03的数据
 ANALY_DATE=$1
 ANALY_HOUR=$2
+#原始数据库
 SOURCEDB=$3
+#结果数据库
 TARGETDB=$4
+#sparkmaster ip 172.30.4.189
 MASTER=$5
+#spark程序 用到的oralce
 OracleURL=$6
+#原始数据路径
 SOURCEDIR=$7
+#版本,userkpi用到,1 为山西,0为辽宁
 VERSINCONTROL=$8
+#导出数据到的oracle
 Oracle=$9
 
 if  [ ${ANALY_HOUR} = 03 ];then
