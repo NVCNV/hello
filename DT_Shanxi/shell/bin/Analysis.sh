@@ -14,7 +14,7 @@ OracleURL=$6
 SOURCEDIR=$7
 #版本,userkpi用到,1 为山西,0为辽宁
 VERSINCONTROL=$8
-#导出数据到的oracle
+#导入数据到的oracle
 Oracle=$9
 
 if  [ ${ANALY_HOUR} = 03 ];then
