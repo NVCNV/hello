@@ -3,20 +3,19 @@ package com.dtmobile.spark.biz.businessexception
 
 
 import com.dtmobile.util.DBUtil
-import org.apache.spark.sql.hive.HiveContext
-import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * Created by shenkaili on 17-4-1.
   */
 class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String){
 
   val CAL_DATE = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-    def analyse(implicit HiveContext: HiveContext): Unit = {
-      exceptionAnalyse(HiveContext)
+    def analyse(implicit sparkSession: SparkSession): Unit = {
+      exceptionAnalyse(sparkSession)
 
     }
 
-   def exceptionAnalyse(implicit HiveContext: HiveContext): Unit = {
+   def exceptionAnalyse(implicit sparkSession: SparkSession): Unit = {
 
      val threshold= new DBUtil(s"jdbc:oracle:thin:@$ORCAL")
      val map= threshold.select()
@@ -119,15 +118,15 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
      }
 
 
-     import HiveContext.sql
+     import sparkSession.sql
      sql(s"use $DDB")
      sql(
        s"""alter table t_xdr_event_msg add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-          LOCATION 'hdfs://dtcluster/$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR'
+          LOCATION 'hdfs://dtcluster$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR'
         """.stripMargin)
      sql(
        s"""
-          |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
+          |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
           |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,etype,errorcode,
           |(case when errorcode="1" then "11"
           |when errorcode="2" then "22"
@@ -160,25 +159,25 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |else "7"
           |end)errorcode,
           |(case when httpstate>=400 then "10"
-          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) then "7"
-          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "8"
-          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05} and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "9"
-          |      when (apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) then "1"
-          |      when (apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) then "2"
-          |      when (apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) then "3"
+          |      when (apptype=15 and appstatus=0 and (busrede/1000)>${XDRthreshold01} and (dldata*8/(case when ((httplastrede/1000)-(httpfirstrede/1000))<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold02}) then "7"
+          |      when (apptype=5 and appstatus=0 and (busrede/1000)>${XDRthreshold03} and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "8"
+          |      when (apptype=1 and appstatus=0 and (busrede/1000)>${XDRthreshold05} and (dldata*8/(case when ((httplastrede/1000)-(httpfirstrede/1000))<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold06}) then "9"
+          |      when (apptype=15 and appstatus=0 and (busrede/1000)>${XDRthreshold01}) then "1"
+          |      when (apptype=15 and appstatus=0 and (dldata*8/(case when ((httplastrede/1000)-(httpfirstrede/1000))<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold02}) then "2"
+          |      when (apptype=5 and appstatus=0 and (busrede/1000)>${XDRthreshold03}) then "3"
           |      when (apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) then "4"
-          |      when (apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) then "5"
-          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when httplastrede-httpfirstrede<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06}) then "6"
+          |      when (apptype=1 and appstatus=0 and (busrede/1000)>${XDRthreshold05}) then "5"
+          |      when (apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede/1000)-(httpfirstrede/1000)<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold06}) then "6"
           |      end
           |)etype
           |from (select * from $SDB.tb_xdr_ifc_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" and
           |(httpstate>=400 or
-          |(apptype=15 and appstatus=0 and busrede>${XDRthreshold01}) or
-          |(apptype=15 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold02}) or
-          |(apptype=5 and appstatus=0 and busrede>${XDRthreshold03}) or
+          |(apptype=15 and appstatus=0 and (busrede/1000)>${XDRthreshold01}) or
+          |(apptype=15 and appstatus=0 and (dldata*8/(case when ((httplastrede/1000)-(httpfirstrede/1000))<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold02}) or
+          |(apptype=5 and appstatus=0 and (busrede/1000)>${XDRthreshold03}) or
           |(apptype=5 and appstatus=0 and (dldata*8/(procedureendtime-procedurestarttime))<${XDRthreshold04}) or
-          |(apptype=1 and appstatus=0 and busrede>${XDRthreshold05}) or
-          |(apptype=1 and appstatus=0 and (dldata*8/(case when (httplastrede-httpfirstrede)<10 then 10 else httplastrede-httpfirstrede end))<${XDRthreshold06})
+          |(apptype=1 and appstatus=0 and (busrede/1000)>${XDRthreshold05}) or
+          |(apptype=1 and appstatus=0 and (dldata*8/(case when ((httplastrede/1000)-(httpfirstrede/1000))<10 then 10 else (httplastrede/1000)-(httpfirstrede/1000) end))<${XDRthreshold06})
           |)
           |)t1
           |left join (select appserveripipv4 as sp,(ServiceIMTime/ServiceIMTrans)instantdelay,(ServiceIMFlow/ServiceIMTime)instantspeed,(mediaRespTimeall/mediaResp)videodelay,(mediadownflow/mediadowntime)videospeed,(pageshowtimeall/pageshowsucc)pagedelay,(httpdownflow/httpdowntime)pagespeed from sp_hour_http where dt="$ANALY_DATE" and h="$ANALY_HOUR" group by appserveripipv4,ServiceIMTime,ServiceIMTrans,ServiceIMFlow,ServiceIMTime,mediaRespTimeall,mediaResp,mediadownflow,mediadowntime,pageshowtimeall,pageshowsucc,httpdownflow,httpdowntime) t2
@@ -201,7 +200,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |on t1.ecgi=t10.cellid
           |) t100
 
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/t_xdr_event_msg/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 
      sql(
@@ -222,7 +221,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |where t.dt=$ANALY_DATE and t.h=$ANALY_HOUR
           |group by t.cellid,t.etype,t.city)t2
           |where t2.speed >$tiemdelay/100 or t2.delay>$vsdelay/100 or t2.inst>$timeandvsdelay/100
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 

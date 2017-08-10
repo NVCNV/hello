@@ -1,7 +1,6 @@
 package com.dtmobile.spark.biz.gridanalyse
 
-import org.apache.spark.sql.SaveMode
-import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
   * Created by zhangchao15 on 2017/5/3.
@@ -11,21 +10,22 @@ class DisturbAnalysis(ANALY_DATE: String, ANALY_HOUR: String,  period: String, a
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR.toInt+1) + ":00:00"
 
-  def analyse(implicit HiveContext: HiveContext): Unit = {
-    disturbAnalysis(HiveContext)
+  def analyse(implicit sparkSession: SparkSession): Unit = {
+    disturbAnalysis(sparkSession)
 
   }
 
-  def disturbAnalysis(HiveContext: HiveContext): Unit ={
-    import HiveContext.sql
+  def disturbAnalysis(sparkSession: SparkSession): Unit ={
+    import sparkSession.sql
     val adjStrngDstrbAvailMrNumThresd :Integer = 100
     val adjStrongDisturbRateThreshold :Integer = 5
     sql(s"use $DDB")
     sql(s"""alter table lte_mro_disturb_ana add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_ana/dt=$ANALY_DATE/h=$ANALY_HOUR'
+           LOCATION 'hdfs://dtcluster/$warhouseDir/tac_day_http/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
     sql(s"""
            |  SELECT
+           |         '',
            |         '$cal_date' as starttime,
            |         '$cal_date2' as endtime,
            |         ${period} as period,
@@ -88,7 +88,7 @@ class DisturbAnalysis(ANALY_DATE: String, ANALY_HOUR: String,  period: String, a
            |                    TCellName,
            |                    tcellpci,
            |                    tcellfreq) M
-      """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mro_disturb_ana/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_ana/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }

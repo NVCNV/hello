@@ -14,7 +14,7 @@ sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/mr_gt_ce
 
 #exception to Oracle
 echo "/dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/exception_analysis t_event_msg 5 4"
-sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/exception_analysis/dt=${ANALY_DATE}/h=${ANALY_HOUR} t_event_msg 20 4
+sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/exception_analysis/dt=${ANALY_DATE}/h=${ANALY_HOUR} t_event_msg 19 4
 echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/cell_hour_http/ cell_hour_http 5 2"
 sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/cell_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} cell_hour_http 5 2
 echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/imsi_cell_hour_http/ imsi_cell_hour_http 8 2"
@@ -31,3 +31,5 @@ echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/ue_hour_
 sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/ue_hour_http/dt=${ANALY_DATE}/h=${ANALY_HOUR} imsi_hour_http 17
 echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/business_type_detail/ business_type_detail 18 4"
 sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/business_type_detail/dt=${ANALY_DATE}/h=${ANALY_HOUR} business_type_detail 18 4
+
+sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/zc_city_data/dt=${ANALY_DATE}/h=${ANALY_HOUR} zc_city_data 20 4

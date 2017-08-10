@@ -22,5 +22,6 @@ echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/sgw_day_
 sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/sgw_day_http/dt=${ANALY_DATE} sgw_day_http 9 2
 echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/cell_day_http cell_day_http 6 2"
 sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/cell_day_http/dt=${ANALY_DATE} cell_day_http 6 2
-echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/imsi_cell_day_http imsi_cell_day_http 7 2"
-sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/imsi_cell_day_http/dt=${ANALY_DATE} imsi_cell_day_http 7 2
+#echo "sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/dcl.db/imsi_cell_day_http imsi_cell_day_http 7 2"
+#sh /dt/bin/hdfs2db.sh hdfs://dtcluster/user/hive/warehouse/${SOURCE_DB}/imsi_cell_day_http/dt=${ANALY_DATE}
+# imsi_cell_day_http 7 2

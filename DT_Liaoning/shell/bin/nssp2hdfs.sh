@@ -38,3 +38,4 @@ echo "put ${LOCAL_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR} to ${HIVE_PATH}
 hdfs dfs -put ${LOCAL_PATH}/${tableName}/* ${HIVE_PATH}/${tableName}/
 done
 echo "Success!"
+

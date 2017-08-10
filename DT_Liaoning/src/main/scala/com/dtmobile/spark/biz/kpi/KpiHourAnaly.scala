@@ -1,9 +1,6 @@
 package com.dtmobile.spark.biz.kpi
 
-import org.apache.spark.sql.SaveMode
-import org.apache.spark.sql.hive.HiveContext
-
-
+import org.apache.spark.sql.{SaveMode, SparkSession}
 /**
   * KpiHourAnaly
   *
@@ -11,12 +8,9 @@ import org.apache.spark.sql.hive.HiveContext
   * create 2017/03/02 10:36
   *
   **/
-class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String,versiononoff:Int) {
+class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
-  var onoff=versiononoff
-  if(versiononoff!=0 && versiononoff!=1){
-    onoff=0
-  }
+  var onoff=0
 
   var procedurestatussuccess=1
   var procedurestatusfaile=2
@@ -24,27 +18,28 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
   var ServiceTypevideo=2
   var callsidecalling=1
   var callsedediacalled=2
-  var timetr=100
+  var timetr=1
 
 
-  def analyse(implicit HiveContext: HiveContext): Unit = {
-      imsiCellHourAnalyse(HiveContext)
-      cellHourAnalyse(HiveContext)
-      mrCellHourAnalyse(HiveContext)
-      mrImsiHourAnalyse(HiveContext)
+  def analyse(implicit sparkSession: SparkSession): Unit = {
+      imsiCellHourAnalyse(sparkSession)
+      cellHourAnalyse(sparkSession)
+      mrCellHourAnalyse(sparkSession)
+      mrImsiHourAnalyse(sparkSession)
 
   }
 
-  def imsiCellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
+  def imsiCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
     if(onoff==1){
       procedurestatussuccess = 0
       ServiceTypeaudio=0
       ServiceTypevideo=1
       callsidecalling=0
       callsedediacalled=1
+      timetr=100
     }
 
-    import HiveContext.sql
+    import sparkSession.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
 
@@ -337,14 +332,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) srvccsucc,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 1 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) srvccatt,
+         |	0 as srvccatt,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
@@ -567,8 +555,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	) voltevdtime,
          | sum(
          |		CASE
-         |		WHEN ProcedureType = 5
-         |		AND interface = 14
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
          |		1
          |		ELSE
@@ -578,7 +566,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypeaudio
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -589,7 +578,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -648,7 +638,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachy,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -732,7 +723,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypeaudio
          |		AND callduration <> 4294967295 THEN
-         |			callduration
+         |			callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -753,7 +744,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo and callduration<> 4294967295 THEN
-         |		callduration
+         |		callduration/$timetr
          |		ELSE
          |			0
          |		END
@@ -771,7 +762,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypeaudio
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -782,7 +774,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -841,7 +834,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachy,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -881,7 +875,14 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	0 AS voltevdanswer,
          |	0 AS srvccsucc,
-         |	0 AS srvccatt,
+         |	sum(CASE
+         |		WHEN INTERFACE = 5
+         |		AND proceduretype = 16
+         |    AND keyword1=3 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END)srvccatt,
          |	0 AS srvcctime,
          |	0 AS lteswsucc,
          |	0 AS lteswatt,
@@ -903,7 +904,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		ELSE
          |			0
          |		END
-         |	) AS srqsucc,
+         |	)srqsucc,
          |	sum(
          |		CASE
          |		WHEN INTERFACE = 5
@@ -1052,17 +1053,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			1
          |		ELSE
          |			0
-         |		END
-         |	) attachy,
-         |	0 AS voltesucc,
-         |  sum(CASE
-         |		WHEN INTERFACE = 5
-         |		AND proceduretype = 16
-         |    AND keyword1=3 and PROCEDURESTATUS=0 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END)srvccsuccS1
+         |		END)attachy,
+         |0 AS voltesucc,
+         |sum(CASE WHEN INTERFACE = 5
+         |AND proceduretype = 16
+         |AND keyword1=3 and PROCEDURESTATUS=0 THEN
+         |1
+         |ELSE
+         |0
+         |END)srvccsuccS1
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -1168,71 +1167,142 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	CELLID
        """.stripMargin)
 
-    uu.unionAll(x2).unionAll(sv).unionAll(voltesip).unionAll(voltesip0).unionAll(voltesip1).unionAll(s1mme).unionAll(s1mmeHandOver).registerTempTable("temp_kpi")
+    val rx = sql(
+      s"""
+         |SELECT
+         |imsi,
+         |msisdn,
+         |CELLID,
+         |0 AS voltemcsucc,
+         |0 AS voltemcatt,
+         |0 AS voltevdsucc,
+         |0 AS voltevdatt,
+         |0 AS voltetime,
+         |0 AS voltemctime,
+         |0 AS voltemctimey,
+         |0 AS voltevdtime,
+         |0 AS voltevdtimey,
+         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE !=1
+         |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
+         |0 AS volteanswer,
+         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 1
+         |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
+         |0 AS voltevdanswer,
+         |0 AS srvccsucc,
+         |0 AS srvccatt,
+         |0 as srvcctime,
+         |0 AS lteswsucc,
+         |0 AS lteswatt,
+         |0 AS srqatt,
+         |0 AS srqsucc,
+         |0 AS tauatt,
+         |0 AS tausucc,
+         |0 AS rrcrebuild,
+         |0 AS rrcsucc,
+         |0 AS rrcreq,
+         |0 AS imsiregatt,
+         |0 AS imsiregsucc,
+         |0 AS wirelessdrop,
+         |0 AS wireless,
+         |0 AS eabdrop,
+         |0 AS eab,
+         |0 AS eabs1swx,
+         |0 AS eabs1swy,
+         |0 AS s1tox2swx,
+         |0 AS s1tox2swy,
+         |0 AS enbx2swx,
+         |0 AS enbx2swy,
+         |0 AS uuenbswx,
+         |0 AS uuenbswy,
+         |0 AS uuenbinx,
+         |0 AS uuenbiny,
+         |0 AS swx,
+         |0 AS swy,
+         |0 AS attachx,
+         |0 AS attachy,
+         |0 AS voltesucc,
+         | 0 AS srvccsuccS1
+         |FROM
+         |$SDB.tb_xdr_ifc_gxrx
+         |WHERE
+         |dt = $ANALY_DATE
+         |AND h = $ANALY_HOUR
+         |GROUP BY
+         |cellid,
+         |imsi,
+         |msisdn
+       """.stripMargin)
+//    uu.union(x2).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
          |	imsi,
-         |  '',
+         |  '' as imei,
          |	msisdn,
          |	CELLID,
-         | '$cal_date',
-         |	sum(voltemcsucc),
-         |	sum(voltemcatt),
-         |	sum(voltevdsucc),
-         |	sum(voltevdatt),
-         |	sum(voltetime),
-         |	sum(voltemctime),
-         |	sum(voltemctimey),
-         |  sum(voltevdtime),
-         |  sum(voltevdtimey),
-         |	sum(voltemchandover),
-         |	sum(volteanswer),
-         |	sum(voltevdhandover),
-         |	sum(voltevdanswer),
-         |	sum(srvccsucc),
-         |	sum(srvccatt),
-         |	sum(srvcctime),
-         |	sum(lteswsucc),
-         |	sum(lteswatt),
-         |	sum(srqatt),
-         |	sum(srqsucc),
-         |	sum(tauatt),
-         |	sum(tausucc),
-         |	sum(rrcrebuild),
-         |	sum(rrcsucc),
-         |	sum(rrcreq),
-         |	sum(imsiregatt),
-         |	sum(imsiregsucc),
-         |	sum(wirelessdrop),
-         |	sum(wireless),
-         |	sum(eabdrop),
-         |	sum(eab),
-         |	sum(eabs1swx),
-         |	sum(eabs1swy),
-         |	sum(s1tox2swx),
-         |	sum(s1tox2swy),
-         |	sum(enbx2swx),
-         |	sum(enbx2swy),
-         |	sum(uuenbswx),
-         |	sum(uuenbswy),
-         |	sum(uuenbinx),
-         |	sum(uuenbiny),
-         |	sum(swx),
-         |	sum(swy),
-         |	sum(attachx),
-         |	sum(attachy),
-         |	sum(voltesucc),
-         |  sum(srvccsuccS1)
+         | '$cal_date' as ttime,
+         |	sum(voltemcsucc) as voltemcsucc,
+         |	sum(voltemcatt) as voltemcatt,
+         |	sum(voltevdsucc) as voltevdsucc,
+         |	sum(voltevdatt) as voltevdatt,
+         |	sum(voltetime) as voltetime,
+         |	sum(voltemctime) as voltemctime,
+         |	sum(voltemctimey) as voltemctimey,
+         |  sum(voltevdtime) as voltevdtime,
+         |  sum(voltevdtimey) as voltevdtimey,
+         |	sum(voltemchandover) as voltemchandover,
+         |	sum(volteanswer) as volteanswer,
+         |	sum(voltevdhandover) as voltevdhandover,
+         |	sum(voltevdanswer) as voltevdanswer,
+         |	sum(srvccsucc) as srvccsucc,
+         |	sum(srvccatt) as srvccatt,
+         |	sum(srvcctime) as srvcctime,
+         |	sum(lteswsucc) as lteswsucc,
+         |	sum(lteswatt) as lteswatt,
+         |	sum(srqatt) as srqatt,
+         |	sum(srqsucc) as srqsucc,
+         |	sum(tauatt) as tauatt,
+         |	sum(tausucc) as tausucc,
+         |	sum(rrcrebuild) as rrcrebuild,
+         |	sum(rrcsucc) as rrcsucc,
+         |	sum(rrcreq) as rrcreq,
+         |	sum(imsiregatt) as imsiregatt,
+         |	sum(imsiregsucc) as imsiregsucc,
+         |	sum(wirelessdrop) as wirelessdrop,
+         |	sum(wireless) as wireless,
+         |	sum(eabdrop) as eabdrop,
+         |	sum(eab) as eab,
+         |	sum(eabs1swx) as eabs1swx,
+         |	sum(eabs1swy) as eabs1swy,
+         |	sum(s1tox2swx) as s1tox2swx,
+         |	sum(s1tox2swy) as s1tox2swy,
+         |	sum(enbx2swx) as enbx2swx,
+         |	sum(enbx2swy) as enbx2swy,
+         |	sum(uuenbswx) as uuenbswx,
+         |	sum(uuenbswy) as uuenbswy,
+         |	sum(uuenbinx) as uuenbinx,
+         |	sum(uuenbiny) as uuenbiny,
+         |	sum(swx) as swx,
+         |	sum(swy) as swy,
+         |	sum(attachx) as attachx,
+         |	sum(attachy) as attachy,
+         |	sum(voltesucc) as voltesucc,
+         |  sum(srvccsuccS1) as srvccsuccS1
          |from temp_kpi
          |group by imsi,
          |	msisdn,
          |	CELLID
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).createOrReplaceTempView("volte_gt_user_ana_base60_tmp")
+    sql(
+      s"""
+         |select t11.* from volte_gt_user_ana_base60_tmp t11 inner join
+         |(select distinct(cellid) from $DDB.ltecell) t12 on t11.cellid=t12.cellid
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def cellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
-    import HiveContext.sql
+  def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
+    import sparkSession.sql
     sql(s"use $DDB")
     sql(s"alter table volte_gt_cell_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     val uu = sql(
@@ -1510,14 +1580,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) srvccsucc,
-         |	sum(
-         |		CASE
-         |		WHEN ProcedureType = 1 THEN
-         |			1
-         |		ELSE
-         |			0
-         |		END
-         |	) srvccatt,
+         |	0 AS srvccatt,
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
@@ -1741,7 +1804,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = 1
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -1752,7 +1816,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -1811,7 +1876,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachy,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -1929,7 +1995,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltemchandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = 1
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -1940,7 +2007,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND ServiceType = $ServiceTypevideo
          |		AND Answertime <> 4294967295 THEN
          |			1
@@ -1999,7 +2067,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachy,
          |	sum(
          |		CASE
-         |		WHEN ProcedureType = 5
+         |		WHEN interface = 14
+         |		AND ProcedureType = 5
          |		AND alertingtime <> 4294967295 THEN
          |			1
          |		ELSE
@@ -2034,7 +2103,14 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS voltevdhandover,
          |	0 AS voltevdanswer,
          |	0 AS srvccsucc,
-         |	0 AS srvccatt,
+         |	sum(CASE
+         |		WHEN INTERFACE = 5
+         |		AND proceduretype = 16
+         |    AND keyword1=3 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END)srvccatt,
          |	0 AS srvcctime,
          |	0 AS lteswsucc,
          |	0 AS lteswatt,
@@ -2313,69 +2389,135 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	CELLID
        """.stripMargin)
-
-    uu.unionAll(x2).unionAll(sv).unionAll(voltesip).unionAll(voltesip0).unionAll(voltesip1).unionAll(s1mme).unionAll(s1mmeHandOver).registerTempTable("temp_kpi")
+    val rx = sql(
+      s"""
+         |SELECT
+         |CELLID,
+         |0 AS voltemcsucc,
+         |0 AS voltemcatt,
+         |0 AS voltevdsucc,
+         |0 AS voltevdatt,
+         |0 AS voltetime,
+         |0 AS voltemctime,
+         |0 AS voltemctimey,
+         |0 AS voltevdtime,
+         |0 AS voltevdtimey,
+         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE !=1
+         |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
+         |0 AS volteanswer,
+         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 1
+         |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
+         |0 AS voltevdanswer,
+         |0 AS srvccsucc,
+         |0 AS srvccatt,
+         |0 as srvcctime,
+         |0 AS lteswsucc,
+         |0 AS lteswatt,
+         |0 AS srqatt,
+         |0 AS srqsucc,
+         |0 AS tauatt,
+         |0 AS tausucc,
+         |0 AS rrcrebuild,
+         |0 AS rrcsucc,
+         |0 AS rrcreq,
+         |0 AS imsiregatt,
+         |0 AS imsiregsucc,
+         |0 AS wirelessdrop,
+         |0 AS wireless,
+         |0 AS eabdrop,
+         |0 AS eab,
+         |0 AS eabs1swx,
+         |0 AS eabs1swy,
+         |0 AS s1tox2swx,
+         |0 AS s1tox2swy,
+         |0 AS enbx2swx,
+         |0 AS enbx2swy,
+         |0 AS uuenbswx,
+         |0 AS uuenbswy,
+         |0 AS uuenbinx,
+         |0 AS uuenbiny,
+         |0 AS swx,
+         |0 AS swy,
+         |0 AS attachx,
+         |0 AS attachy,
+         |0 AS voltesucc,
+         | 0 AS srvccsuccS1
+         |FROM
+         |$SDB.tb_xdr_ifc_gxrx
+         |WHERE
+         |dt = $ANALY_DATE
+         |AND h = $ANALY_HOUR
+         |GROUP BY
+         |cellid
+       """.stripMargin)
+//    uu.union(x2).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
-         |'$cal_date',
+         |'$cal_date' as ttime,
          |	CELLID,
-         |	sum(voltemcsucc),
-         |	sum(voltemcatt),
-         |	sum(voltevdsucc),
-         |	sum(voltevdatt),
-         |	sum(voltetime),
-         |	sum(voltemctime),
-         |	sum(voltemctimey),
-         |  sum(voltevdtime),
-         |  sum(voltevdtimey),
-         |	sum(voltemchandover),
-         |	sum(volteanswer),
-         |	sum(voltevdhandover),
-         |	sum(voltevdanswer),
-         |	sum(srvccsucc),
-         |	sum(srvccatt),
-         |	sum(srvcctime),
-         |	sum(lteswsucc),
-         |	sum(lteswatt),
-         |	sum(srqatt),
-         |	sum(srqsucc),
-         |	sum(tauatt),
-         |	sum(tausucc),
-         |	sum(rrcrebuild),
-         |	sum(rrcsucc),
-         |	sum(rrcreq),
-         |	sum(imsiregatt),
-         |	sum(imsiregsucc),
-         |	sum(wirelessdrop),
-         |	sum(wireless),
-         |	sum(eabdrop),
-         |	sum(eab),
-         |	sum(eabs1swx),
-         |	sum(eabs1swy),
-         |	sum(s1tox2swx),
-         |	sum(s1tox2swy),
-         |	sum(enbx2swx),
-         |	sum(enbx2swy),
-         |	sum(uuenbswx),
-         |	sum(uuenbswy),
-         |	sum(uuenbinx),
-         |	sum(uuenbiny),
-         |	sum(swx),
-         |	sum(swy),
-         |	sum(attachx),
-         |	sum(attachy),
-         |	sum(voltesucc),
-         | sum(srvccsuccS1)
+         |	sum(voltemcsucc) as voltemcsucc,
+         |	sum(voltemcatt) as voltemcatt,
+         |	sum(voltevdsucc) as voltevdsucc,
+         |	sum(voltevdatt) as voltevdatt,
+         |	sum(voltetime) as voltetime,
+         |	sum(voltemctime) as voltemctime,
+         |	sum(voltemctimey) as voltemctimey,
+         |  sum(voltevdtime) as voltevdtime,
+         |  sum(voltevdtimey) as voltevdtimey,
+         |	sum(voltemchandover) as voltemchandover,
+         |	sum(volteanswer) as volteanswer,
+         |	sum(voltevdhandover) as voltevdhandover,
+         |	sum(voltevdanswer) as voltevdanswer,
+         |	sum(srvccsucc) as srvccsucc,
+         |	sum(srvccatt) as srvccatt,
+         |	sum(srvcctime) as srvcctime,
+         |	sum(lteswsucc) as lteswsucc,
+         |	sum(lteswatt) as lteswatt,
+         |	sum(srqatt) as srqatt,
+         |	sum(srqsucc) as srqsucc,
+         |	sum(tauatt) as tauatt,
+         |	sum(tausucc) as tausucc,
+         |	sum(rrcrebuild) as rrcrebuild,
+         |	sum(rrcsucc) as rrcsucc,
+         |	sum(rrcreq) as rrcreq,
+         |	sum(imsiregatt) as imsiregatt,
+         |	sum(imsiregsucc) as imsiregsucc,
+         |	sum(wirelessdrop) as wirelessdrop,
+         |	sum(wireless) as wireless,
+         |	sum(eabdrop) as eabdrop,
+         |	sum(eab) as eab,
+         |	sum(eabs1swx) as eabs1swx,
+         |	sum(eabs1swy) as eabs1swy,
+         |	sum(s1tox2swx) as s1tox2swx,
+         |	sum(s1tox2swy) as s1tox2swy,
+         |	sum(enbx2swx) as enbx2swx,
+         |	sum(enbx2swy) as enbx2swy,
+         |	sum(uuenbswx) as uuenbswx,
+         |	sum(uuenbswy) as uuenbswy,
+         |	sum(uuenbinx) as uuenbinx,
+         |	sum(uuenbiny) as uuenbiny,
+         |	sum(swx) as swx,
+         |	sum(swy) as swy,
+         |	sum(attachx) as attachx,
+         |	sum(attachy) as attachy,
+         |	sum(voltesucc) as voltesucc,
+         | sum(srvccsuccS1) as srvccsuccS1
          |FROM
          |	temp_kpi
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).createOrReplaceTempView("volte_gt_cell_ana_base60_tmp")
+      sql(
+        s"""
+           |select t11.* from volte_gt_cell_ana_base60_tmp t11 inner join
+           |(select distinct(cellid) from $DDB.ltecell) t12 on t11.cellid=t12.cellid
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def mrImsiHourAnalyse(implicit HiveContext: HiveContext): Unit = {
-    import HiveContext.sql
+  def mrImsiHourAnalyse(implicit sparkSession: SparkSession): Unit = {
+    import sparkSession.sql
     sql(s"use $DDB")
     sql(s"alter table mr_gt_user_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(
@@ -2746,8 +2888,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	imsi,
          |	msisdn,
          |	xdrid
-       """.stripMargin).registerTempTable("temp_kpi")
-
+       """.stripMargin).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -2761,21 +2902,34 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          | '' dir_state,
          | '' elong,
          | '' elat,
-         |	sum(avgrsrpx),
+         | sum(avgrsrpx),
          |	sum(commy),
          |	sum(avgrsrqx),
          |	sum(ltecoverratex),
          |	sum(weakcoverratex),
          |	sum(
          |		CASE
-         |		WHEN overlapcoverratex > 3 THEN
+         |		WHEN overlapcoverratey > 3 THEN
          |			1
          |		ELSE
          |			0
          |		END
          |	) overlapcoverratex,
          |	sum(overlapcoverratey),
-         |	max(
+         |	sum(upsigrateavgx),
+         |	sum(upsigrateavgy),
+         |sum(
+         |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
+         |	) updiststrox,
+         |	sum(
+         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
+         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
+         | ) updiststroy,
+         |	sum(model3diststrox) model3diststrox,
+         |	sum(model3diststroy) model3diststroy,
+         |  sum(uebootx),
+         |	sum(uebooty),
+         | max(
          |		greatest(
          |			updiststroxvalue1,
          |			updiststroxvalue2,
@@ -2789,30 +2943,17 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			updiststroxvalue10
          |		)
          |	) updiststromax,
-         |	sum(
-         |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
-         |	) updiststrox,
-         |	sum(
-         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
-         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
-         | ) updiststroy,
-         |	MAX(upsigrateavgmax),
-         |	sum(upsigrateavgx),
-         |	sum(upsigrateavgy),
-         |	sum(uebootx),
-         |	sum(uebooty),
-         |	sum(model3diststrox) model3diststrox,
-         |	sum(model3diststroy) model3diststroy
+         |	MAX(upsigrateavgmax)upsigrateavgmax
          |FROM
          |	temp_kpi
          |GROUP BY
          |	imsi,
          |	msisdn
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
-  def mrCellHourAnalyse(implicit HiveContext: HiveContext): Unit = {
-    import HiveContext.sql
+  def mrCellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
+    import sparkSession.sql
     val CAL_DATE = ANALY_DATE + " " + ANALY_HOUR + "00:00"
     sql(s"use $DDB")
     sql(s"alter table mr_gt_cell_ana_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
@@ -3181,7 +3322,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	CELLID,
          |	xdrid
-       """.stripMargin).registerTempTable("temp_kpi")
+       """.stripMargin).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -3202,7 +3343,20 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		END
          |	) overlapcoverratex,
          |	sum(overlapcoverratey),
-         |	max(
+         |	sum(upsigrateavgx),
+         |	sum(upsigrateavgy),
+         |sum(
+         |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
+         |	) updiststrox,
+         |	sum(
+         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
+         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
+         | ) updiststroy,
+         |	sum(model3diststrox) model3diststrox,
+         |	sum(model3diststroy) model3diststroy,
+         |  sum(uebootx),
+         |	sum(uebooty),
+         | max(
          |		greatest(
          |			updiststroxvalue1,
          |			updiststroxvalue2,
@@ -3216,25 +3370,12 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			updiststroxvalue10
          |		)
          |	) updiststromax,
-         |	sum(
-         |		updiststroxvalue1 + updiststroxvalue2 + updiststroxvalue3 + updiststroxvalue4 + updiststroxvalue5 + updiststroxvalue6 + updiststroxvalue7 + updiststroxvalue8 + updiststroxvalue9 + updiststroxvalue10
-         |	) updiststrox,
-         |	sum(
-         |  case when (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) is not null then
-         |  (updiststrox1 + updiststrox2 + updiststrox3 + updiststrox4 + updiststrox5 + updiststrox6 + updiststrox7 + updiststrox8 + updiststrox9 + updiststrox10) else 0 end
-         | ) updiststroy,
-         |	MAX(upsigrateavgmax),
-         |	sum(upsigrateavgx),
-         |	sum(upsigrateavgy),
-         |	sum(uebootx),
-         |	sum(uebooty),
-         |	sum(model3diststrox) model3diststrox,
-         |	sum(model3diststroy) model3diststroy
+         |	MAX(upsigrateavgmax)upsigrateavgmax
          |FROM
          |	temp_kpi
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }

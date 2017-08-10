@@ -7,7 +7,6 @@ mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
 ANALY_DATE=$1
 ANALY_HOUR=$2
-
 echo "@@@@@@@@@@@@${ANALY_DATE}@@@@@@@@@@@@@"
 echo "@@@@@@@@@@@@${ANALY_HOUR}@@@@@@@@@@@@@"
 HIVE_PATH="hdfs://dtcluster/datang"
@@ -20,7 +19,7 @@ fi
 for tableName in ${HIVE_TABLES}
 do
 hdfs dfs -test -e ${HIVE_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}
-if [ $? -eq 0 ] ;then
+if [ $? -eq 0 ] ;then 
    hdfs dfs -rm -r ${HIVE_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}
 fi
 echo "hdfs dfs -mkdir -p ${HIVE_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}"
@@ -32,3 +31,5 @@ rm -rf ${LOCAL_PATH}/${tableName}/${ANALY_DATE}/${ANALY_HOUR}
 done
 echo "`date '+/%y/%m/%d %H:%M:%S'` INFO done ,exit..."
 echo "Success!"
+
+

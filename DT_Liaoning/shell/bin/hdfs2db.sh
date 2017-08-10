@@ -60,6 +60,8 @@ UE_HOUR_HTTP_COLS="ttime,imsi,msisdn,browsedownloadvisits,videoservicevisits,ins
 
 BUSINESS_TYPE_DETAIL="TTIME,city,region,CELLID,app_type,app_sub_type,uldata,dldata"
 
+zc_city_data='ttime,city,cellid,businessdelay,pageDownKps,etype'
+
 if [ $COL_NUM = 1 ]
 then
    COLS=$KPI_IMSI_COLS
@@ -111,9 +113,14 @@ elif [ $COL_NUM = 17 ]; then
 elif [ $COL_NUM = 18 ]; then
    COLS=$BUSINESS_TYPE_DETAIL
    TABLE=business_type_detail
-else
+elif [ $COL_NUM = 19 ]; then
    COLS=$EVENT_MSG
+   TABLE=t_event_msg
+else
+    COLS=$zc_city_data
+    TABLE=zc_city_data
 fi
+
 /opt/app/sqoop/bin/sqoop export --connect $URL \
 --username $USERNAME --password tiger \
 --table $TABLE \

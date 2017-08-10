@@ -5,8 +5,7 @@ package com.dtmobile.spark.biz.gridanalyse
 
 import java.math.BigDecimal
 
-import org.apache.spark.sql.SaveMode
-import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String, warhouseDir: String) {
 
@@ -45,8 +44,8 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
   var undefinedrelationrsrp:String ="3"
   var undefinedrelationrsrpOp:String =">"
 
-  def getCondition(implicit HiveContext: HiveContext) :Int = {
-    import HiveContext.sql
+  def getCondition(implicit sparkSession: SparkSession) :Int = {
+    import sparkSession.sql
 
     val rs:Int = 1
     val t = sql("select FIELD,OPERATOR,VALUE from ltepci_degree_condition").collectAsList()
@@ -274,10 +273,10 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
 
   }
 
-  def analyse(implicit HiveContext: HiveContext): Unit ={
-    import HiveContext.sql
+  def analyse(implicit sparkSession: SparkSession): Unit ={
+    import sparkSession.sql
 
-    getCondition(HiveContext)
+    getCondition(sparkSession)
 
     sql(s"use $DDB")
     //    |insert into lte_mrs_dlbestrow_grid_ana60(oid,starttime,endtime,timeseq,enodebid,cellid,gridcenterlongitude,gridcenterlatitude,
@@ -304,7 +303,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | and t1.cellid = t2.cellid and t1.oid>0
          | and t1.MMEUES1APID = t2.MMEUES1APID
          | GROUP BY t1.oid,t1.starttime,t1.endtime,t1.timeseq,t1.enbid,t1.CELLID,t1.GRIDCENTERLONGITUDE,t1.GRIDCENTERLATITUDE
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mrs_dlbestrow_grid_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_grid_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     //    | insert  into lte_mro_overlap_grid_ana60(oid,starttime,endtime,timeseq,enodebid,cellid,gridcenterlongitude,gridcenterLatitude,usercount,
     //   overlapbestrowcellcount,adjacentareainterferenceintens,rsrqcount,rsrqsum,celloverlapbestrowmrcount,rsrpcount,rsrpsum)
@@ -349,7 +348,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | WHERE DISTRUBCOUNT > $adjstrongDisturb AND (OVERCELLCOUNT + 1) > $recovercount
          | GROUP BY oid,STARTTIME,endtime,timeseq,ENBID,CELLID
          | )C on A.cellid=C.cellid and A.oid=C.oid
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mro_overlap_grid_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_overlap_grid_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     //    | insert all into GRID_LTEMRKPI60(begintime,endtime,timeseq,
     //    | enodebid,cellid,gridcenterlongitude,gridcenterlatitude,oid,KPI1049,KPI1239,KPI1011,KPI1012,KPI1241,KPI1243,KPI1245,KPI1247)
@@ -366,7 +365,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | sum(case when t.kpi6>=0 and t.kpi6-23 $poorUEpowerThOp $poorUEpowerTh and t.MRNAME='MR.LteScRSRP'then 1 else 0 end) as KPI1012,
          | $PlrulandPlrdlSql FROM lte_mro_source_ana_tmp t where  vid = 0 and t.oid >0 GROUP BY t.starttime,t.endtime,t.timeseq,
          | t.ENBID,t.oid,t.CELLID,t.GRIDCENTERLONGITUDE,t.GRIDCENTERLATITUDE
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/grid_ltemrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/grid_ltemrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     //  |insert into CELL_LTEMRKPITEMP(begintime,endtime,timeseq,
     //  |        enodebid,cellid,KPI1001,KPI1002,KPI1003,KPI1004,KPI1005,KPI1006,KPI1011,KPI1012,KPI1009,KPI1010,KPI1049,
@@ -433,7 +432,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | SUM (CASE WHEN t.kpi17>=0 and t.MRNAME = 'MR.LteScRSRP' THEN t.kpi17 ELSE 0 END) AS KPI1190,$MrRipKpiSql
          | FROM lte_mro_source_ana_tmp t GROUP BY t.starttime,t.endtime,t.timeseq,t.ENBID
          | ,t.CELLID
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/cell_ltemrkpitemp/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_ltemrkpitemp/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 //    insert all into CELL_LTEMRKPI60(begintime,endtime,timeseq,
 //      enodebid,cellid,KPI1001,KPI1002,KPI1003,KPI1004,KPI1005,KPI1006,KPI1011,KPI1012,KPI1009,KPI1010,KPI1049,
@@ -468,7 +467,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          |  KPI1033,KPI1034,KPI1035,KPI1036,KPI1037,KPI1038,KPI1039,KPI1040,
          |  KPI1041,KPI1042,KPI1043,KPI1044,KPI1045,KPI1046,KPI1047,KPI1048,
          |  KPI1007,KPI1008,KPI1241,KPI1242,KPI1245,KPI1246,KPI1237,KPI1243,KPI1247 from CELL_LTEMRKPITEMP
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/CELL_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/CELL_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 */
 
     //    | insert  into LTE_MRO_OVERLAP_B_ANA60(STARTTIME, ENDTIME, TIMESEQ,ENODEBID, CELLID,
@@ -512,7 +511,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | WHERE (T .distrubcount / POWER (10, $adjDisturbRSRP/10)) > $adjstrongDisturb AND (T.overcellcount + 1) > $recovercount
          | GROUP BY T .CELLID,T .ENBID) T3
          | on T1.CELLID = T3 .CELLID and T1.ENBID = T3.ENBID
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mro_overlap_b_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_overlap_b_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 //    |INSERT INTO CELL_LTENEWMRKPI60 (STARTTIME,ENDTIME,TIMESEQ,MMEGROUPID,MMEID,ENODEBID,CELLID,MrOverlayCount,MrOverCoverCount,MrLoseNeibCount,MrEdgeWeakCoverCount)
     sql(s"""alter table cell_ltenewmrkpi60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
@@ -538,6 +537,6 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          | left join (select distinct cellid from lte2lteadj) T4
          | on T.cellid=T4.cellid left join lte2lteadj T5 on T.cellid=T5.cellid and T.tcellid=T5.adjcellid
          | GROUP BY T.startTime,T.endTime,T.timeseq,T.mmegroupid,T.mmecode,T.enbid,T.cellId
-       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/cell_ltenewmrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/cell_ltenewmrkpi60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }

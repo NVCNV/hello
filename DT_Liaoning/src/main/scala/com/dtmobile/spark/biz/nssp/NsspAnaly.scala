@@ -1,19 +1,18 @@
 package com.dtmobile.spark.biz.nssp
 
-import org.apache.spark.sql.SaveMode
-import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 
 /**
   * NsspAnaly
   *
   * @author heyongjin
-  * @ create 2017/03/02 10:36
+  * @create 2017/03/02 10:36
   *
   **/
 class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String) {
-  def analyse(implicit HiveContext: HiveContext): Unit = {
-    import HiveContext.sql
+  def analyse(implicit sparkSession: SparkSession): Unit = {
+    import sparkSession.sql
     //原始表初始化
     sql(s"use $SDB")
     sql(
@@ -35,17 +34,12 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(
       s"""
          |alter table tb_xdr_ifc_gxrx add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-         |location "/$localStr/volte_rx/$ANALY_DATE/$ANALY_HOUR"
+         |location "/$localStr/volte_rx/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
     sql(
       s"""
          |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
-       """.stripMargin)
-    sql(
-      s"""
-         |alter table tb_xdr_ifc_dns add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-         |location "/$localStr/s1u_dns_orgn/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
     sql(
       s"""
@@ -69,250 +63,191 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(s"alter table cell_mr add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(s"alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
 
-//    sql(
-//      s"""
-//         |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-//         |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
-//       """.stripMargin)
+    sql(
+      s"""
+         |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+
+    sql(
+      s"""
+         |select
+         |x2.LENGTH,
+         |x2.CITY,
+         |x2.INTERFACE,
+         |x2.XDRID,
+         |x2.RAT,
+         |S1.IMSI,
+         |S1.IMEI,
+         |S1.MSISDN,
+         |x2.PROCEDURETYPE,
+         |x2.PROCEDURESTARTTIME,
+         |x2.PROCEDUREENDTIME,
+         |x2.PROCEDURESTATUS,
+         |x2.CELLID,
+         |x2.TARGETCELLID,
+         |x2.ENBID,
+         |x2.TARGETENBID,
+         |x2.MMEUES1APID,
+         |x2.MMEGROUPID,
+         |x2.MMECODE,
+         |x2.REQUESTCAUSE,
+         |x2.FAILURECAUSE,
+         |x2.EPSBEARERNUMBER,
+         |x2.BEARER0ID,
+         |x2.BEARER0STATUS,
+         |x2.BEARER1ID,
+         |x2.BEARER1STATUS,
+         |x2.BEARER2ID,
+         |x2.BEARER2STATUS,
+         |x2.BEARER3ID,
+         |x2.BEARER3STATUS,
+         |x2.BEARER4ID,
+         |x2.BEARER4STATUS,
+         |x2.BEARER5ID,
+         |x2.BEARER5STATUS,
+         |x2.BEARER6ID,
+         |x2.BEARER6STATUS,
+         |x2.BEARER7ID,
+         |x2.BEARER7STATUS,
+         |x2.BEARER8ID,
+         |x2.BEARER8STATUS,
+         |x2.BEARER9ID,
+         |x2.BEARER9STATUS,
+         |x2.BEARER10ID,
+         |x2.BEARER10STATUS,
+         |x2.BEARER11ID,
+         |x2.BEARER11STATUS,
+         |x2.BEARER12ID,
+         |x2.BEARER12STATUS,
+         |x2.BEARER13ID,
+         |x2.BEARER13STATUS,
+         |x2.BEARER14ID,
+         |x2.BEARER14STATUS,
+         |x2.BEARER15ID,
+         |x2.BEARER15STATUS,
+         |x2.RANGETIME
+         |from $SDB.tb_Xdr_ifc_x2 x2
+         |left outer join
+         |(
+         |SELECT
+         |mmeues1apid
+         |,mmegroupid
+         |,mmecode
+         |,imsi
+         |,IMEI
+         |,MSISDN
+         |,ROW_NUMBER() OVER(PARTITION BY mmeues1apid,mmegroupid,mmecode ORDER BY PROCEDURESTARTTIME DESC) rum
+         |from
+         |(
+         |select imsi,IMEI,MSISDN,x2.mmeues1apid,x2.mmegroupid,x2.mmecode,x2.PROCEDURESTARTTIME
+         |FROM
+         |(select imsi,IMEI,MSISDN,mmeues1apid,mmegroupid,mmecode,PROCEDURESTARTTIME,dt,h from $SDB.tb_Xdr_ifc_s1mme where imsi is not null and imsi !='' and dt='$ANALY_DATE' and h='$ANALY_HOUR') s1
+         |left outer join
+         |(select distinct mmeues1apid,mmegroupid,mmecode,PROCEDURESTARTTIME,dt,h from $SDB.tb_xdr_ifc_x2 where dt='$ANALY_DATE' and h='$ANALY_HOUR') x2
+         |on x2.mmeues1apid=s1.mmeues1apid and x2.mmegroupid=s1.mmegroupid and x2.mmecode=s1.mmecode
+         |and x2.dt=s1.dt and x2.h=s1.h
+         |where s1.PROCEDURESTARTTIME>=x2.PROCEDURESTARTTIME-120000
+         |and s1.PROCEDURESTARTTIME<=x2.PROCEDURESTARTTIME+120000
+         |)
+         |)s1
+         |on x2.mmeues1apid=s1.mmeues1apid and x2.mmegroupid=s1.mmegroupid and x2.mmecode=s1.mmecode
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
+       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
+      .csv(s"$warhouseDir/tb_xdr_ifc_x2/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
          |SELECT
-         | x2. LENGTH,
-         | x2.CITY,
-         | x2.INTERFACE,
-         | x2.XDRID,
-         | x2.RAT,
-         | S1.IMSI,
-         | S1.IMEI,
-         | S1.MSISDN,
-         | x2.PROCEDURETYPE,
-         | x2.PROCEDURESTARTTIME,
-         | x2.PROCEDUREENDTIME,
-         | x2.PROCEDURESTATUS,
-         | x2.CELLID,
-         | x2.TARGETCELLID,
-         | x2.ENBID,
-         | x2.TARGETENBID,
-         | x2.MMEUES1APID,
-         | x2.MMEGROUPID,
-         | x2.MMECODE,
-         | x2.REQUESTCAUSE,
-         | x2.FAILURECAUSE,
-         | x2.EPSBEARERNUMBER,
-         | x2.BEARER0ID,
-         | x2.BEARER0STATUS,
-         | x2.BEARER1ID,
-         | x2.BEARER1STATUS,
-         | x2.BEARER2ID,
-         | x2.BEARER2STATUS,
-         | x2.BEARER3ID,
-         | x2.BEARER3STATUS,
-         | x2.BEARER4ID,
-         | x2.BEARER4STATUS,
-         | x2.BEARER5ID,
-         | x2.BEARER5STATUS,
-         | x2.BEARER6ID,
-         | x2.BEARER6STATUS,
-         | x2.BEARER7ID,
-         | x2.BEARER7STATUS,
-         | x2.BEARER8ID,
-         | x2.BEARER8STATUS,
-         | x2.BEARER9ID,
-         | x2.BEARER9STATUS,
-         | x2.BEARER10ID,
-         | x2.BEARER10STATUS,
-         | x2.BEARER11ID,
-         | x2.BEARER11STATUS,
-         | x2.BEARER12ID,
-         | x2.BEARER12STATUS,
-         | x2.BEARER13ID,
-         | x2.BEARER13STATUS,
-         | x2.BEARER14ID,
-         | x2.BEARER14STATUS,
-         | x2.BEARER15ID,
-         | x2.BEARER15STATUS,
-         | x2.RANGETIME,
-         | 0
-         |FROM
-         | $SDB.tb_Xdr_ifc_x2 x2
-         |LEFT OUTER JOIN (
-         | SELECT
-         |  B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE,
-         |  MIN(A .PROCEDUREENDTIME) PROCEDUREENDTIME
-         | FROM
-         |  (
-         |   SELECT
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE,
-         |    MIN (PROCEDUREENDTIME) PROCEDUREENDTIME
-         |   FROM
-         |    $SDB.tb_Xdr_ifc_s1mme
-         |    where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         |   GROUP BY
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE
-         |  ) A
-         | INNER JOIN (
-         |  SELECT
-         |   IMSI,
-         |   IMEI,
-         |   MSISDN,
-         |   MMEUES1APID,
-         |   MMEGROUPID,
-         |   MMECODE,
-         |   PROCEDUREENDTIME
-         |  FROM
-         |   $SDB.tb_Xdr_ifc_s1mme
-         |   where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         | ) B ON A .PROCEDUREENDTIME = B.PROCEDUREENDTIME
-         | AND A .MMEUES1APID = B.MMEUES1APID
-         | AND A .MMEGROUPID = B.MMEGROUPID
-         | AND A .MMECODE = B.MMECODE
-         | GROUP BY B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE
-         |) S1 ON x2.MMEUES1APID = S1.MMEUES1APID
-         |AND x2.MMEGROUPID = S1.MMEGROUPID
-         |AND x2.MMECODE = S1.MMECODE
-         |WHERE
-         | x2.dt='$ANALY_DATE' and x2.h='$ANALY_HOUR' and
-         | x2.PROCEDUREENDTIME - S1.PROCEDUREENDTIME <= 600000
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .format("com.databricks.spark.csv")
-      .option("header", "false").save(s"$warhouseDir/tb_xdr_ifc_x2/dt=$ANALY_DATE/h=$ANALY_HOUR")
-
-    sql(
-      s"""
+         |UU.LENGTH,
+         |UU.CITY,
+         |UU.INTERFACE,
+         |UU.XDRID,
+         |UU.RAT,
+         |S1.IMSI,
+         |S1.IMEI,
+         |S1.MSISDN,
+         |UU.PROCEDURETYPE,
+         |UU.PROCEDURESTARTTIME,
+         |UU.PROCEDUREENDTIME,
+         |UU.KEYWORD1,
+         |UU.KEYWORD2,
+         |UU.PROCEDURESTATUS,
+         |UU.PLMNID,
+         |UU.ENBID,
+         |UU.CELLID,
+         |UU.CRNTI,
+         |UU.TARGETENBID,
+         |UU.TARGETCELLID,
+         |UU.TARGETCRNTI,
+         |UU.MMEUES1APID,
+         |UU.MMEGROUPID,
+         |UU.MMECODE,
+         |UU.MTMSI,
+         |UU.CSFBINDICATION,
+         |UU.REDIRECTEDNETWORK,
+         |UU.EPSBEARERNUMBER,
+         |UU.BEARER0ID,
+         |UU.BEARER0STATUS,
+         |UU.BEARER1ID,
+         |UU.BEARER1STATUS,
+         |UU.BEARER2ID,
+         |UU.BEARER2STATUS,
+         |UU.BEARER3ID,
+         |UU.BEARER3STATUS,
+         |UU.BEARER4ID,
+         |UU.BEARER4STATUS,
+         |UU.BEARER5ID,
+         |UU.BEARER5STATUS,
+         |UU.BEARER6ID,
+         |UU.BEARER6STATUS,
+         |UU.BEARER7ID,
+         |UU.BEARER7STATUS,
+         |UU.BEARER8ID,
+         |UU.BEARER8STATUS,
+         |UU.BEARER9ID,
+         |UU.BEARER9STATUS,
+         |UU.BEARER10ID,
+         |UU.BEARER10STATUS,
+         |UU.BEARER11ID,
+         |UU.BEARER11STATUS,
+         |UU.BEARER12ID,
+         |UU.BEARER12STATUS,
+         |UU.BEARER13ID,
+         |UU.BEARER13STATUS,
+         |UU.BEARER14ID,
+         |UU.BEARER14STATUS,
+         |UU.BEARER15ID,
+         |UU.BEARER15STATUS,
+         |UU.RANGETIME
+         |FROM $SDB.TB_XDR_IFC_UU UU
+         |left outer join
+         |(
          |SELECT
-         | UU.LENGTH,
-         | UU.CITY,
-         | UU.INTERFACE,
-         | UU.XDRID,
-         | UU.RAT,
-         | S1.IMSI,
-         | S1.IMEI,
-         | S1.MSISDN,
-         | UU.PROCEDURETYPE,
-         | UU.PROCEDURESTARTTIME,
-         | UU.PROCEDUREENDTIME,
-         | UU.KEYWORD1,
-         | UU.KEYWORD2,
-         | UU.PROCEDURESTATUS,
-         | UU.PLMNID,
-         | UU.ENBID,
-         | UU.CELLID,
-         | UU.CRNTI,
-         | UU.TARGETENBID,
-         | UU.TARGETCELLID,
-         | UU.TARGETCRNTI,
-         | UU.MMEUES1APID,
-         | UU.MMEGROUPID,
-         | UU.MMECODE,
-         | UU.MTMSI,
-         | UU.CSFBINDICATION,
-         | UU.REDIRECTEDNETWORK,
-         | UU.EPSBEARERNUMBER,
-         | UU.BEARER0ID,
-         | UU.BEARER0STATUS,
-         | UU.BEARER1ID,
-         | UU.BEARER1STATUS,
-         | UU.BEARER2ID,
-         | UU.BEARER2STATUS,
-         | UU.BEARER3ID,
-         | UU.BEARER3STATUS,
-         | UU.BEARER4ID,
-         | UU.BEARER4STATUS,
-         | UU.BEARER5ID,
-         | UU.BEARER5STATUS,
-         | UU.BEARER6ID,
-         | UU.BEARER6STATUS,
-         | UU.BEARER7ID,
-         | UU.BEARER7STATUS,
-         | UU.BEARER8ID,
-         | UU.BEARER8STATUS,
-         | UU.BEARER9ID,
-         | UU.BEARER9STATUS,
-         | UU.BEARER10ID,
-         | UU.BEARER10STATUS,
-         | UU.BEARER11ID,
-         | UU.BEARER11STATUS,
-         | UU.BEARER12ID,
-         | UU.BEARER12STATUS,
-         | UU.BEARER13ID,
-         | UU.BEARER13STATUS,
-         | UU.BEARER14ID,
-         | UU.BEARER14STATUS,
-         | UU.BEARER15ID,
-         | UU.BEARER15STATUS,
-         | UU.RANGETIME,
-         | 0
+         |mmeues1apid
+         |,mmegroupid
+         |,mmecode
+         |,imsi
+         |,IMEI
+         |,MSISDN
+         |,ROW_NUMBER() OVER(PARTITION BY mmeues1apid,mmegroupid,mmecode ORDER BY PROCEDURESTARTTIME DESC) rum
+         |from
+         |(
+         |select imsi,IMEI,MSISDN,uu.mmeues1apid,uu.mmegroupid,uu.mmecode,uu.PROCEDURESTARTTIME
          |FROM
-         | $SDB.TB_XDR_IFC_UU UU
-         |LEFT OUTER JOIN (
-         | SELECT
-         |  B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE,
-         |  MIN(A.PROCEDUREENDTIME) PROCEDUREENDTIME
-         | FROM
-         |  (
-         |   SELECT
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE,
-         |    MIN (PROCEDUREENDTIME) PROCEDUREENDTIME
-         |   FROM
-         |    $SDB.tb_Xdr_ifc_s1mme
-         |    where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         |   GROUP BY
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE
-         |  ) A
-         | INNER JOIN (
-         |  SELECT
-         |   IMSI,
-         |   IMEI,
-         |   MSISDN,
-         |   MMEUES1APID,
-         |   MMEGROUPID,
-         |   MMECODE,
-         |   PROCEDUREENDTIME
-         |  FROM
-         |   $SDB.tb_Xdr_ifc_s1mme
-         |   where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         | ) B ON A .PROCEDUREENDTIME = B.PROCEDUREENDTIME
-         | AND A .MMEUES1APID = B.MMEUES1APID
-         | AND A .MMEGROUPID = B.MMEGROUPID
-         | AND A .MMECODE = B.MMECODE
-         | GROUP BY B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE
-         |) S1 ON UU.MMEUES1APID = S1.MMEUES1APID
-         |AND UU.MMEGROUPID = S1.MMEGROUPID
-         |AND UU.MMECODE = S1.MMECODE
-         |WHERE
-         | UU.dt='$ANALY_DATE' and UU.h='$ANALY_HOUR' and
-         | UU.PROCEDUREENDTIME - S1.PROCEDUREENDTIME <= 600000
+         |(select imsi,IMEI,MSISDN,mmeues1apid,mmegroupid,mmecode,PROCEDURESTARTTIME,dt,h from $SDB.tb_Xdr_ifc_s1mme where imsi is not null and imsi !='' and dt='$ANALY_DATE' and h='$ANALY_HOUR') s1
+         |left outer join
+         |(select distinct mmeues1apid,mmegroupid,mmecode,PROCEDURESTARTTIME,dt,h from $SDB.tb_xdr_ifc_uu where dt='$ANALY_DATE' and h='$ANALY_HOUR') uu
+         |on uu.mmeues1apid=s1.mmeues1apid and uu.mmegroupid=s1.mmegroupid and uu.mmecode=s1.mmecode
+         |and uu.dt=s1.dt and uu.h=s1.h
+         |where s1.PROCEDURESTARTTIME>=uu.PROCEDURESTARTTIME-120000
+         |and s1.PROCEDURESTARTTIME<=uu.PROCEDURESTARTTIME+120000
+         |)
+         |)s1
+         |on uu.mmeues1apid=s1.mmeues1apid and uu.mmegroupid=s1.mmegroupid and uu.mmecode=s1.mmecode
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .csv(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
@@ -424,61 +359,34 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |lte.v_enb,
          |lte.mrtime
          |FROM
-         | $SDB.lte_mro_source lte
-         |LEFT OUTER JOIN (
-         | SELECT
-         |  B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE,
-         |  MIN(A.PROCEDUREENDTIME) PROCEDUREENDTIME
-         | FROM
-         |  (
-         |   SELECT
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE,
-         |    MIN (PROCEDUREENDTIME) PROCEDUREENDTIME
-         |   FROM
-         |    $SDB.tb_xdr_ifc_s1mme
-         |    where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         |   GROUP BY
-         |    MMEUES1APID,
-         |    MMEGROUPID,
-         |    MMECODE
-         |  ) A
-         | INNER JOIN (
-         |  SELECT
-         |   IMSI,
-         |   IMEI,
-         |   MSISDN,
-         |   MMEUES1APID,
-         |   MMEGROUPID,
-         |   MMECODE,
-         |   PROCEDUREENDTIME
-         |  FROM
-         |   $SDB.tb_xdr_ifc_s1mme
-         |   where dt='$ANALY_DATE' and h='$ANALY_HOUR'
-         | ) B ON A .PROCEDUREENDTIME = B.PROCEDUREENDTIME
-         | AND A .MMEUES1APID = B.MMEUES1APID
-         | AND A .MMEGROUPID = B.MMEGROUPID
-         | AND A .MMECODE = B.MMECODE
-         | GROUP BY B.IMSI,
-         |  B.IMEI,
-         |  B.MSISDN,
-         |  A .MMEUES1APID,
-         |  A .MMEGROUPID,
-         |  A .MMECODE
-         |) S1 ON lte.MMEUES1APID = S1.MMEUES1APID
-         |AND lte.MMEGROUPID = S1.MMEGROUPID
-         |AND lte.MMECODE = S1.MMECODE
-         |WHERE
-         | lte.dt='$ANALY_DATE' and lte.h='$ANALY_HOUR' and
-         | lte.MRTIME - S1.PROCEDUREENDTIME <= 600000
+         |$SDB.lte_mro_source lte
+         |left outer join
+         |(
+         |SELECT
+         |mmeues1apid
+         |,mmegroupid
+         |,mmecode
+         |,imsi
+         |,IMEI
+         |,MSISDN
+         |,ROW_NUMBER() OVER(PARTITION BY mmeues1apid,mmegroupid,mmecode ORDER BY PROCEDURESTARTTIME DESC) rum
+         |from
+         |(
+         |select imsi,IMEI,MSISDN,lte.mmeues1apid,lte.mmegroupid,lte.mmecode,lte.PROCEDURESTARTTIME
+         |FROM
+         |(select imsi,IMEI,MSISDN,mmeues1apid,mmegroupid,mmecode,PROCEDURESTARTTIME,dt,h from $SDB.tb_Xdr_ifc_s1mme where imsi is not null and imsi !='' and dt='$ANALY_DATE' and h='$ANALY_HOUR') s1
+         |left outer join
+         |(select distinct mmeues1apid,mmegroupid,mmecode,mrtime PROCEDURESTARTTIME,dt,h from $SDB.lte_mro_source where dt='$ANALY_DATE' and h='$ANALY_HOUR') lte
+         |on lte.mmeues1apid=s1.mmeues1apid and lte.mmegroupid=s1.mmegroupid and lte.mmecode=s1.mmecode
+         |and lte.dt=s1.dt and lte.h=s1.h
+         |where s1.PROCEDURESTARTTIME>=lte.PROCEDURESTARTTIME-120000
+         |and s1.PROCEDURESTARTTIME<=lte.PROCEDURESTARTTIME+120000
+         |)
+         |)s1
+         |on lte.mmeues1apid=s1.mmeues1apid and lte.mmegroupid=s1.mmegroupid and lte.mmecode=s1.mmecode
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .csv(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
       s"""
@@ -593,7 +501,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |$SDB.lte_mro_source
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0'
        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
-      .format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
 
