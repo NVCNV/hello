@@ -2,8 +2,7 @@ package com.dtmobile.spark.job
 
 import com.dtmobile.spark.Analyse
 import org.apache.spark.sql.SparkSession
-import com.dtmobile.spark.biz.shanxikpi._
-import com.dtmobile.spark.biz.nssp.NsspAnaly
+
 
 /**
   * AnalyJob
@@ -22,15 +21,15 @@ class AnalyJob(args: Array[String]) extends Analyse {
 
 
    def analyse(implicit sparkSession: SparkSession): Unit = {
-    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
-    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
+//    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+//    val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
 //    val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
 //    val kpibusinessDayAnaly = new KpibusinessDayAnaly(args(0), args(2), args(3), warhouseDir)
 //    val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
 //    val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
 //    kpibusinessHourAnaly.analyse
 //    nsspAnaly.analyse
-    kpiHourAnaly.analyse
+//    kpiHourAnaly.analyse
 //    exception.analyse
 //    typedetail.analyse
 
