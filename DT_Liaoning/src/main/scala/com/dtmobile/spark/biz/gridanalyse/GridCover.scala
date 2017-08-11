@@ -44,8 +44,8 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
   var undefinedrelationrsrp:String ="3"
   var undefinedrelationrsrpOp:String =">"
 
-  def getCondition(implicit sparkSession: SparkSession) :Int = {
-    import sparkSession.sql
+  def getCondition(implicit SparkSession: SparkSession) :Int = {
+    import SparkSession.sql
 
     val rs:Int = 1
     val t = sql("select FIELD,OPERATOR,VALUE from ltepci_degree_condition").collectAsList()
@@ -273,10 +273,10 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
 
   }
 
-  def analyse(implicit sparkSession: SparkSession): Unit ={
-    import sparkSession.sql
+  def analyse(implicit SparkSession: SparkSession): Unit ={
+    import SparkSession.sql
 
-    getCondition(sparkSession)
+    getCondition(SparkSession)
 
     sql(s"use $DDB")
     //    |insert into lte_mrs_dlbestrow_grid_ana60(oid,starttime,endtime,timeseq,enodebid,cellid,gridcenterlongitude,gridcenterlatitude,
@@ -467,7 +467,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
          |  KPI1033,KPI1034,KPI1035,KPI1036,KPI1037,KPI1038,KPI1039,KPI1040,
          |  KPI1041,KPI1042,KPI1043,KPI1044,KPI1045,KPI1046,KPI1047,KPI1048,
          |  KPI1007,KPI1008,KPI1241,KPI1242,KPI1245,KPI1246,KPI1237,KPI1243,KPI1247 from CELL_LTEMRKPITEMP
-       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/CELL_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/CELL_LTEMRKPI60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 */
 
     //    | insert  into LTE_MRO_OVERLAP_B_ANA60(STARTTIME, ENDTIME, TIMESEQ,ENODEBID, CELLID,

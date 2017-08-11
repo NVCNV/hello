@@ -11,12 +11,12 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR.toInt+1) + ":00:00"
 
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    lteMroAdjCoverAna(sparkSession)
+  def analyse(implicit SparkSession: SparkSession): Unit = {
+    lteMroAdjCoverAna(SparkSession)
   }
 
-  def lteMroAdjCoverAna(sparkSession: SparkSession): Unit ={
-    import sparkSession.sql
+  def lteMroAdjCoverAna(SparkSession: SparkSession): Unit ={
+    import SparkSession.sql
     val t1 = sql("select value from ltepci_degree_condition where field = 'thrscgoodcoverrsrp'").collectAsList()
     var thrScGoodCoverRSRP : Int = -85
     if(t1.size()>0){
@@ -45,7 +45,6 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
     // LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_adjcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR'
     sql(s"""
            |SELECT
-           |       '' as id,
            |        '$cal_date' as starttime,
            |       '$cal_date2' as endtime,
            |       $ANALY_HOUR as timeseq ,
@@ -70,7 +69,7 @@ class LteMroAdjCoverAna(ANALY_DATE: String, ANALY_HOUR: String,  anahour: String
            |           CASE
            |            WHEN SIGN(s.kpi1 - ${thrScGoodCoverRSRP}) = 1 THEN 1
            |            ELSE  0 END )
-           |  FROM lte_mro_source_tmp s
+           |  FROM lte_mro_source_ana_tmp s
            |  left join lte2lteadj_pci p
            |    ON p.eNodeBId = s.enbID
            |   AND p.cellID = s.cellId

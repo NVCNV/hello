@@ -8,13 +8,13 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 class DisturbMixAna(ANALY_DATE: String, ANALY_HOUR: String, period: String, anahour: String, SDB: String, DDB: String, warhouseDir: String) {
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR.toInt+1) + ":00:00"
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    disturbMixAna(sparkSession)
+  def analyse(implicit SparkSession: SparkSession): Unit = {
+    disturbMixAna(SparkSession)
   }
 
 
-  def disturbMixAna(sparkSession: SparkSession): Unit ={
-    import sparkSession.sql
+  def disturbMixAna(SparkSession: SparkSession): Unit ={
+    import SparkSession.sql
     sql(s"use $DDB")
     sql(s"""alter table lte_mro_disturb_mix add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
            LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_mix/dt=$ANALY_DATE/h=$ANALY_HOUR'
@@ -24,7 +24,6 @@ class DisturbMixAna(ANALY_DATE: String, ANALY_HOUR: String, period: String, anah
 
     sql(s"""
            |SELECT
-           |'' as id ,
            '$cal_date' as starttime,
          '$cal_date2' as endtime,
          ${period} as period,

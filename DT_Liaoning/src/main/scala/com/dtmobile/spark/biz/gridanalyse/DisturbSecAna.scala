@@ -12,14 +12,14 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
   val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR) + ":00:00"
   val cal_date2 = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + String.valueOf(ANALY_HOUR.toInt+1) + ":00:00"
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
-    lteMroAdjCoverAna(sparkSession)
+  def analyse(implicit SparkSession: SparkSession): Unit = {
+    lteMroAdjCoverAna(SparkSession)
   }
-  def lteMroAdjCoverAna(sparkSession: SparkSession): Unit ={
-    import sparkSession.sql
+  def lteMroAdjCoverAna(SparkSession: SparkSession): Unit ={
+    import SparkSession.sql
 
-    var sqlSecSrv : String =s"SELECT  '','$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'";
-    var sqlSecAdj : String = s"SELECT  '','$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'";
+    var sqlSecSrv : String =s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'";
+    var sqlSecAdj : String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'";
     //var sqlSecTab : String = s"insert into lte_mro_disturb_sec partition(dt='${ANALY_DATE}',h='${ANALY_HOUR}')";
     val fString : String = "-120;-110;-100;-90;-80;-70;-60;"; //暂时写死 分段字符串
     val fDelimiter = ";"
@@ -39,21 +39,36 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
         sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
       }
     }
+
+    val s = 71-cnt
+    for(i <- 0 to 71){
+      if(i <= 71){
+        sqlSecSrv += s" ,0 as a${i} "
+        sqlSecAdj += s" ,0 as a${i} "
+      }
+      /*else{
+        sqlSecSrv += " ''"
+        sqlSecAdj += " ''"
+      }*/
+    }
+
     // sqlSecSrv += ",'','','','','','','','','','','','','','','','','','', '','','','','','','','','','','','','','','','','','', '','','','','','',  '','','','','','','','','','','','','','','','','','','','','','','','','','','','',''"
-    sqlSecSrv += s" FROM (SELECT t.enbID,t.cellID,t.meaTime,t.kpi1,t.kpi9,t.kpi10 FROM lte_mro_source_tmp t WHERE t.VID = 0 ) s  LEFT JOIN ltecell c ON s.enbID = c.enodebId AND s.CellID = c.cellId WHERE 1=1 GROUP BY s.enbID,s.cellID,c.MmeGroupId,c.Mmeid,c.CellName,s.kpi10,s.kpi9"
-    sqlSecAdj += s" FROM lte_mro_source_tmp s,lte2lteadj_pci p WHERE p.eNodeBId =s.enbID AND p.cellID = s.cellId AND p.adjPci = s.kpi12 AND P.ADJFREQ1 = s.kpi11 GROUP BY p.adjENodeBId,p.adjCellId ,p.adjMmeGroupId,p.adjMmeId,p.adjCellName,p.adjpci,p.adjfreq1 "
+    sqlSecSrv += s" FROM (SELECT t.enbID,t.cellID,t.meaTime,t.kpi1,t.kpi9,t.kpi10 FROM lte_mro_source_ana_tmp t WHERE t.VID = 0 ) s  LEFT JOIN ltecell c ON s.enbID = c.enodebId AND s.CellID = c.cellId WHERE 1=1 GROUP BY s.enbID,s.cellID,c.MmeGroupId,c.Mmeid,c.CellName,s.kpi10,s.kpi9"
+    sqlSecAdj += s" FROM lte_mro_source_ana_tmp s,lte2lteadj_pci p WHERE p.eNodeBId =s.enbID AND p.cellID = s.cellId AND p.adjPci = s.kpi12 AND P.ADJFREQ1 = s.kpi11 GROUP BY p.adjENodeBId,p.adjCellId ,p.adjMmeGroupId,p.adjMmeId,p.adjCellName,p.adjpci,p.adjfreq1 "
     //sqlSecTab+= " )"
 
     sql(s"use $DDB")
     sql(s"""alter table lte_mro_disturb_sec add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
            LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
+
     sql(s"""
         ${sqlSecSrv}
       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
     sql(s"""
         ${sqlSecAdj}
-      """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
+      """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
 
   }
 
@@ -107,6 +122,11 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
       }
     }
     pos
+  }
+
+  def main(args: Array[String]) {
+    val fString : String = "-120;-110;-100;-90;-80;-70;-60;";
+    print(fString.split(";").length)
   }
 }
 

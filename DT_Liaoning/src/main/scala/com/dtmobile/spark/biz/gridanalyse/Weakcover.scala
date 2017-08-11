@@ -27,9 +27,9 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   var azimuthOp=">"
   var azimuthTh= 35
 
-  def analyse(implicit sparkSession: SparkSession): Unit={
+  def analyse(implicit SparkSession: SparkSession): Unit={
 
-    import sparkSession.sql
+    import SparkSession.sql
     val t = sql("select operator,value from ltecover_degree_condition where field = 'PoorCoverageRSRPTh'").collectAsList()
     if(t.size()>0) {
       poorRSRPOp = t.get(0).getString(0)
@@ -111,7 +111,7 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
                      left join (SELECT startTime,endTime,timeseq,enbID,cellid,SUM (CASE WHEN kpi1>=0 THEN 1 ELSE  0  END) as CELLMRCOUNT
                      from lte_mro_source_ana_tmp where mrname='MR.LteScRSRP'and vid = 0 GROUP BY startTime,endTime,timeseq,enbID,cellid ) s3 ON s1.startTime = s3.startTime
                      AND s1.endTime = s3.endTime AND s1.timeseq = s3.timeseq AND s1.enodebid = s3.enbid AND s1.cellid = s3.cellid
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_JOINUSER_ANA60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_joinuser_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }

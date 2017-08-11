@@ -44,17 +44,18 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
 
 //    val genDisPreRsrpDifSeqSql=GenDisPreRsrpDifSeqSql
 
-  def analyse(implicit sparkSession: SparkSession): Unit= {
-    import sparkSession.sql
+  def analyse(implicit SparkSession: SparkSession): Unit= {
+    import SparkSession.sql
     val genDisPreRsrpDifSeqValueSql = GenDisPreRsrpDifSeqValueSql("t.kpi1","t.kpi2")
     val t = sql("select operator,value from ltepci_degree_condition where field = 'cellrsrpcoverth'").collectAsList()
-    val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getDecimal(1)
+    val sRsrpLap = t.get(0).getString(0)+" "+t.get(0).getAs("value")
     val t2 = sql("select operator,value from ltepci_degree_condition where field = 'adjcellrsrpeffectiveth'").collectAsList()
-    val adjRsrpthresh = t.get(0).getString(0)+" "+t.get(0).getDecimal(1)
+    val adjRsrpthresh = t2.get(0).getString(0)+" "+t2.get(0).getAs("value")
     sql(s"use $DDB")
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 drop if  exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
     sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 add  partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
-    val selectSql=s"""select t.startTime, t.endTime, t.timeseq,
+    val selectSql=s"""select
+                      |       t.startTime, t.endTime, t.timeseq,
                       |        t.mmecode, t.enbid, t.cellid,t2.cellname,
                       |        (case when t.kpi10!= -1 then t.kpi10 else null end) as cellpci,
                       |        (case when t.kpi9!= -1  then t.kpi9  else null end) as cellfreq,
@@ -73,7 +74,7 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
                       |        group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid, t2.cellname,t2.adjenodebid,
                       |        t2.adjcellID, t2.adjcellname,t.kpi11, t.kpi12,t.kpi9, t.kpi10""".stripMargin
 
-    sql(selectSql).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/LTE_MRO_DISTURB_PRETREATE60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+    sql(selectSql).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_disturb_pretreate60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
   }
 
