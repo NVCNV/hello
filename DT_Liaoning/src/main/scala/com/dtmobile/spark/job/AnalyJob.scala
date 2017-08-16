@@ -74,6 +74,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
       fAnaly.analyse
     }
 */
+
     if("03".equals(args(1))){
     val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       val kpibusinessDayAnaly = new KpibusinessDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
