@@ -15,42 +15,40 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
   def analyse(implicit SparkSession: SparkSession): Unit = {
     lteMroAdjCoverAna(SparkSession)
   }
-  def lteMroAdjCoverAna(SparkSession: SparkSession): Unit ={
+  def lteMroAdjCoverAna(SparkSession: SparkSession): Unit = {
     import SparkSession.sql
 
-    var sqlSecSrv : String =s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'";
-    var sqlSecAdj : String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'";
+    var sqlSecSrv: String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'"
+    var sqlSecAdj: String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'"
     //var sqlSecTab : String = s"insert into lte_mro_disturb_sec partition(dt='${ANALY_DATE}',h='${ANALY_HOUR}')";
-    val fString : String = "-120;-110;-100;-90;-80;-70;-60;"; //暂时写死 分段字符串
+    val fString: String = "-120;-110;-100;-90;-80;-70;-60;"
+    //暂时写死 分段字符串
     val fDelimiter = ";"
-    val cnt : Integer = fString.split(fDelimiter).length
-    var min : Integer = 0
-    var max : Integer = 0
-    var i : Int = 0
-    for ( i <- 0 to cnt ){
-      //sqlSecTab += " ,seq" + i
-      breakable{
-        if(i == 0){
-          break
-        }
+    val cnt: Integer = fString.split(fDelimiter).length
+    var min: Integer = 0
+    var max: Integer = 0
+    var i: Int = 1
+    if (cnt > 0){
+      for (i <- 1 to cnt) {
+        //sqlSecTab += " ,seq" + i
         min = max
-        max = null2Zero(Integer.parseInt(getSplitString(fString,fDelimiter,i)))
-        sqlSecSrv += " ,sum( CASE WHEN s.kpi1 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
-        sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= "+min+" AND s.kpi1 < "+max+" THEN 1 ELSE 0 END  )"
-      }
-    }
+        max = null2Zero(Integer.parseInt(getSplitString(fString, fDelimiter, i))) + 141
 
-    val s = 71-cnt
-    for(i <- 0 to 71){
-      if(i <= 71){
-        sqlSecSrv += s" ,0 as a${i} "
-        sqlSecAdj += s" ,0 as a${i} "
+        sqlSecSrv += " ,sum( CASE WHEN s.kpi1 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
+        sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
       }
-      /*else{
-        sqlSecSrv += " ''"
-        sqlSecAdj += " ''"
-      }*/
-    }
+  }
+//    val s = 71-cnt
+//    for(i <- 0 to 71){
+//      if(i <= 71){
+//        sqlSecSrv += s" ,0 as a${i} "
+//        sqlSecAdj += s" ,0 as a${i} "
+//      }
+//      /*else{
+//        sqlSecSrv += " ''"
+//        sqlSecAdj += " ''"
+//      }*/
+//    }
 
     // sqlSecSrv += ",'','','','','','','','','','','','','','','','','','', '','','','','','','','','','','','','','','','','','', '','','','','','',  '','','','','','','','','','','','','','','','','','','','','','','','','','','','',''"
     sqlSecSrv += s" FROM (SELECT t.enbID,t.cellID,t.meaTime,t.kpi1,t.kpi9,t.kpi10 FROM lte_mro_source_ana_tmp t WHERE t.VID = 0 ) s  LEFT JOIN ltecell c ON s.enbID = c.enodebId AND s.CellID = c.cellId WHERE 1=1 GROUP BY s.enbID,s.cellID,c.MmeGroupId,c.Mmeid,c.CellName,s.kpi10,s.kpi9"
