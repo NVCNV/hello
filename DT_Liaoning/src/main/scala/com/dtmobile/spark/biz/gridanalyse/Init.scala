@@ -13,11 +13,11 @@ import org.apache.spark.sql.SparkSession
 class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String,sourceDir:String) {
 
   val oracle:String = "jdbc:oracle:thin:@"+ORCAL
-  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + s"$ANALY_HOUR:00:00"
+  val cal_date:String = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + s"$ANALY_HOUR:00:00"
 
 
   var currentDate:String= ANALY_DATE
-  val currentHour = ANALY_HOUR.toInt
+  val currentHour:Int = ANALY_HOUR.toInt
   var nextHour = ""
   if( 0<=currentHour && currentHour<9 ){
     nextHour = "0"+currentHour.+(1)
@@ -30,7 +30,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
     currentDate=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
   }
 
-  val cal_date2= currentDate+nextHour+":00:00"
+  val cal_date2:String= currentDate+nextHour+":00:00"
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
     InitLteCell(sparkSession)
@@ -288,7 +288,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
     val dateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd")
     val date = dateFormat.parse(dt)
     val cal: Calendar = Calendar.getInstance()
-    cal.setTime(date);
+    cal.setTime(date)
     cal.add(Calendar.DATE, - 1)
     val yesterday = dateFormat.format(cal.getTime())
     yesterday
