@@ -18,41 +18,52 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String, per
 
   def lteMroAdjCoverAna(SparkSession: SparkSession): Unit = {
     import SparkSession.sql
-    //    println("------------------------**************************************--------------------------------------")
-
 
     var sqlSecSrv: String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,c.MmeGroupId,c.Mmeid,s.enbID,s.cellID,c.CellName,s.kpi10,s.kpi9,'MR.LteScRSRP'"
     var sqlSecAdj: String = s"SELECT  '$cal_date' as starttime ,'$cal_date2' as endtime,${period} as period,$ANALY_HOUR as timeseq ,p.adjMmeGroupId,p.adjMmeId,p.adjenodebId,p.adjcellID,p.adjCellName,p.adjpci,p.adjfreq1,'MR.LteNcRSRP'"
     //var sqlSecTab : String = s"insert into lte_mro_disturb_sec partition(dt='${ANALY_DATE}',h='${ANALY_HOUR}')";
-    val fString: String = "-120;-110;-100;-90;-80;-70;-60;"
-    //暂时写死 分段字符串
+    //[-120;-110;-100;-90;-80;-70;-60;]
+    val fS= sql(
+      s"""
+         |SELECT c.setValue
+         |          FROM ltemrsegment_config c, ltemrsegment_type t
+         |          WHERE
+         |               t.typeNameEn='MR.RSRP'
+         |               AND c.typeId = t.typeId
+         |               AND c.isDefault = 0
+       """.stripMargin).collectAsList()
+
+    val fColl = fS.get(0).toString()
+    val fString = fColl.substring(1,fColl.length() -1)
     val fDelimiter = ";"
     val cnt: Integer = fString.split(fDelimiter).length
     var min: Integer = 0
     var max: Integer = 0
+//    println("***********************************"+fString+"*****************************")
+//    println("**************"+cnt+"*****************")
     //    var i: Int = 0
     if (cnt > 0) {
       for (i <- 0 until cnt) {
         //sqlSecTab += " ,seq" + i
         min = max
-        max = null2Zero(Integer.parseInt(getSplitString(fString, fDelimiter, i))) + 141
+        max = null2Zero(Integer.parseInt(getSplitString(fString,fDelimiter, i))) + 141
         sqlSecSrv += " ,sum( CASE WHEN s.kpi1 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
         sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
         println(s"$sqlSecSrv")
         println(s"$sqlSecAdj")
       }
     }
-    //    val s = 71-cnt
-    //    for(i <- 0 to 71){
-    //      if(i <= 71){
-    //        sqlSecSrv += s" ,0 as a${i} "
-    //        sqlSecAdj += s" ,0 as a${i} "
-    //      }
-    //      /*else{
-    //        sqlSecSrv += " ''"
-    //        sqlSecAdj += " ''"
-    //      }*/
-    //    }
+        val s = 71-cnt
+        for(i <- 0 to s){
+          if(i <= s){
+            sqlSecSrv += s" ,'' as a${i} "
+            sqlSecAdj += s" ,'' as a${i} "
+          }
+          /*else{
+            sqlSecSrv += " ''"
+            sqlSecAdj += " ''"
+          }*/
+        }
 
     // sqlSecSrv += ",'','','','','','','','','','','','','','','','','','', '','','','','','','','','','','','','','','','','','', '','','','','','',  '','','','','','','','','','','','','','','','','','','','','','','','','','','','',''"
     sqlSecSrv += s" FROM (SELECT t.enbID,t.cellID,t.meaTime,t.kpi1,t.kpi9,t.kpi10 FROM lte_mro_source_ana_tmp t WHERE t.VID = 0 ) s  LEFT JOIN ltecell c ON s.enbID = c.enodebId AND s.CellID = c.cellId WHERE 1=1 GROUP BY s.enbID,s.cellID,c.MmeGroupId,c.Mmeid,c.CellName,s.kpi10,s.kpi9"
