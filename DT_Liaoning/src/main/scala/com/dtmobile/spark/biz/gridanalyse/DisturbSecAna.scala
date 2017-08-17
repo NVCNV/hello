@@ -27,12 +27,12 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
     val cnt: Integer = fString.split(fDelimiter).length
     var min: Integer = 0
     var max: Integer = 0
-    var i: Int = 1
+    var i: Int = 0
     if (cnt > 0){
-      for (i <- 1 to cnt) {
+      for (i <- 0 to cnt) {
         //sqlSecTab += " ,seq" + i
         min = max
-        max = null2Zero(Integer.parseInt(getSplitString(fString, fDelimiter, i))) + 141
+        max = null2Zero(Integer.parseInt(getSplitString(fString, fDelimiter, i+1))) + 141
 
         sqlSecSrv += " ,sum( CASE WHEN s.kpi1 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
         sqlSecAdj += " ,sum( CASE WHEN s.kpi2 >= " + min + " AND s.kpi1 < " + max + " THEN 1 ELSE 0 END  )"
@@ -57,7 +57,6 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
 
     sql(s"use $DDB")
     sql(s"""alter table lte_mro_disturb_sec add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-           LOCATION 'hdfs://dtcluster/$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR'
       """)
 
     sql(s"""
@@ -79,9 +78,9 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String,peri
     }else{
       val posPre = findStrPos(str,delimiter,order-1)+1
       val posNext = findStrPos(str,delimiter,order)
-      if("1".equals(posPre)){
-        reStr = "1";
-      }else if ("2".equals(posNext)){
+      if(1 == posPre){
+        reStr = ""
+      }else if (0 == posNext){
         reStr = str.substring(posPre)
       }else{
         reStr = str.substring(posPre,posNext - posPre)
