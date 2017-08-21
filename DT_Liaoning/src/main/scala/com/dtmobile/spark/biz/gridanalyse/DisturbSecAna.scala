@@ -74,7 +74,7 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String, per
     sql(s"""alter table $DDB.lte_mro_disturb_sec add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""")
 
 
-    println("------------------------**************************************--------------------------------------")
+    /*println("------------------------**************************************--------------------------------------")
     println(s" ${sqlSecSrv}")
     println(s" ${sqlSecAdj}")
 
@@ -86,7 +86,7 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String, per
     sql(
       s"""
         ${sqlSecAdj}
-      """.stripMargin).show()
+      """.stripMargin).show()*/
     //      .write.mode(SaveMode.Append).csv(s"$warhouseDir/lte_mro_disturb_sec/dt=$ANALY_DATE/h=$ANALY_HOUR")
     sql(
       s"""
