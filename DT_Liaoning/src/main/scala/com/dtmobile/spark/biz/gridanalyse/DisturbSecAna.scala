@@ -77,7 +77,6 @@ class DisturbSecAna(ANALY_DATE: String, ANALY_HOUR: String, anahour: String, per
     /*println("------------------------**************************************--------------------------------------")
     println(s" ${sqlSecSrv}")
     println(s" ${sqlSecAdj}")
-
     sql(
       s"""
         ${sqlSecSrv}
