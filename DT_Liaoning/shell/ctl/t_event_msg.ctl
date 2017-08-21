@@ -1,7 +1,6 @@
-OPTIONS(SKIP=1)
 LOAD DATA
 characterset UTF8
-APPEND INTO TABLE t_event_msg
+APPEND INTO TABLE T_EVENT_MSG
 FIELDS TERMINATED BY ','
 trailing nullcols
 (
@@ -19,7 +18,50 @@ cellkey,
 interface,
 prointerface,
 rangetime date "yyyy-mm-dd hh24:mi:ss",
-ELONG,
-ELAT,
-EUPORDOWN
+elong,
+elat,
+eupordown,
+exceptioncode,
+xdrid,
+excertiontype,
+interfacetype,
+exceptionstarttime,
+exceptionxdrid,
+pci,
+cellrsrp,
+rip,
+phr,
+upsinr,
+highestcellid,
+highestcellrsrp,
+secondcellid,
+secondcellrsrp,
+thirdcellid,
+thirdcellrsrp,
+actualrange,
+equivalentdistance,
+modelThreeNCellId,
+modelThreeNPci,
+modelThreeNRSRP,
+modelthreeactualrange,
+modelthreeequivdistance,
+targetPci,
+targetCellRip,
+targetCellRSRP,
+targetHighestCellId,
+targetHighestCellRSRP,
+targetSecondCellId,
+targetSecondCellRSRP,
+targetThirdCellId,
+targetThirdCellRSRP,
+targetActualRange,
+targetEquivalentDistance,
+targetModelThreeNCellId,
+targetModelThreeNPci,
+targetModelThreeNRSRP,
+targetModelThreeActualRange,
+targetModelThreeEquivDistance,
+MRType,
+resultDesc char(500),
+wirelessResultDesc char(500)
 )
