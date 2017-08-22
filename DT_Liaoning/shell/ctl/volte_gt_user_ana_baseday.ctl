@@ -1,4 +1,3 @@
-OPTIONS(SKIP=1)
 LOAD DATA
 characterset UTF8
 APPEND INTO TABLE volte_gt_user_ana_baseday
