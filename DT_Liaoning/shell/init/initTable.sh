@@ -13,37 +13,48 @@ CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 DROP TABLE IF EXISTS tb_xdr_ifc_gxrx;
 CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx(
-  length bigint, 
-  city string, 
-  interface int, 
-  xdrid string, 
-  rat int, 
-  imsi string, 
-  imei string, 
-  msisdn string, 
-  proceduretype bigint, 
-  procedurestarttime bigint, 
-  procedureendtime bigint, 
-  icid string, 
-  originrealm string, 
-  destinationrealm string, 
-  originhost string, 
-  destinationhost string, 
-  sgsnsgwsigip string, 
-  afappid string, 
-  ccrequesttype bigint, 
-  rxrequesttype bigint, 
-  mediatype bigint, 
-  abortcause bigint, 
-  resultcode bigint, 
-  experimentalresultcode bigint, 
-  sessionreleasecause bigint, 
-  rangetime string)
-PARTITIONED BY ( 
-  dt string, 
+   length int,
+  city string,
+  interface smallint,
+  xdrid string,
+  rat smallint,
+  imsi string,
+  imei string,
+  msisdn string,
+  proceduretype string,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  icid string,
+  originrealm string,
+  destinationrealm string,
+  originhost string,
+  destinationhost string,
+  sgsnsgwsigip string,
+  afappid string,
+  ccrequesttype smallint,
+  rxrequesttype smallint,
+  mediatype smallint,
+  abortcause smallint,
+  resultcode bigint,
+  experimentalresultcode bigint,
+  sessionreleasecause bigint,
+  rulefailurecode smallint,
+  sessionid string,
+  calledstationid string,
+  framedipv6prefix string,
+  framedipaddress string,
+  cellid bigint,
+  sourcetac int,
+  sourceneip string,
+  sourceneport int,
+  destinationneip string,
+  destinationneport int,
+  qci int)
+PARTITIONED BY (
+  dt string,
   h string)
-ROW FORMAT DELIMITED 
-  FIELDS TERMINATED BY '|' 
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '|'
 LOCATION
   '/${DB_PATH}/volte_rx';
   
