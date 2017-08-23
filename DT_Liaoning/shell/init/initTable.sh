@@ -63,7 +63,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_http(
   length bigint, 
   city bigint, 
   interface bigint, 
-  xdrid bigint, 
+  xdrid string,
   rat bigint, 
   imsi string, 
   imei string, 
