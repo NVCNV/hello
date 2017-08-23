@@ -71,9 +71,6 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
       AdjStrongDisturbRateThreshold = t6.get(0).getDecimal(0).doubleValue()*100
     }
     sql(
-      s"""alter table $DDB.lte_mrs_overcover_ana60 if exists drop partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
-      """.stripMargin)
-    sql(
       s"""alter table $DDB.lte_mrs_overcover_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
       """.stripMargin)
     sql(
