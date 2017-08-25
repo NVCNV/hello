@@ -7,7 +7,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * QueryPt
   *
   * @author heyongjin
-  * @create 2017/08/15 9:17
+  * @ create 2017/08/15 9:17
   *
   **/
 class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, DDB: String, DDBDIR: String) {
@@ -42,6 +42,8 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
     startTime = startTimes
     endTime = startTime + 300000
     arr.foreach(query(sparkSession, _, "mw"))
+
+    arr.foreach(unionAll(sparkSession, _))
   }
 
   def query(sparkSession: SparkSession, MIN: String, interfaces: String): Unit = {
@@ -93,6 +95,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
     sql(s"alter table tb_xdr_ifc_sv add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
     sql(s"alter table tb_xdr_ifc_gxrx add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
     sql(s"alter table tb_xdr_ifc_mw add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
+    sql(s"alter table tb_xdr_ifc_all add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
 
     if ("lte".equals(interfaces)) {
       sql(s"use $DCL")
@@ -343,49 +346,59 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
         .parquet(s"$DDBDIR/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR/m=$MIN")
-      sparkSession.sqlContext.cacheTable("tb_xdr_ifc_uu_cache")
     } else if ("s1mme".equals(interfaces)) {
       sql(s"use $SDB")
       sql(
         s"""
            |select
-           |length
-           |,city
-           |,interface
-           |,xdrid
-           |,rat
-           |,imsi
-           |,imei
-           |,msisdn
-           |,proceduretype
-           |,procedurestarttime
-           |,procedureendtime
-           |,procedurestatus
-           |,requestcause
-           |,failurecause
-           |,keyword1
-           |,keyword2
-           |,keyword3
-           |,keyword4
-           |,mmeues1apid
-           |,oldmmegroupid
-           |,oldmmecode
-           |,oldmtmsi
-           |,mmegroupid
-           |,mmecode
-           |,mtmsi
-           |,tmsi
-           |,useripv4
-           |,useripv6
-           |,mmeipadd
-           |,enbipadd
-           |,mmeport
-           |,enbport
-           |,tac
-           |,cellid
-           |,othertac
-           |,othereci
-           |,apn
+           |length_s
+           |,local_province_s
+           |,local_city_s
+           |,owner_province_s
+           |,owner_city_s
+           |,roaming_type_s
+           |,interface_s
+           |,xdrid_s
+           |,rat_s
+           |,imsi_s
+           |,imei_s
+           |,msisdn_s
+           |,procedure_type_s
+           |,start_time_s
+           |,end_time_s
+           |,start_lon_s
+           |,start_lat_s
+           |,location_source_s
+           |,msgflag_s
+           |,procedure_status_s
+           |,req_cause_g_s
+           |,request_cause_s
+           |,fail_cause_g_s
+           |,failure_cause_s
+           |,keyword1_s
+           |,keyword2_s
+           |,keyword3_s
+           |,keyword4_s
+           |,mme_ue_s1apid_s
+           |,old_mme_groupid_s
+           |,old_mmecode_s
+           |,old_mtmsi_s
+           |,old_guti_type_s
+           |,mme_groupid_s
+           |,mmecode_s
+           |,mtmsi_s
+           |,tmsi_s
+           |,useripv4_s
+           |,useripv6_s
+           |,mme_ip_s
+           |,enb_ip_s
+           |,mmeport_s
+           |,enbport_s
+           |,tac_s
+           |,eci_s
+           |,other_tac_s
+           |,other_eci_s
+           |,apn_s
            |,epsbearernumber
            |,bearer0id
            |,bearer0type
@@ -524,44 +537,44 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
       sql(
         s"""
            |select
-           |length
-           |,city
-           |,interface
-           |,xdrid
-           |,rat
-           |,imsi
-           |,imei
-           |,msisdn
-           |,proceduretype
-           |,procedurestarttime
-           |,procedureendtime
-           |,sourceneip
-           |,sourceneport
-           |,destneip
-           |,destneport
-           |,roamdirection
-           |,homemcc
-           |,homemnc
-           |,mcc
-           |,mnc
-           |,targetlac
-           |,sourcetac
-           |,sourceeci
-           |,svflags
-           |,ulcmscip
-           |,dlcmmeip
-           |,ulcmscteid
-           |,dlcmmeteid
-           |,stnsr
-           |,targetrncid
-           |,targetcellid
-           |,arp
-           |,requestresult
-           |,result
-           |,svcause
-           |,postfailurecause
-           |,respdelay
-           |,svdelay
+           |length_s
+           |,city_s
+           |,interface_s
+           |,xdr_id_s
+           |,rat_s
+           |,imsi_s
+           |,imei_s
+           |,msisdn_s
+           |,procedure_type_s
+           |,procedure_start_time_s
+           |,procedure_end_time_s
+           |,source_ne_ip_s
+           |,source_ne_port_s
+           |,dest_ne_ip_s
+           |,dest_ne_port_s
+           |,roam_direction_s
+           |,home_mcc_s
+           |,home_mnc_s
+           |,mcc_s
+           |,mnc_s
+           |,target_lac_s
+           |,source_tac_s
+           |,source_eci_s
+           |,sv_flags_s
+           |,ul_c_msc_ip_s
+           |,dl_c_mme_ip_s
+           |,ul_c_msc_teid_s
+           |,dl_c_mme_teid_s
+           |,stn_sr_s
+           |,target_rnc_id_s
+           |,target_cell_id_s
+           |,arp_s
+           |,request_result_s
+           |,result_s
+           |,sv_cause_s
+           |,post_failure_cause_s
+           |,resp_delay_s
+           |,sv_delay_s
            |,rangetime
            |from tb_xdr_ifc_sv_cache
            |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
@@ -572,43 +585,43 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
       sql(
         s"""
            |select
-           |length
-           |,city
-           |,interface
-           |,xdrid
-           |,rat
-           |,imsi
-           |,imei
-           |,msisdn
-           |,proceduretype
-           |,procedurestarttime
-           |,procedureendtime
-           |,icid
-           |,originrealm
-           |,destinationrealm
-           |,originhost
-           |,destinationhost
-           |,sgsnsgwsigip
-           |,afappid
-           |,ccrequesttype
-           |,rxrequesttype
-           |,mediatype
-           |,abortcause
-           |,resultcode
-           |,experimentalresultcode
-           |,sessionreleasecause
-           |,rulefailurecode
-           |,sessionid
-           |,calledstationid
-           |,framedipv6prefix
-           |,framedipaddress
-           |,cellid
-           |,sourcetac
-           |,sourceneip
-           |,sourceneport
-           |,destinationneip
-           |,destinationneport
-           |,qci
+           |length_s
+           |,city_s
+           |,interface_s
+           |,xdr_id_s
+           |,rat_s
+           |,imsi_s
+           |,imei_s
+           |,msisdn_s
+           |,procedure_type_s
+           |,procedure_start_time_s
+           |,procedure_end_time_s
+           |,icid_s
+           |,origin_realm_s
+           |,destination_realm_s
+           |,origin_host_s
+           |,destination_host_s
+           |,sgsn_sgw_sig_ip_s
+           |,af_app_id_s
+           |,cc_request_type_s
+           |,rx_request_type_s
+           |,media_type_s
+           |,abort_cause_s
+           |,result_code_s
+           |,experimental_result_code_s
+           |,session_release_cause_s
+           |,rule_failure_code_s
+           |,session_id_s
+           |,called_station_id_s
+           |,framed_ipv6_prefix_s
+           |,framed_ip_address_s
+           |,source_eci_s
+           |,source_tac_s
+           |,source_ne_ip_s
+           |,source_ne_port_s
+           |,destination_ne_ip_s
+           |,destination_ne_port_s
+           |,qci_s
            |from tb_xdr_ifc_gxrx_cache
            |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
@@ -618,44 +631,88 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
       sql(
         s"""
            |select
-           |length
-           |,city
-           |,interface
-           |,xdrid
-           |,rat
-           |,imsi
-           |,imei
-           |,msisdn
-           |,proceduretype
-           |,procedurestarttime
-           |,procedureendtime
-           |,servicetype
-           |,procedurestatus
-           |,callingnumber
-           |,callednumber
-           |,callingpartyuri
-           |,requesturi
-           |,userip
-           |,callid
-           |,icid
-           |,sourceneip
-           |,sourceneport
-           |,destneip
-           |,destneport
-           |,callside
-           |,sourceaccesstype
-           |,sourceeci
-           |,sourcetac
-           |,sourceimsi
-           |,sourceimei
-           |,destaccesstype
-           |,desteci
-           |,desttac
-           |,destimsi
-           |,destimei
-           |,authtype
-           |,expirestimereq
-           |,expirestimersp
+           |length_s
+           |,city_s
+           |,interface_s
+           |,xdr_id_s
+           |,rat_s
+           |,imsi_s
+           |,imei_s
+           |,msisdn_s
+           |,procedure_type_s
+           |,procedure_start_time_s
+           |,procedure_end_time_s
+           |,service_type_s
+           |,procedure_status_s
+           |,calling_number_s
+           |,called_number_s
+           |,calling_party_uri_s
+           |,request_uri_s
+           |,user_ip_s
+           |,callid_s
+           |,icid_s
+           |,source_ne_ip_s
+           |,source_ne_port_s
+           |,dest_ne_ip_s
+           |,dest_ne_port_s
+           |,call_side_s
+           |,source_access_type_s
+           |,source_eci_s
+           |,source_tac_s
+           |,source_imsi_s
+           |,source_imei_s
+           |,dest_access_type_s
+           |,dest_eci_s
+           |,dest_tac_s
+           |,dest_imsi_s
+           |,dest_imei_s
+           |,auth_type_s
+           |,expires_time_req_s
+           |,expires_time_rsp_s
+           |,calling_sdp_ip_addr_s
+           |,calling_audio_sdp_port_s
+           |,calling_video_sdp_port_s
+           |,called_sdp_ip_addr_s
+           |,called_audio_sdp_port_s
+           |,called_video_port_s
+           |,audio_codec_s
+           |,video_codec_s
+           |,redirecting_party_address_s
+           |,original_party_address_s
+           |,redirect_reason_s
+           |,response_code_s
+           |,finish_warning_code_s
+           |,finish_reason_protocol_s
+           |,finish_reason_cause_s
+           |,first_fail_time_s
+           |,first_fail_ne_ip_s
+           |,first_fail_transaction_s
+           |,progress_time_s
+           |,update_time_s
+           |,alerting_time_s
+           |,answer_time_s
+           |,release_time_s
+           |,call_duration_s
+           |,auth_req_time_s
+           |,auth_rsp_time_s
+           |,stn_sr_s
+           |,atcf_mgmt_s
+           |,atu_sti_s
+           |,c_msisdn_s
+           |,ssi_s
+           |,sbc_domain_s
+           |,multiparty_call_status_s
+           |,retryafter_s
+           |,release_part_s
+           |,finish_warning_s
+           |,finish_reason_s
+           |,nonce_value_s
+           |,auth_response_s
+           |,media_s
+           |,user_agent_s
+           |,executed_service_s
+           |,enb_ip_s
+           |,egw_ip_s
            |from tb_xdr_ifc_mw_cache
            |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
@@ -680,5 +737,302 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
         sparkSession.sqlContext.uncacheTable("tb_xdr_ifc_mw_cache")
       }
     }
+  }
+
+  def unionAll(sparkSession: SparkSession, MIN: String): Unit = {
+    import sparkSession.sql
+    sql(s"use $DDB")
+    sql(
+      s"""
+         |select length,
+         |        city,
+         |        interface as interfaces,
+         |        xdrid,
+         |        rat,
+         |        imsi,
+         |        imei,
+         |        msisdn,
+         |        mrtime as prostartTime,
+         |        meatime as metaTime,
+         |        '' as cnProcedureStatus,
+         |        '' as failCause,
+         |        cellId,
+         |        kpi1 as rsrp,
+         |        kpi13 as rsrq,
+         |        '' as rip,
+         |        mrtype as procedureType,
+         |        kpi8 as upsinr,
+         |        kpi6 as phr,
+         |        vid
+         |   from  lte_mro_source
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND mrname = 'MR.LteScRSRP'
+         |UNION ALL
+         |select length,
+         |        city,
+         |        interface as interfaces,
+         |        xdrid,
+         |        rat,
+         |        imsi,
+         |        imei,
+         |        msisdn,
+         |        mrtime as prostartTime,
+         |        meatime as metaTime,
+         |        '' as cnProcedureStatus,
+         |        '' as failCause,
+         |        cellId,
+         |        kpi1 as rsrp,
+         |        kpi13 as rsrq,
+         |        '' as rip,
+         |        mrtype as procedureType,
+         |        kpi8 as upsinr,
+         |        kpi6 as phr,
+         |        vid
+         |   from  lte_mro_source
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND mrname = 'MR.LteScRIP0'
+         |UNION ALL
+         |select length_s as length,
+         |        city_s as city,
+         |        interface_s as interfaces,
+         |        xdr_id_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        procedure_start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        procedure_status_s as cnProcedureStatus,
+         |        response_code_s as failCause,
+         |        case
+         |          when procedure_type_s = 5 then
+         |           case
+         |             when call_side_s = 1 then
+         |              source_eci_s
+         |             else
+         |              dest_eci_s
+         |           end
+         |          else
+         |           source_eci_s
+         |        end as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_mw
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 14
+         |UNION ALL
+         |select length_s as length,
+         |        city_s as city,
+         |        interface_s as interfaces,
+         |        xdr_id_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        procedure_start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        procedure_status_s  as cnProcedureStatus,
+         |        response_code_s  as failCause,
+         |        case
+         |          when procedure_type_s = 5 then
+         |           case
+         |             when call_side_s = 1 then
+         |              source_eci_s
+         |             else
+         |              dest_eci_s
+         |           end
+         |          else
+         |           source_eci_s
+         |        end as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as  procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_mw
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 18
+         |UNION ALL
+         |select length_s as  length,
+         |        city_s,
+         |        interface_s as interfaces,
+         |        xdr_id_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        procedure_start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        procedure_status_s as cnProcedureStatus,
+         |        response_code_s as failCause,
+         |        case
+         |          when procedure_type_s = 5 then
+         |           case
+         |             when call_side_s = 1 then
+         |              source_eci_s
+         |             else
+         |              dest_eci_s
+         |           end
+         |          else
+         |           source_eci_s
+         |        end as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_mw
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 15
+         |UNION ALL
+         |select length_s as length,
+         |        city_s as city,
+         |        interface_s as interfaces,
+         |        xdr_id_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        procedure_start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        '' as cnProcedureStatus,
+         |        result_code_s as failCause,
+         |        '' as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_gxrx
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 25
+         |UNION ALL
+         |select length_s as length,
+         |        city_s as city,
+         |        interface_s as interfaces,
+         |        xdr_id_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        procedure_start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        '' as cnProcedureStatus,
+         |        result_code_s as failCause,
+         |        '' as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_gxrx
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 26
+         |UNION ALL
+         |select length_s as length,
+         |        local_city_s as city,
+         |        interface_s as interfaces,
+         |        xdrid_s as xdrid,
+         |        rat_s as rat,
+         |        imsi_s as imsi,
+         |        imei_s as imei,
+         |        msisdn_s as msisdn,
+         |        start_time_s as prostartTime,
+         |        '' as metaTime,
+         |        procedure_status_s as cnProcedureStatus,
+         |        failure_cause_s as failCause,
+         |        eci_s as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedure_type_s as procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_s1mme
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface_s = 5
+         |UNION ALL
+         |select length,
+         |        city,
+         |        interface as interfaces,
+         |        xdrid,
+         |        rat,
+         |        imsi,
+         |        imei,
+         |        msisdn,
+         |        procedurestarttime as prostartTime,
+         |        '' as metaTime,
+         |        procedurestatus as cnProcedureStatus,
+         |        '' as failCause,
+         |        cellid as cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_uu
+         |   where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |UNION ALL
+         |  select length,
+         |        city,
+         |        interface as interfaces,
+         |        xdrid,
+         |        rat,
+         |        imsi,
+         |        imei,
+         |        msisdn,
+         |        procedurestarttime as prostartTime,
+         |        '' as metaTime,
+         |        procedurestatus as cnProcedureStatus,
+         |        failurecause as failCause,
+         |        cellId,
+         |        '' as rsrp,
+         |        '' as rsrq,
+         |        '' as rip,
+         |        procedureType,
+         |        '' as upsinr,
+         |        '' as phr,
+         |        '' as vid
+         |   from  tb_xdr_ifc_x2
+         |  where dt =  $ANALY_DATE
+         |    AND h = $ANALY_HOUR
+         |    AND m=$MIN
+         |    AND interface = 2
+       """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
+      .parquet(s"$DDBDIR/tb_xdr_ifc_all/dt=$ANALY_DATE/h=$ANALY_HOUR/m=$MIN")
   }
 }
