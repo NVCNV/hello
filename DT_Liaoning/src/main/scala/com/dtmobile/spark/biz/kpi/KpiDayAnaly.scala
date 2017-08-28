@@ -86,6 +86,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_baseday/dt=$ANALY_DATE")
   }
 
+
   def cellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
