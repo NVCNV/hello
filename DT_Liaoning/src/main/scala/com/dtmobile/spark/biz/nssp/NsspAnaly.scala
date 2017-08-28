@@ -153,7 +153,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |)s1
          |on x2.mmeues1apid=s1.mmeues1apid and x2.mmegroupid=s1.mmegroupid and x2.mmecode=s1.mmecode
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
+       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/tb_xdr_ifc_x2/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
@@ -246,7 +246,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |)s1
          |on uu.mmeues1apid=s1.mmeues1apid and uu.mmegroupid=s1.mmegroupid and uu.mmecode=s1.mmecode
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
+       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
@@ -385,7 +385,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |)s1
          |on lte.mmeues1apid=s1.mmeues1apid and lte.mmegroupid=s1.mmegroupid and lte.mmecode=s1.mmecode
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
+       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
     sql(
@@ -500,7 +500,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |FROM
          |$SDB.lte_mro_source
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0'
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite)
+       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
