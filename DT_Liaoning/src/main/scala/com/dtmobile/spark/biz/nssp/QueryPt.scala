@@ -15,8 +15,32 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
   var startTime = startTimes
   var endTime = startTime + 300000
   val arr = Array("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
+  //TDDO
+    val localStr = "datang"
+    def analyse(implicit sparkSession: SparkSession): Unit = {
+      import sparkSession.sql
+      sql(s"use $SDB")
+      sql(
+      s"""
+         |alter table tb_xdr_ifc_mw_s add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "/$localStr/volte_orgn_s/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+      sql(
+        s"""
+           |alter table tb_xdr_ifc_gxrx_s add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+           |location "/$localStr/volte_rx_s/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+      sql(
+        s"""
+           |alter table tb_xdr_ifc_s1mme_s add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+           |location "/$localStr/s1mme_orgn_s/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+      sql(
+        s"""
+           |alter table tb_xdr_ifc_sv_s add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+           |location "/$localStr/volte_sv_s/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
 
-  def analyse(implicit sparkSession: SparkSession): Unit = {
     arr.foreach(query(sparkSession, _, "lte"))
 
     startTime = startTimes
@@ -43,7 +67,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
     endTime = startTime + 300000
     arr.foreach(query(sparkSession, _, "mw"))
 
-    arr.foreach(unionAll(sparkSession, _))
+    //arr.foreach(unionAll(sparkSession, _))
   }
 
   def query(sparkSession: SparkSession, MIN: String, interfaces: String): Unit = {
@@ -65,7 +89,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_uu_cache")
       } else if ("s1mme".equals(interfaces)) {
         sql(s"use $SDB")
-        sql(s"select * from tb_xdr_ifc_s1mme where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_s1mme_cache")
+        sql(s"select * from tb_xdr_ifc_s1mme_s where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_s1mme_cache")
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_s1mme_cache")
       } else if ("sv".equals(interfaces)) {
         sql(s"use $SDB")
@@ -73,11 +97,11 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_sv_cache")
       } else if ("gx".equals(interfaces)) {
         sql(s"use $SDB")
-        sql(s"select * from tb_xdr_ifc_gxrx where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_gxrx_cache")
+        sql(s"select * from tb_xdr_ifc_gxrx_s where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_gxrx_cache")
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_gxrx_cache")
       } else if ("mw".equals(interfaces)) {
         sql(s"use $SDB")
-        sql(s"select * from tb_xdr_ifc_mw where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_mw_cache")
+        sql(s"select * from tb_xdr_ifc_mw_s where dt=$ANALY_DATE and h=$ANALY_HOUR").createOrReplaceTempView("tb_xdr_ifc_mw_cache")
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_mw_cache")
       }
     }else  if ("12".equals(MIN)) {
@@ -95,7 +119,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
     sql(s"alter table tb_xdr_ifc_sv add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
     sql(s"alter table tb_xdr_ifc_gxrx add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
     sql(s"alter table tb_xdr_ifc_mw add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
-    sql(s"alter table tb_xdr_ifc_all add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
+    //sql(s"alter table tb_xdr_ifc_all add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR,m=$MIN)")
 
     if ("lte".equals(interfaces)) {
       sql(s"use $DCL")
@@ -399,7 +423,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |,other_tac_s
            |,other_eci_s
            |,apn_s
-           |,epsbearernumber
+           |,eps_bearer_number_s
            |,bearer0id
            |,bearer0type
            |,bearer0qci
@@ -529,7 +553,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |,bearer15enbgtpteid
            |,bearer15sgwgtpteid
            |from tb_xdr_ifc_s1mme_cache
-           |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
+           |where  start_time_s>=$startTime and start_time_s<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
         .parquet(s"$DDBDIR/tb_xdr_ifc_s1mme/dt=$ANALY_DATE/h=$ANALY_HOUR/m=$MIN")
     } else if ("sv".equals(interfaces)) {
@@ -537,45 +561,45 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
       sql(
         s"""
            |select
-           |length_s
-           |,city_s
-           |,interface_s
-           |,xdr_id_s
-           |,rat_s
-           |,imsi_s
-           |,imei_s
-           |,msisdn_s
-           |,procedure_type_s
-           |,procedure_start_time_s
-           |,procedure_end_time_s
-           |,source_ne_ip_s
-           |,source_ne_port_s
-           |,dest_ne_ip_s
-           |,dest_ne_port_s
-           |,roam_direction_s
-           |,home_mcc_s
-           |,home_mnc_s
-           |,mcc_s
-           |,mnc_s
-           |,target_lac_s
-           |,source_tac_s
-           |,source_eci_s
-           |,sv_flags_s
-           |,ul_c_msc_ip_s
-           |,dl_c_mme_ip_s
-           |,ul_c_msc_teid_s
-           |,dl_c_mme_teid_s
-           |,stn_sr_s
-           |,target_rnc_id_s
-           |,target_cell_id_s
-           |,arp_s
-           |,request_result_s
-           |,result_s
-           |,sv_cause_s
-           |,post_failure_cause_s
-           |,resp_delay_s
-           |,sv_delay_s
-           |,rangetime
+           |length
+           |,city
+           |,interface
+           |,xdrid
+           |,rat
+           |,imsi
+           |,imei
+           |,msisdn
+           |,proceduretype
+           |,procedurestarttime
+           |,procedureendtime
+           |,sourceneip
+           |,sourceneport
+           |,destneip
+           |,destneport
+           |,roamdirection
+           |,homemcc
+           |,homemnc
+           |,mcc
+           |,mnc
+           |,targetlac
+           |,sourcetac
+           |,sourceeci
+           |,svflags
+           |,ulcmscip
+           |,dlcmmeip
+           |,ulcmscteid
+           |,dlcmmeteid
+           |,stnsr
+           |,targetrncid
+           |,targetcellid
+           |,arp
+           |,requestresult
+           |,result
+           |,svcause
+           |,postfailurecause
+           |,respdelay
+           |,svdelay
+           |rangetime
            |from tb_xdr_ifc_sv_cache
            |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
@@ -623,7 +647,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |,destination_ne_port_s
            |,qci_s
            |from tb_xdr_ifc_gxrx_cache
-           |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
+           |where  procedure_start_time_s>=$startTime and procedure_start_time_s<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
         .parquet(s"$DDBDIR/tb_xdr_ifc_gxrx/dt=$ANALY_DATE/h=$ANALY_HOUR/m=$MIN")
     } else if ("mw".equals(interfaces)) {
@@ -714,7 +738,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |,enb_ip_s
            |,egw_ip_s
            |from tb_xdr_ifc_mw_cache
-           |where  procedurestarttime>=$startTime and procedurestarttime<$endTime
+           |where  procedure_start_time_s>=$startTime and procedure_start_time_s<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
         .parquet(s"$DDBDIR/tb_xdr_ifc_mw/dt=$ANALY_DATE/h=$ANALY_HOUR/m=$MIN")
     }
