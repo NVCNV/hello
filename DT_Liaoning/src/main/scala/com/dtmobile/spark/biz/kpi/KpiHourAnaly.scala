@@ -1298,7 +1298,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
       s"""
          |select t11.* from volte_gt_user_ana_base60_tmp t11 inner join
          |(select distinct(cellid) from $DDB.ltecell) t12 on t11.cellid=t12.cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def cellHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -2513,7 +2513,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
         s"""
            |select t11.* from volte_gt_cell_ana_base60_tmp t11 inner join
            |(select distinct(cellid) from $DDB.ltecell) t12 on t11.cellid=t12.cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
   def mrImsiHourAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -3375,7 +3375,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	temp_kpi
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
 }
