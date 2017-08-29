@@ -1182,10 +1182,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltemctimey,
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
-         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE !=1
+         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 0
          |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
          |0 AS volteanswer,
-         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 1
+         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 1
          |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
@@ -2402,10 +2402,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltemctimey,
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
-         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE !=1
+         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE =0
          |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
          |0 AS volteanswer,
-         |count(case when Interface = 26 and ProcedureType = 3 and MEDIATYPE = 1
+         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 1
          |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
