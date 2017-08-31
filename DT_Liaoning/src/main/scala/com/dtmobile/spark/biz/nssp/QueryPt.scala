@@ -105,6 +105,7 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
         sparkSession.sqlContext.cacheTable("tb_xdr_ifc_mw_cache")
       }
     }else  if ("12".equals(MIN)) {
+      startTime = endTime
       endTime = endTime + 600000
     }else{
       startTime = endTime
@@ -423,135 +424,167 @@ class QueryPt(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DCL: String, 
            |,other_tac_s
            |,other_eci_s
            |,apn_s
-           |,eps_bearer_number_s
+           |,epsbearernumber
            |,bearer0id
            |,bearer0type
            |,bearer0qci
            |,bearer0status
-           |,bearer0requestcause
-           |,bearer0failurecause
-           |,bearer0enbgtpteid
-           |,bearer0sgwgtpteid
+           |,bearer0requestcauseg
+           |,bearer0requestcauses
+           |,bearer0failurecauseg
+           |,bearer0failurecauses
+           |,bearer0enbteid
+           |,bearer0sgwteid
            |,bearer1id
            |,bearer1type
            |,bearer1qci
            |,bearer1status
-           |,bearer1requestcause
-           |,bearer1failurecause
-           |,bearer1enbgtpteid
-           |,bearer1sgwgtpteid
+           |,bearer1requestcauseg
+           |,bearer1requestcauses
+           |,bearer1failurecauseg
+           |,bearer1failurecauses
+           |,bearer1enbteid
+           |,bearer1sgwteid
            |,bearer2id
            |,bearer2type
            |,bearer2qci
            |,bearer2status
-           |,bearer2requestcause
-           |,bearer2failurecause
-           |,bearer2enbgtpteid
-           |,bearer2sgwgtpteid
+           |,bearer2requestcauseg
+           |,bearer2requestcauses
+           |,bearer2failurecauseg
+           |,bearer2failurecauses
+           |,bearer2enbteid
+           |,bearer2sgwteid
            |,bearer3id
            |,bearer3type
            |,bearer3qci
            |,bearer3status
-           |,bearer3requestcause
-           |,bearer3failurecause
-           |,bearer3enbgtpteid
-           |,bearer3sgwgtpteid
+           |,bearer3requestcauseg
+           |,bearer3requestcauses
+           |,bearer3failurecauseg
+           |,bearer3failurecauses
+           |,bearer3enbteid
+           |,bearer3sgwteid
            |,bearer4id
            |,bearer4type
            |,bearer4qci
            |,bearer4status
-           |,bearer4requestcause
-           |,bearer4failurecause
-           |,bearer4enbgtpteid
-           |,bearer4sgwgtpteid
+           |,bearer4requestcauseg
+           |,bearer4requestcauses
+           |,bearer4failurecauseg
+           |,bearer4failurecauses
+           |,bearer4enbteid
+           |,bearer4sgwteid
            |,bearer5id
            |,bearer5type
            |,bearer5qci
            |,bearer5status
-           |,bearer5requestcause
-           |,bearer5failurecause
-           |,bearer5enbgtpteid
-           |,bearer5sgwgtpteid
+           |,bearer5requestcauseg
+           |,bearer5requestcauses
+           |,bearer5failurecauseg
+           |,bearer5failurecauses
+           |,bearer5enbteid
+           |,bearer5sgwteid
            |,bearer6id
            |,bearer6type
            |,bearer6qci
            |,bearer6status
-           |,bearer6requestcause
-           |,bearer6failurecause
-           |,bearer6enbgtpteid
-           |,bearer6sgwgtpteid
+           |,bearer6requestcauseg
+           |,bearer6requestcauses
+           |,bearer6failurecauseg
+           |,bearer6failurecauses
+           |,bearer6enbteid
+           |,bearer6sgwteid
            |,bearer7id
            |,bearer7type
            |,bearer7qci
            |,bearer7status
-           |,bearer7requestcause
-           |,bearer7failurecause
-           |,bearer7enbgtpteid
-           |,bearer7sgwgtpteid
+           |,bearer7requestcauseg
+           |,bearer7requestcauses
+           |,bearer7failurecauseg
+           |,bearer7failurecauses
+           |,bearer7enbteid
+           |,bearer7sgwteid
            |,bearer8id
            |,bearer8type
            |,bearer8qci
            |,bearer8status
-           |,bearer8requestcause
-           |,bearer8failurecause
-           |,bearer8enbgtpteid
-           |,bearer8sgwgtpteid
+           |,bearer8requestcauseg
+           |,bearer8requestcauses
+           |,bearer8failurecauseg
+           |,bearer8failurecauses
+           |,bearer8enbteid
+           |,bearer8sgwteid
            |,bearer9id
            |,bearer9type
            |,bearer9qci
            |,bearer9status
-           |,bearer9requestcause
-           |,bearer9failurecause
-           |,bearer9enbgtpteid
-           |,bearer9sgwgtpteid
+           |,bearer9requestcauseg
+           |,bearer9requestcauses
+           |,bearer9failurecauseg
+           |,bearer9failurecauses
+           |,bearer9enbteid
+           |,bearer9sgwteid
            |,bearer10id
            |,bearer10type
            |,bearer10qci
            |,bearer10status
-           |,bearer10requestcause
-           |,bearer10failurecause
-           |,bearer10enbgtpteid
-           |,bearer10sgwgtpteid
+           |,bearer10requestcauseg
+           |,bearer10requestcauses
+           |,bearer10failurecauseg
+           |,bearer10failurecauses
+           |,bearer10enbteid
+           |,bearer10sgwteid
            |,bearer11id
            |,bearer11type
            |,bearer11qci
            |,bearer11status
-           |,bearer11requestcause
-           |,bearer11failurecause
-           |,bearer11enbgtpteid
-           |,bearer11sgwgtpteid
+           |,bearer11requestcauseg
+           |,bearer11requestcauses
+           |,bearer11failurecauseg
+           |,bearer11failurecauses
+           |,bearer11enbteid
+           |,bearer11sgwteid
            |,bearer12id
            |,bearer12type
            |,bearer12qci
            |,bearer12status
-           |,bearer12requestcause
-           |,bearer12failurecause
-           |,bearer12enbgtpteid
-           |,bearer12sgwgtpteid
+           |,bearer12requestcauseg
+           |,bearer12requestcauses
+           |,bearer12failurecauseg
+           |,bearer12failurecauses
+           |,bearer12enbteid
+           |,bearer12sgwteid
            |,bearer13id
            |,bearer13type
            |,bearer13qci
            |,bearer13status
-           |,bearer13requestcause
-           |,bearer13failurecause
-           |,bearer13enbgtpteid
-           |,bearer13sgwgtpteid
+           |,bearer13requestcauseg
+           |,bearer13requestcauses
+           |,bearer13failurecauseg
+           |,bearer13failurecauses
+           |,bearer13enbteid
+           |,bearer13sgwteid
            |,bearer14id
            |,bearer14type
            |,bearer14qci
            |,bearer14status
-           |,bearer14requestcause
-           |,bearer14failurecause
-           |,bearer14enbgtpteid
-           |,bearer14sgwgtpteid
+           |,bearer14requestcauseg
+           |,bearer14requestcauses
+           |,bearer14failurecauseg
+           |,bearer14failurecauses
+           |,bearer14enbteid
+           |,bearer14sgwteid
            |,bearer15id
            |,bearer15type
            |,bearer15qci
            |,bearer15status
-           |,bearer15requestcause
-           |,bearer15failurecause
-           |,bearer15enbgtpteid
-           |,bearer15sgwgtpteid
+           |,bearer15requestcauseg
+           |,bearer15requestcauses
+           |,bearer15failurecauseg
+           |,bearer15failurecauses
+           |,bearer15enbteid
+           |,bearer15sgwteid
            |from tb_xdr_ifc_s1mme_cache
            |where  start_time_s>=$startTime and start_time_s<$endTime
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
