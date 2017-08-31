@@ -5,6 +5,7 @@ DDB=$1
 hive<<EOF
 create database if not exists ${DDB};
 use ${DDB};
+
 drop table if exists tb_xdr_ifc_s1mme;
 CREATE TABLE if not exists tb_xdr_ifc_s1mme(
   length_s int,
