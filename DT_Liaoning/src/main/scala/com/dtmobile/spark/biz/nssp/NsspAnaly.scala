@@ -7,7 +7,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * NsspAnaly
   *
   * @author heyongjin
-  * @create 2017/03/02 10:36
+  * @ create 2017/03/02 10:36
   *
   **/
 class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String) {
@@ -384,7 +384,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |)
          |)s1
          |on lte.mmeues1apid=s1.mmeues1apid and lte.mmegroupid=s1.mmegroupid and lte.mmecode=s1.mmecode
-         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1 and (lte.mrtime !="" or lte.mrtime  is not null or lte.mrtime != null)
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
@@ -499,7 +499,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |MRTIME
          |FROM
          |$SDB.lte_mro_source
-         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0'
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0' and (MRTIME !="" or MRTIME  is not null or MRTIME != null)
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
