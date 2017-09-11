@@ -729,7 +729,7 @@ create table CELL_LTEMRKPITEMP(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
-drop tbale LTE_MRO_OVERLAP_B_ANA60;
+drop table LTE_MRO_OVERLAP_B_ANA60;
 create table LTE_MRO_OVERLAP_B_ANA60(
    STARTTIME   string,
    ENDTIME   string,
@@ -895,6 +895,8 @@ create table CELL_LTEMRKPI60(
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+
+drop table LTE_MRO_DISTURB_SEC;
  create table LTE_MRO_DISTURB_SEC
 (
   ID         int ,
@@ -988,7 +990,7 @@ ROW FORMAT DELIMITED
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
 
-
+drop table lte_mro_disturb_ana;
 CREATE TABLE lte_mro_disturb_ana(
   id int, 
   starttime string, 
@@ -1017,7 +1019,9 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
-  
+
+
+  drop table lte_mro_disturb_mix;
   CREATE TABLE lte_mro_disturb_mix(
   id int, 
   starttime string, 
@@ -1049,7 +1053,9 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
-  
+
+
+drop table lte_mro_adjcover_ana60;
 CREATE TABLE lte_mro_adjcover_ana60(
   id int, 
   starttime string, 
@@ -1069,6 +1075,8 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ',' ;
 
+
+drop table LTE_MRO_SOURCE_TMP;
 create table LTE_MRO_SOURCE_TMP
 (
   OBJECTID               int ,
@@ -1122,8 +1130,9 @@ create table LTE_MRO_SOURCE_TMP
   h string)
 ROW FORMAT DELIMITED 
   FIELDS TERMINATED BY ','  ;
-  
-    create table LTE_MRO_DISTURB_SEC
+
+drop table LTE_MRO_DISTURB_SEC;
+create table LTE_MRO_DISTURB_SEC
 (
   ID         int ,
   STARTTIME  string ,
@@ -1217,8 +1226,8 @@ ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',' ;
 
 
-
-  CREATE TABLE lte_mro_disturb_mix(
+drop table lte_mro_disturb_mix;
+CREATE TABLE lte_mro_disturb_mix(
   id int, 
   starttime string, 
   endtime string, 

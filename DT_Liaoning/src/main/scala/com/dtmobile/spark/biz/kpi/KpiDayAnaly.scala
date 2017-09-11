@@ -86,6 +86,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_user_ana_baseday/dt=$ANALY_DATE")
   }
 
+
   def cellDayAnalyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     sql(s"use $DDB")
@@ -147,7 +148,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |where dt=$ANALY_DATE
          |GROUP BY
          |	cellid
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/volte_gt_cell_ana_baseday/dt=$ANALY_DATE")
   }
 
   def mrImsiDayAnalyse(implicit sparkSession: SparkSession): Unit = {
@@ -230,7 +231,7 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |GROUP BY
          |	cellid,
          | dir_state
-       """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_baseday/dt=$ANALY_DATE")
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/mr_gt_cell_ana_baseday/dt=$ANALY_DATE")
   }
 
 

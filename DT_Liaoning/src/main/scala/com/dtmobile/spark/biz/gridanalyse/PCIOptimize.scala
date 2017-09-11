@@ -52,8 +52,9 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
     val t2 = sql("select operator,value from ltepci_degree_condition where field = 'adjcellrsrpeffectiveth'").collectAsList()
     val adjRsrpthresh = t2.get(0).getString(0)+" "+t2.get(0).getAs("value")
     sql(s"use $DDB")
-    sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 drop if  exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
-    sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 add  partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
+    sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)""".stripMargin)
+    sql(s"""alter table LTE_MRO_DISTURB_PRETREATE60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)"""
+      .stripMargin)
     val selectSql=s"""select
                       |       t.startTime, t.endTime, t.timeseq,
                       |        t.mmecode, t.enbid, t.cellid,t2.cellname,

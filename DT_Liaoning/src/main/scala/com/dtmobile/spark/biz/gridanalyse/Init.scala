@@ -13,11 +13,11 @@ import org.apache.spark.sql.SparkSession
 class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warhouseDir: String,ORCAL: String,sourceDir:String) {
 
   val oracle:String = "jdbc:oracle:thin:@"+ORCAL
-  val cal_date = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + s"$ANALY_HOUR:00:00"
+  val cal_date:String = ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " " + s"$ANALY_HOUR:00:00"
 
 
   var currentDate:String= ANALY_DATE
-  val currentHour = ANALY_HOUR.toInt
+  val currentHour:Int = ANALY_HOUR.toInt
   var nextHour = ""
   if( 0<=currentHour && currentHour<9 ){
     nextHour = "0"+currentHour.+(1)
@@ -30,7 +30,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
     currentDate=ANALY_DATE.substring(0, 4) + "-" + ANALY_DATE.substring(4).substring(0,2) + "-" + ANALY_DATE.substring(6) + " "
   }
 
-  val cal_date2= currentDate+nextHour+":00:00"
+  val cal_date2:String= currentDate+nextHour+":00:00"
 
   def analyse(implicit sparkSession: SparkSession): Unit = {
     InitLteCell(sparkSession)
@@ -123,7 +123,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
            |SELECT x1.OBJECTID as objectid, x1.VID as vid,
          | '$cal_date' as starttime,
          | '$cal_date2' as endtime,
-         |from_unixtime(cast(round(mrtime /1000) as bigint),'HH') as timeseq
+         |  '$ANALY_HOUR' as timeseq
          |, x1.ENBID as enbid, x1.MRNAME as mrname, x1.CELLID as cellid, x1.MMEUES1APID as mmeues1apid, x1.MMEGROUPID as mmegroupid
          |, x1.MMECODE as mmecode, x1.MEATIME as meatime, x2.gridcenterlongitude,x2.gridcenterlatitude, x1.KPI1 as kpi1
          |, x1.KPI2 as kpi2, x1.KPI3 as kpi3, x1.KPI4 as kpi4, x1.KPI5 as kpi5, x1.KPI6 as kpi6
@@ -288,7 +288,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
     val dateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd")
     val date = dateFormat.parse(dt)
     val cal: Calendar = Calendar.getInstance()
-    cal.setTime(date);
+    cal.setTime(date)
     cal.add(Calendar.DATE, - 1)
     val yesterday = dateFormat.format(cal.getTime())
     yesterday

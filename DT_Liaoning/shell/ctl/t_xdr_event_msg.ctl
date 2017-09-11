@@ -1,4 +1,3 @@
-OPTIONS(SKIP=1)
 LOAD DATA
 characterset UTF8
 APPEND INTO TABLE t_xdr_event_msg

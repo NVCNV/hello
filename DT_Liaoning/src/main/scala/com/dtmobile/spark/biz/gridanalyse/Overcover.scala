@@ -70,10 +70,8 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
     if (t6.size() > 0) {
       AdjStrongDisturbRateThreshold = t6.get(0).getDecimal(0).doubleValue()*100
     }
-
     sql(
-      s"""
-        |alter table ${DDB}.lte_mrs_overcover_ana60 add if not exists partition(dt=${ANALY_DATE},h=${ANALY_HOUR})
+      s"""alter table $DDB.lte_mrs_overcover_ana60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
       """.stripMargin)
     sql(
       s"""
@@ -101,36 +99,35 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |t2.ADJENODEBID,t2.adjcellID, t2.adjcellname, t.kpi11, t.kpi12
        """.stripMargin).createOrReplaceTempView("LTE_MRS_OVERCOVER_TEMP")
 
-  /*
+
     SparkSession.sql(
       s"""select s1.STARTTIME,s1.ENDTIME,s1.TIMESEQ,s1.MMEGROUPID,s1.MMEID,s1.ENODEBID,s1.CELLID,s2.tcellid,s1.TCELLPCI,
          |s1.TCELLFREQ,s1.RSRPDIFABS,s1.RSRPDifCount,
-         |s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERE,
-         |s1.overlapDisturbRSRPDIF,s1.adjeffectRSRPCount,s1.CELLFREQ,s1.CELLNAME,s1.TMMEGROUPID,
+         |s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.adjacentareainterferenceintens,
+         |s1.overlapDisturbRSRPDIFCount,s1.adjeffectRSRPCount,s1.CELLFREQ,s1.CELLNAME,s1.TMMEGROUPID,
          |s1.TMMEID,s2.tenbid,s1.TCELLNAME,s1.disturbMrNum,s1.disturbAvalableNum
          |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
+/*    SparkSession.sql(
+      s"""select s1.STARTTIME,s1.ENDTIME,s1.TIMESEQ,s1.MMEGROUPID,s1.MMEID,s1.ENODEBID,s1.CELLID,s2.tcellid,s1.TCELLPCI,
+          |s1.TCELLFREQ,s1.RSRPDIFABS,s1.RSRPDifCount,
+          |s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERE,
+          |s1.overlapDisturbRSRPDIF,s1.adjeffectRSRPCount,s1.CELLFREQ,s1.CELLNAME,s1.TMMEGROUPID,
+          |s1.TMMEID,s2.tenbid,s1.TCELLNAME,s1.disturbMrNum,s1.disturbAvalableNum
+          |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")*/
 
 
-    SparkSession.sql(
+
+/*    SparkSession.sql(
       s"""select s1.STARTTIME, s1.ENDTIME, s1.TIMESEQ, s1.MMEID, s1.ENODEBID, s1.CELLID, s1.CELLPCI,s1.CELLFREQ,s1.CELLNAME,
          |s1.TMMEGROUPID,s1.TMMEID,s2.tenbid,s2.tcellid, s1.TCELLNAME,s1.TCELLPCI, s1.TCELLFREQ,
          |s1.RSRPDIFABS ,s1.RSRPDifCount, s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERENCEINTENS,
          |s1.overlapDisturbRSRPDIFCount,s1.adjeffectRSRPCount,s1.disturbMrNum,s1.disturbAvalableNum
          |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
-        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")*/
   }
 
 
-
-
-
-//    SparkSession.sql(
-//      s"""select s1.STARTTIME, s1.ENDTIME, s1.TIMESEQ, s1.MMEID, s1.ENODEBID, s1.CELLID, s1.CELLPCI,s1.CELLFREQ,s1.CELLNAME,
-//         |s1.TMMEGROUPID,s1.TMMEID,s2.tenbid,s2.tcellid, s1.TCELLNAME,s1.TCELLPCI, s1.TCELLFREQ,
-//         |s1.RSRPDIFABS ,s1.RSRPDifCount, s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.ADJACENTAREAINTERFERENCEINTENS,
-//         |s1.overlapDisturbRSRPDIFCount,s1.adjeffectRSRPCount,s1.disturbMrNum,s1.disturbAvalableNum
-//         |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
-//        """.stripMargin).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save (s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
-//  }
 }

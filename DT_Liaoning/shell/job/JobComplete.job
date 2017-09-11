@@ -1,4 +1,4 @@
 # JobComplete.job
 type=command
 dependencies=ExceptionAanaly
-command=echo "job complete!!!"
+command=sh /dt/bin/asynimportData.sh ${ANALY_DATE} ${ANALY_HOUR}

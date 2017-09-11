@@ -2,7 +2,7 @@ package com.dtmobile.spark.job
 
 import com.dtmobile.spark.Analyse
 import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly, KpibusinessDayAnaly, KpibusinessHourAnaly}
-import com.dtmobile.spark.biz.nssp.NsspAnaly
+import com.dtmobile.spark.biz.nssp.{NsspAnaly, QueryPt, SplitData}
 import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 import com.dtmobile.spark.biz.businessexception.businessexception
@@ -32,34 +32,42 @@ class AnalyJob(args: Array[String]) extends Analyse {
 
     val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
     val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
-
+    val queryPt = new QueryPt(args(0), args(1), args(2), args(3) ,"gelq", "/user/hive/warehouse/gelq.db")
     nsspAnaly.analyse
     kpibusinessHourAnaly.analyse
     kpiHourAnaly.analyse
     exception.analyse
     typedetail.analyse
+    queryPt.analyse
 
 
-//    val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5))
-//    val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
-//    val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
-//    val disturbMixAna =new DisturbMixAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
-//    val disturbSecAna =new DisturbSecAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
-//    val lteMroAdjCoverAna =new LteMroAdjCoverAna(args(0), args(1),"1",args(2),args(3),warhouseDir)
-//    val pCIOptimize = new PCIOptimize(args(0), args(1), args(2), args(3), warhouseDir)
-//    val weakcover = new Weakcover(args(0), args(1), args(2), args(3), warhouseDir)
-//    val gridCover = new GridCover(args(0), args(1), args(2), args(3), warhouseDir)
-//
-//
-//     init.analyse
-//     overcover.analyse
-//     disturbAnalysis.analyse
-//     disturbMixAna.analyse
-//     disturbSecAna.analyse
-//     lteMroAdjCoverAna.analyse
-//    pCIOptimize.analyse
-//    weakcover.analyse
-//    gridCover.analyse
+   /* val splitData = new SplitData(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+
+    splitData.analyse*/
+
+
+
+
+   /* val init = new Init(args(0), args(1), args(2), args(3),warhouseDir,args(5),sourceDir)
+    val overcover =new Overcover(args(0), args(1), args(2), args(3),warhouseDir)
+    val disturbAnalysis =new  DisturbAnalysis(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val disturbMixAna =new DisturbMixAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val disturbSecAna =new DisturbSecAna(args(0), args(1),"1","1",args(2),args(3),warhouseDir)
+    val lteMroAdjCoverAna =new LteMroAdjCoverAna(args(0), args(1),"1",args(2),args(3),warhouseDir)
+    val pCIOptimize = new PCIOptimize(args(0), args(1), args(2), args(3), warhouseDir)
+    val weakcover = new Weakcover(args(0), args(1), args(2), args(3), warhouseDir)
+    val gridCover = new GridCover(args(0), args(1), args(2), args(3), warhouseDir)
+
+
+     init.analyse
+     overcover.analyse
+     disturbAnalysis.analyse
+     disturbMixAna.analyse
+     disturbSecAna.analyse
+     lteMroAdjCoverAna.analyse
+     pCIOptimize.analyse
+     weakcover.analyse
+     gridCover.analyse*/
 
 
 ////伪基站
@@ -74,6 +82,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
       fAnaly.analyse
     }
 */
+
     if("03".equals(args(1))){
     val kpiDayAnALY = new KpiDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
       val kpibusinessDayAnaly = new KpibusinessDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)

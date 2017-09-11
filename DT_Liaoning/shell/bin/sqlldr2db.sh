@@ -1,18 +1,17 @@
-#!/bin/bash
-export ORALCE_HOME=/opt/app/oracle
-export LD_LIBRARY_PATH=$ORACLE_HOME/lib
-export PATH=$PATH:$LD_LIBRARY_PATH
+#!/bash
 TAKING_DATE=$1
 TAKING_HOUR=$2
+HIVEDB=$3
+ORACLEDB=$4
 mypath="$(cd "$(dirname "$0")"; pwd)"
 cd $mypath
-HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/dcl.db"
-DB_ADDR="userid=scott/tiger@umorpho602"
+HDFS_ADDR="hdfs://dtcluster/user/hive/warehouse/${HIVEDB}.db"
+DB_ADDR="userid=scott/tiger@${ORACLEDB}"
 HIVE_TBLES="business_type_detail cell_hour_http imsi_cell_hour_http mr_gt_cell_ana_base60 mr_gt_user_ana_base60 sgw_hour_http sp_hour_http t_xdr_event_msg tac_hour_http volte_gt_cell_ana_base60 volte_gt_user_ana_base60 zc_city_data"
 
-LOCALDIR="/dt/bin/data"
-CTLDIR="/dt/bin/ctl"
-LOG_DIR=/dt/bin/sqlldrLog
+LOCALDIR="/dt/tmpdata"
+CTLDIR="/dt/ctl"
+LOG_DIR="/dt/sqlldrLog"
 
 rm -rf ${LOCALDIR}/$TAKING_DATE
 mkdir ${LOCALDIR}/$TAKING_DATE
@@ -23,7 +22,7 @@ do
 mkdir -p ${LOG_DIR}/${tableName}/${TAKING_DATE}/${TAKING_HOUR}
 echo "get from ${HDFS_ADDR}/${tableName}/dt=${TAKING_DATE}/h=${TAKING_HOUR}/* to ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}"
 hdfs dfs -getmerge ${HDFS_ADDR}/${tableName}/dt=${TAKING_DATE}/h=${TAKING_HOUR}/* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}.dat
-sqlldr ${DB_ADDR} control=${CTLDIR}/${tableName}.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}.dat log=/dt/bin/sqlldrLog/${tableName}/${TAKING_DATE}/${TAKING_HOUR}
+sqlldr ${DB_ADDR} control=${CTLDIR}/${tableName}.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/${tableName}.dat log=/dt/sqlldrLog/${tableName}/${TAKING_DATE}/${TAKING_HOUR}
 done
 
 mkdir -p ${LOG_DIR}/t_event_msg/${TAKING_DATE}/${TAKING_HOUR}
