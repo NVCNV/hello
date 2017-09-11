@@ -83,7 +83,7 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
           sum(case when t1.kpi7>=0 and ABS(360-t1.kpi7/2-t3.azimuth)$azimuthOp$azimuthTh  then 1 else 0 end) as AOAdeviates
           from lte_mro_source_ana_tmp t1
           left join Mr_InDoorAna_Temp t2 on t1.enbid = t2.enbid and t1.cellid = t2.cellid and t1.MMEUES1APID = t2.MMEUES1APID
-          left join  ltecell t3 on t1.cellid=t3.cellid   and t1.mrname='MR.LteScRSRP' and t1.vid = 0
+          left join  ltecell t3 on t1.cellid=t3.cellid   and t1.mrname='MR.LteScRSRP' and t1.vid = 1
           group by t1.startTime, t1.endTime, t1.timeseq,t1.enbID, t1.cellid
           """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
@@ -99,17 +99,17 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
                      sum(case when t.kpi1>0  and  t.kpi1 -141$poorRSRPOp$poorRSRPTh then 1 else 0 end) as poolCoverCount,
                      sum(case when t.kpi1>0  and  t.kpi1 -141$goodRSRPOp$goodRSRP then 1 else 0 end) as goodCoverCount
                      from lte_mro_source_ana_tmp t
-                     where t.mmeues1apId>0 and t.mrname='MR.LteScRSRP'and vid = 0
+                     where t.mmeues1apId>0 and t.mrname='MR.LteScRSRP'and vid = 1
                      group by t.startTime, t.endTime, t.timeseq, t.mmegroupid,t.mmecode, t.enbID, t.cellid, t.mmeues1apId) s1
                      left join (select t2.mmegroupid,t2.MmeCode as mmeid,
                      t2.cellID as cellid, t2.MmeUeS1apId as mmeues1apId, t2.kpi1 -141 as rsrp
                      from (SELECT mmegroupid,cellid,mmeues1apId,MmeCode,avg(kpi1)kpi1 FROM lte_mro_source_ana_tmp l
                      WHERE 1 = 1 and l.mrname='MR.LteScRSRP'
                      and l.MmeUeS1apId>0 and l.kpi1>=0
-                     and l.startTime is not null and vid = 0 group by mmegroupid,cellid,MmeCode,MmeUeS1apId) t2 ) s2
+                     and l.startTime is not null and vid = 1 group by mmegroupid,cellid,MmeCode,MmeUeS1apId) t2 ) s2
                      on s1.mmegroupid = s2.mmegroupid and s1.cellid = s2.cellid and s1.mmeues1apId = s2.mmeues1apId
                      left join (SELECT startTime,endTime,timeseq,enbID,cellid,SUM (CASE WHEN kpi1>=0 THEN 1 ELSE  0  END) as CELLMRCOUNT
-                     from lte_mro_source_ana_tmp where mrname='MR.LteScRSRP'and vid = 0 GROUP BY startTime,endTime,timeseq,enbID,cellid ) s3 ON s1.startTime = s3.startTime
+                     from lte_mro_source_ana_tmp where mrname='MR.LteScRSRP'and vid = 1 GROUP BY startTime,endTime,timeseq,enbID,cellid ) s3 ON s1.startTime = s3.startTime
                      AND s1.endTime = s3.endTime AND s1.timeseq = s3.timeseq AND s1.enodebid = s3.enbid AND s1.cellid = s3.cellid
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mro_joinuser_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }

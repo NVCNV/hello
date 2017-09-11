@@ -191,7 +191,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          | FROM lte_mro_source_ana_tmp t
          | WHERE t.mmeues1apId > 0
          |  AND t.mrname = 'MR.LteScRSRP'
-         |  AND vid = 0
+         |  AND vid = 1
          | GROUP BY t.enbID, t.cellid, t.mmeues1apId
          | )t1
          """.stripMargin).createOrReplaceTempView("Mr_InDoorAna_Temp")
