@@ -48,7 +48,7 @@ sql(
      |users2 as maxusers from
      |(select cellid,max(users1) users2 from
      |  (
-     |select cellid,hours,max(users) users1
+     |select cellid,hours,max(sub_users_peak) users1
      |  from $DDB.gt_pulse_cell_base60
      |  where dt="$ANALY_DATE" group by cellid,hours
      |  ) t
