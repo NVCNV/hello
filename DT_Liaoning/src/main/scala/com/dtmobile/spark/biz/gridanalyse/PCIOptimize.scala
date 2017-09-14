@@ -71,7 +71,7 @@ class PCIOptimize(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Stri
                       |		and kpi1>=0 and kpi2>=0 and kpi1-141 $sRsrpLap
                       |        and kpi2-141 $adjRsrpthresh) T
                       |        left join lte2lteadj_pci T2 on T.cellId = T2.cellid and T2.adjpci = T.kpi12 and T2.adjfreq1 = T.kpi11
-                      |		left join fill_tenbid_tcellid  f where f.cellid=t.cellid
+                      |		left join fill_tenbid_tcellid  f on f.cellid=t.cellid and T.kpi12=f.pci and f.freq1=T.kpi11
                       |        group by t.startTime, t.endTime, t.timeseq,t.mmecode, t.enbid, t.cellid, t2.cellname,t2.adjenodebid,
                       |        t2.adjcellID, t2.adjcellname,t.kpi11, t.kpi12,t.kpi9, t.kpi10""".stripMargin
 
