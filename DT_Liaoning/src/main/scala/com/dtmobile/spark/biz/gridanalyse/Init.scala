@@ -191,7 +191,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          | FROM lte_mro_source_ana_tmp t
          | WHERE t.mmeues1apId > 0
          |  AND t.mrname = 'MR.LteScRSRP'
-         |  AND vid = 0
+         |  AND vid = 1
          | GROUP BY t.enbID, t.cellid, t.mmeues1apId
          | )t1
          """.stripMargin).createOrReplaceTempView("Mr_InDoorAna_Temp")
@@ -276,7 +276,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
          |select t.cellid as cellid,a.cellid as tcellid,a.enodebid as tenbid,a.freq1,a.pci,a.latitude as alatitude,
          |(POWER(ABS(a.LATITUDE-t.latitude), 2) + POWER(ABS(a.LONGITUDE-t.longitude), 2)) as d,
          |a.longitude as alongitude,t.latitude as tlatitude,t.longitude as tlongitude
-         |from LTECell t,ltecell a where t.cellid!=a.cellid and t.freq1=a.freq1 and t.pci=a.pci
+         |from LTECell t,ltecell a where t.cellid!=a.cellid
          |)
          |) where rank = 1
      """.stripMargin).createOrReplaceTempView("fill_tenbid_tcellid")
