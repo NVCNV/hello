@@ -414,6 +414,7 @@ PARTITIONED BY (
   m string)
    STORED AS PARQUET;
 
+
 drop table if exists tb_xdr_ifc_gxrx;
 CREATE TABLE if not exists tb_xdr_ifc_gxrx(
   length_s int,
