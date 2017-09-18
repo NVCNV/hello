@@ -2,7 +2,7 @@ package com.dtmobile.spark.job
 
 import com.dtmobile.spark.Analyse
 import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly, KpibusinessDayAnaly, KpibusinessHourAnaly}
-import com.dtmobile.spark.biz.nssp.{NsspAnaly, QueryPt, SplitData}
+import com.dtmobile.spark.biz.nssp.{NsspAnaly, QueryPt}
 import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 import com.dtmobile.spark.biz.businessexception.businessexception
@@ -26,7 +26,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
   val onoff=args(7).toInt
 
   override def analyse(implicit sparkSession: SparkSession): Unit = {
-    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
+    val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir,args(5))
     val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
     val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir)
 
