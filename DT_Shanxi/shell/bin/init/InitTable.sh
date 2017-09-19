@@ -8435,7 +8435,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1mme';
 
@@ -8566,7 +8566,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/lte_mro_source';
 
@@ -8728,7 +8728,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_uu';
 
@@ -8789,7 +8789,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_x2';
 
@@ -8890,7 +8890,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_mw';
 
@@ -8942,7 +8942,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/gxrx';
 
@@ -9719,7 +9719,7 @@ PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sgs';
 
@@ -9781,12 +9781,12 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   eupordown int,
   railline string,
   echksvtype int,
-    etype int)
+  etype int)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';
 
