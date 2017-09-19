@@ -7773,6 +7773,7 @@ CREATE TABLE volte_gt_user_ana_base60(
   MSISDN                 string,
   CELLID                bigint,
   TTIME                  string,
+  RAILLINE               string,
   DIR_STATE             bigint,
   VOLTEMCSUCC           bigint,
   VOLTEMCATT            bigint,
@@ -7835,6 +7836,7 @@ CREATE TABLE volte_gt_user_ana_baseday(
   MSISDN                 string,
   CELLID                bigint,
   TTIME                  string,
+  RAILLINE               string,
   DIR_STATE             bigint,
   VOLTEMCSUCC           bigint,
   VOLTEMCATT            bigint,
@@ -8412,7 +8414,6 @@ CREATE external TABLE tb_xdr_ifc_s1mme_new(
  bearer5enbgtpteid int,
  bearer5sgwgtpteid int,
  rangetime string,
- etype int,
  gridid int,
  slong string,
  slat string,
@@ -8426,8 +8427,10 @@ CREATE external TABLE tb_xdr_ifc_s1mme_new(
  flag int,
  beforeflag int,
  eupordown int,
+ railline string,
  echk4gtype int,
- echk4g23type int)
+ echk4g23type int,
+ etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8544,7 +8547,6 @@ CREATE EXTERNAL TABLE lte_mro_source_new(
   tdsneighborcellnumber int,
   v_enb int,
   mrtime bigint,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8557,7 +8559,9 @@ CREATE EXTERNAL TABLE lte_mro_source_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+  etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8705,7 +8709,6 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   bearer5id int,
   bearer5status int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8718,7 +8721,9 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+  etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8765,7 +8770,6 @@ length int,
   bearer5id int,
   bearer5status int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8778,7 +8782,9 @@ length int,
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+   etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8865,7 +8871,6 @@ CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   cmsisdn string,
   ssi string,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8878,7 +8883,9 @@ CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+   etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8916,7 +8923,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   experimentalresultcode int,
   sessionreleasecause int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8929,7 +8935,9 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+  etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -9692,7 +9700,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   vlrnamelength int,
   vlrname string,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -9705,7 +9712,9 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string,
+  etype int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -9756,7 +9765,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   respdelay int,
   svdelay int,
   rangetime string,
-  etype int,
+
   gridid int,
   slong string,
   slat string,
@@ -9770,7 +9779,9 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   flag int,
   beforeflag int,
   eupordown int,
-  echksvtype int)
+  railline string,
+  echksvtype int,
+    etype int)
 PARTITIONED BY (
   dt string,
   h string)
