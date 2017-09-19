@@ -37,14 +37,14 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   def analyse(implicit SparkSession: SparkSession): Unit = {
     import SparkSession.sql
 
-    val t = sql("select operator,value from ltepci_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
+    val t = sql("select operator,value from ltecover_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
 
     if (t.size() > 0) {
       adjDisturbRSRPOp = t.get(0).getString(0)
       adjDisturbRSRP = t.get(0).getDecimal(0)
 
   }
-    val t1 = sql("select operator,value from ltepci_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
+    val t1 = sql("select operator,value from ltecover_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
     if (t1.size() > 0) {
       overcoveradjcellrsrpOp = t1.get(0).getString(0)
       overcoveradjcellrsrp = t1.get(0).getDecimal(0)
