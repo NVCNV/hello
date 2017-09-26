@@ -218,7 +218,7 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
       .load().createOrReplaceTempView("lte2lteadj")
 
     sc.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","ltecover_degree_condition")
+      .option("dbtable","(select  ID,FIELD,OPERATOR, CAST( to_char(value,'S999.999') AS float ) VALUE from ltecover_degree_condition ) T")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
