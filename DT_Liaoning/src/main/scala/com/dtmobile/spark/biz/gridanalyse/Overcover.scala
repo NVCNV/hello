@@ -37,14 +37,14 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
   def analyse(implicit SparkSession: SparkSession): Unit = {
     import SparkSession.sql
 
-    val t = sql("select operator,value from ltepci_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
+    val t = sql("select operator,value from ltecover_degree_condition where field = 'adjDisturbRSRP'").collectAsList()
 
     if (t.size() > 0) {
       adjDisturbRSRPOp = t.get(0).getString(0)
       adjDisturbRSRP = t.get(0).getDecimal(0)
 
   }
-    val t1 = sql("select operator,value from ltepci_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
+    val t1 = sql("select operator,value from ltecover_degree_condition where field = 'overcoveradjcellrsrpdvalue'").collectAsList()
     if (t1.size() > 0) {
       overcoveradjcellrsrpOp = t1.get(0).getString(0)
       overcoveradjcellrsrp = t1.get(0).getDecimal(0)
@@ -106,7 +106,7 @@ class Overcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
          |s1.MrCount,s1.CELLRSRPSum,s1.CELLRSRPCount,s1.TCELLRSRPSum,s1.TCELLRSRPCount,s1.adjacentareainterferenceintens,
          |s1.overlapDisturbRSRPDIFCount,s1.adjeffectRSRPCount,s1.CELLFREQ,s1.CELLNAME,s1.TMMEGROUPID,
          |s1.TMMEID,s2.tenbid,s1.TCELLNAME,s1.disturbMrNum,s1.disturbAvalableNum
-         |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid
+         |from LTE_MRS_OVERCOVER_TEMP s1 left join fill_tenbid_tcellid s2 on s1.cellid=s2.cellid and s1.TCELLPCI=s2.pci and s2.freq1=s1.TCELLFREQ
         """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_overcover_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
 /*    SparkSession.sql(

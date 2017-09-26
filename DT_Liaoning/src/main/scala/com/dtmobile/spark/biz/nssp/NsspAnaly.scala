@@ -5,12 +5,13 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
   * NsspAnaly
+  *x
   *
   * @author heyongjin
-  * @create 2017/03/02 10:36
+  * @ create 2017/03/02 10:36
   *
   **/
-class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String) {
+class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,localStr:String,warhouseDir:String,ORCAL: String) {
   def analyse(implicit sparkSession: SparkSession): Unit = {
     import sparkSession.sql
     //原始表初始化
@@ -249,6 +250,51 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/tb_xdr_ifc_uu/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
+    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+      .option("dbtable", "ltecell")
+      .option("user", "scott")
+      .option("password", "tiger")
+      .option("driver", "oracle.jdbc.driver.OracleDriver")
+      .load().registerTempTable("ltecell")
+
+    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+      .option("dbtable","lte2lteadj")
+      .option("user", "scott")
+      .option("password", "tiger")
+      .option("driver", "oracle.jdbc.driver.OracleDriver")
+      .load().registerTempTable("lte2lteadj")
+
+    sql(s"use $DDB")
+    sparkSession.udf.register("calcdis", (fLon:Float,fLat:Float,tLon:Float,tLat:Float)=>(2 * scala.math.asin(scala.math.sqrt(scala.math.pow(scala.math.sin((fLat*3.14159265/180 - tLat*3.14159265/180)/2),2) + scala.math.cos(fLat*3.14159265/180)*scala.math.cos(tLat*3.14159265/180)*scala.math.pow(scala.math.sin((fLon*3.14159265/180 - tLon*3.14159265/180)/2),2))))*6378.137)
+
+    sql(
+      s"""
+      select
+         | abc.cellid,
+         | abc.freq1,
+         | abc.pci,
+         | abc.dis,
+         | abc.tcellid
+         | from
+         |(
+         |select b.cellid,
+         |       b.freq1,
+         |       b.pci,
+         |       b.tcellid,
+         |       b.dis,
+         |       ROW_NUMBER() OVER(partition by b.cellid,b.freq1,b.pci order by b.dis asc ) as ascdis
+         |  from (select t.cellid as cellid,
+         |               a.freq1,
+         |               a.pci,
+         |               calcdis(a.longitude, a.latitude, t.longitude, t.latitude) as dis,
+         |               a.cellid as tcellid
+         |          from ltecell t, ltecell a
+         |         where t.cellid != a.cellid) b
+         |         )abc
+         |         where abc.ascdis = 1
+         |
+        """.stripMargin).repartition(20).write.mode(SaveMode.Overwrite).format("com.databricks.spark.csv").option("header", "false").save(s"$warhouseDir/tb_cell_distance/") //dt=$ANALY_DATE/h=$ANALY_HOUR")
+
     sql(
       s"""
          |SELECT
@@ -296,7 +342,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |lte.kpi22,
          |lte.kpi23,
          |lte.kpi24,
-         |lte.kpi25,
+         |AA.tcellid,
          |lte.kpi26,
          |lte.kpi27,
          |lte.kpi28,
@@ -360,6 +406,10 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |lte.mrtime
          |FROM
          |$SDB.lte_mro_source lte
+          LEFT JOIN  adjacent_area AA
+         | ON  lte.cellid = AA.cellid
+         | AND lte.kpi12 = AA.pci
+         | AND lte.kpi11 = AA.freq1
          |left outer join
          |(
          |SELECT
@@ -384,7 +434,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |)
          |)s1
          |on lte.mmeues1apid=s1.mmeues1apid and lte.mmegroupid=s1.mmegroupid and lte.mmecode=s1.mmecode
-         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and rum=1 and ( lte.mrtime !='' or lte.mrtime !="" or lte.mrtime  is not null or lte.mrtime != null)
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/lte_mro_source/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
@@ -499,7 +549,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |MRTIME
          |FROM
          |$SDB.lte_mro_source
-         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0'
+         |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0' and MRTIME is not null
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }

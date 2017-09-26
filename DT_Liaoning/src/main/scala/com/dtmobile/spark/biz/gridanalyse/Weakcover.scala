@@ -83,7 +83,7 @@ class Weakcover(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: String
           sum(case when t1.kpi7>=0 and ABS(360-t1.kpi7/2-t3.azimuth)$azimuthOp$azimuthTh  then 1 else 0 end) as AOAdeviates
           from lte_mro_source_ana_tmp t1
           left join Mr_InDoorAna_Temp t2 on t1.enbid = t2.enbid and t1.cellid = t2.cellid and t1.MMEUES1APID = t2.MMEUES1APID
-          left join  ltecell t3 on t1.cellid=t3.cellid   and t1.mrname='MR.LteScRSRP' and t1.vid = 1
+          left join  ltecell t3 on t1.cellid=t3.cellid where t1.mrname='MR.LteScRSRP' and t1.vid = 1
           group by t1.startTime, t1.endTime, t1.timeseq,t1.enbID, t1.cellid
           """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/lte_mrs_dlbestrow_ana60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
