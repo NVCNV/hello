@@ -260,14 +260,6 @@ class Init(ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB: String, warho
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load().createOrReplaceTempView("ltepci_degree_condition")
 
-
-    sc.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","ltepci_degree_condition")
-      .option("user", "scott")
-      .option("password", "tiger")
-      .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().createOrReplaceTempView("ltepci_degree_condition")
-
     sc.sql(
       s"""
          |select cellid,freq1,pci,tcellid,tenbid,d from
