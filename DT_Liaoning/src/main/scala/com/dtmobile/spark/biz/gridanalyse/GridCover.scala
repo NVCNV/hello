@@ -48,7 +48,7 @@ class GridCover(ANALY_DATE: String,ANALY_HOUR: String, SDB: String, DDB: String,
     import SparkSession.sql
 
     val rs:Int = 1
-    val t = sql("select FIELD,OPERATOR,VALUE from ltepci_degree_condition").collectAsList()
+    val t = sql("select FIELD,OPERATOR,VALUE from ltecover_degree_condition").collectAsList()
     var i = 0
     var field = ""
     val size = t.size()-1
