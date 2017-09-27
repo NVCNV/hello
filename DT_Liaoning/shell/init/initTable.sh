@@ -1983,4 +1983,16 @@ PARTITIONED BY (
   h string)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
+
+DROP TABLE IF EXISTS adjacent_area;
+CREATE EXTERNAL TABLE adjacent_area(
+  cellid bigint,
+  freq1 bigint,
+  pci bigint,
+  dis bigint,
+  tcellid bigint)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster/user/hive/warehouse/${DCLDB}.db/tb_cell_distance';
 EOF
