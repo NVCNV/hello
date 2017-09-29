@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-
+#!/bin/bash
 
 ANALY_DATE=$1
 ANALY_HOUR=$2
@@ -8,8 +7,6 @@ RESULTDATABASE=$4
 SOURCEDATABASE=$5
 
 hive<<EOF
-
-
 alter table ${INITDATABASE}.lte_mro_source add if not exists partition(dt="${ANALY_DATE}",h="${ANALY_HOUR}")
 location "/${SOURCEDATABASE}/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}" ;
 
@@ -125,6 +122,5 @@ tdsneighborcellnumber,
 v_enb,
 mrtime
 from ${INITDATABASE}.lte_mro_source where mrname='MR.LteScRIP0' and dt="${ANALY_DATE}" and h="${ANALY_HOUR}";
-
-
 EOF
+
