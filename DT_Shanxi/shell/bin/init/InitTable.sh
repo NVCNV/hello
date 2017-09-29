@@ -1,8 +1,11 @@
 #!/bin/bash
-
+#结果库
 DDLDB=$1
+#结果库中的外部路径
 DB_PATH=$2
+#原始库
 BaseDB=$3
+#原始库外部路径
 BasePath=$4
 
 
@@ -14,6 +17,105 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+DROP TABLE IF EXISTS tb_xdr_ifc_http_new;
+CREATE EXTERNAL TABLE tb_xdr_ifc_http_new(
+  length int,
+  city int,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi bigint,
+  imei bigint,
+  msisdn bigint,
+  machineipaddtype int,
+  sgwipaddr string,
+  enbipaddr string,
+  sgwport int,
+  enbport int,
+  enbgtpteid bigint,
+  sgwgtpteid bigint,
+  tac bigint,
+  ecgi bigint,
+  apn string,
+  apptypecode bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  protocoltype bigint,
+  apptype bigint,
+  appsubtype bigint,
+  appcontent int,
+  appstatus int,
+  useripv4 string,
+  useripv6 string,
+  userport string,
+  l4protocal int,
+  appserveripipv4 string,
+  appserveripipv6 string,
+  appserverport string,
+  uldata bigint,
+  dldata bigint,
+  ulippacket bigint,
+  dlippacket bigint,
+  ultcppacketor bigint,
+  dltcppacketor bigint,
+  ultcppacketre bigint,
+  dltcppacketre bigint,
+  tcpestabrede bigint,
+  tcpestabdeconf bigint,
+  ulipfragpackets bigint,
+  dlipfragpackets bigint,
+  tcpfirstrede bigint,
+  tcpfirstconf bigint,
+  winsize bigint,
+  msssize bigint,
+  tcpattnum bigint,
+  tcplinkstatus bigint,
+  sessionflag int,
+  httpversion string,
+  transactiontype string,
+  httpstate string,
+  httpfirstrede bigint,
+  httplastrede bigint,
+  acklastconf bigint,
+  host string,
+  uri string,
+  xonlinehost string,
+  useragent string,
+  httpcontenttype string,
+  referuri string,
+  cookie string,
+  contentlength bigint,
+  targetbehavior int,
+  wtpinterrupttype int,
+  wtpinterruptcause int,
+  title string,
+  keyword string,
+  busconductlogo int,
+  buscompletionflag int,
+  busrede int,
+  browsingtool int,
+  portalapp int,
+  gridid int,
+  slong string,
+  slat string,
+  dlong string,
+  dlat string,
+  distance string,
+  espeed string,
+  elong string,
+  elat string,
+  falurecause string,
+  flag int,
+  beforeflag int,
+  eupordown int,
+  railline string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '|'
+LOCATION
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_http';
 
 --20170627新增
 drop table lte_cellmr_source;
@@ -183,7 +285,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster//datang2/output/xdrnew/volte_gtuser_data';
+  'hdfs://dtcluster//${DB_PATH}/output/xdrnew/volte_gtuser_data';
 
 -- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
@@ -8495,8 +8597,7 @@ CREATE external TABLE tb_xdr_ifc_s1mme_new(
  eupordown int,
  railline string,
  echk4gtype int,
- echk4g23type int,
- etype int)
+ echk4g23type int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8626,13 +8727,12 @@ CREATE EXTERNAL TABLE lte_mro_source_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-  etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY '|'
+  FIELDS TERMINATED BY ','
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/lte_mro_source';
 
@@ -8788,13 +8888,12 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-  etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY '|'
+  FIELDS TERMINATED BY ','
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_uu';
 
@@ -8849,13 +8948,12 @@ length int,
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-   etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY '|'
+  FIELDS TERMINATED BY ','
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_x2';
 
@@ -8950,8 +9048,7 @@ CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-   etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -9002,8 +9099,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-  etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -9779,8 +9875,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string,
-  etype int)
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -9831,7 +9926,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   respdelay int,
   svdelay int,
   rangetime string,
-
   gridid int,
   slong string,
   slat string,
@@ -9846,8 +9940,7 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   beforeflag int,
   eupordown int,
   railline string,
-  echksvtype int,
-  etype int)
+  echksvtype int)
 PARTITIONED BY (
   dt string,
   h string)
