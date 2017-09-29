@@ -34,13 +34,16 @@ INIT_PATH=$3
 RESULT_PATH=$4
 SOURCE_PATH=$5
 ORACLE_NAME=$6
-
+VERSION=$7
 echo ${ANALY_DATE}
 echo ${ANALY_HOUR}
 
 ./repeat_volteTrain.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
 ./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} >> job_logs.log 2>&1
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} ${INIT_PATH} ${RESULT_PATH} ${SOURCE_PATH} >>  job_logs.log 2>&1
+./EtypeFill.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
+#NewEtypeToOracle.sh
+./ExceptionAanaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${VERSION} >> job_logs.log 2>&1
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} ${ORACLE_NAME} >> job_logs.log 2>&1
 
 # 日期 小时 Oracle数据库
