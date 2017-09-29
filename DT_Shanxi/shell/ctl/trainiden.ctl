@@ -4,7 +4,8 @@ APPEND INTO TABLE numberiden
 FIELDS TERMINATED BY ','
 trailing nullcols
 (
+imsi,
+linename,
 trainnumber,
-upordown,
-groupname
+upordown
 )

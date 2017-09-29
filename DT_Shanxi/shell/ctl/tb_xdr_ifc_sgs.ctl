@@ -1,7 +1,7 @@
 LOAD DATA
 characterset UTF8
 APPEND INTO TABLE tb_xdr_ifc_sgs_new
-FIELDS TERMINATED BY ','
+FIELDS TERMINATED BY '|'
 trailing nullcols
 (
 length,
@@ -37,7 +37,6 @@ callingid,
 vlrnamelength,
 vlrname,
 rangetime date "yyyy-mm-dd hh24:mi:ss",
-etype,
 gridid,
 slong,
 slat,
@@ -50,5 +49,7 @@ elat,
 falurecause,
 flag,
 beforeflag,
-eupordown
+eupordown,
+railline,
+etype
 )

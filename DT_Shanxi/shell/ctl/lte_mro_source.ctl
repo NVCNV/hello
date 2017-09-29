@@ -110,7 +110,6 @@ gsmneighborcellnumber,
 tdsneighborcellnumber,
 v_enb,
 mrtime,
-etype,
 gridid,
 slong,
 slat,
@@ -123,5 +122,7 @@ elat,
 falurecause,
 flag,
 beforeflag,
-eupordown
+eupordown,
+railline,
+etype
 )

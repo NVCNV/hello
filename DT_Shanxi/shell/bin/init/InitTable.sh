@@ -1,8 +1,11 @@
 #!/bin/bash
-
+#结果库
 DDLDB=$1
+#结果库中的外部路径
 DB_PATH=$2
+#原始库
 BaseDB=$3
+#原始库外部路径
 BasePath=$4
 
 
@@ -14,50 +17,215 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+DROP TABLE IF EXISTS tb_xdr_ifc_http_new;
+CREATE EXTERNAL TABLE tb_xdr_ifc_http_new(
+  length int,
+  city int,
+  interface int,
+  xdrid string,
+  rat int,
+  imsi bigint,
+  imei bigint,
+  msisdn bigint,
+  machineipaddtype int,
+  sgwipaddr string,
+  enbipaddr string,
+  sgwport int,
+  enbport int,
+  enbgtpteid bigint,
+  sgwgtpteid bigint,
+  tac bigint,
+  ecgi bigint,
+  apn string,
+  apptypecode bigint,
+  procedurestarttime bigint,
+  procedureendtime bigint,
+  protocoltype bigint,
+  apptype bigint,
+  appsubtype bigint,
+  appcontent int,
+  appstatus int,
+  useripv4 string,
+  useripv6 string,
+  userport string,
+  l4protocal int,
+  appserveripipv4 string,
+  appserveripipv6 string,
+  appserverport string,
+  uldata bigint,
+  dldata bigint,
+  ulippacket bigint,
+  dlippacket bigint,
+  ultcppacketor bigint,
+  dltcppacketor bigint,
+  ultcppacketre bigint,
+  dltcppacketre bigint,
+  tcpestabrede bigint,
+  tcpestabdeconf bigint,
+  ulipfragpackets bigint,
+  dlipfragpackets bigint,
+  tcpfirstrede bigint,
+  tcpfirstconf bigint,
+  winsize bigint,
+  msssize bigint,
+  tcpattnum bigint,
+  tcplinkstatus bigint,
+  sessionflag int,
+  httpversion string,
+  transactiontype string,
+  httpstate string,
+  httpfirstrede bigint,
+  httplastrede bigint,
+  acklastconf bigint,
+  host string,
+  uri string,
+  xonlinehost string,
+  useragent string,
+  httpcontenttype string,
+  referuri string,
+  cookie string,
+  contentlength bigint,
+  targetbehavior int,
+  wtpinterrupttype int,
+  wtpinterruptcause int,
+  title string,
+  keyword string,
+  busconductlogo int,
+  buscompletionflag int,
+  busrede int,
+  browsingtool int,
+  portalapp int,
+  gridid int,
+  slong string,
+  slat string,
+  dlong string,
+  dlat string,
+  distance string,
+  espeed string,
+  elong string,
+  elat string,
+  falurecause string,
+  flag int,
+  beforeflag int,
+  eupordown int,
+  railline string)
+PARTITIONED BY (
+  dt string,
+  h string)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '|'
+LOCATION
+  'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_http';
 
 --20170627新增
 drop table lte_cellmr_source;
 create table lte_cellmr_source(
-ObjectID        string,
-startTime       string,
-endTime         string,
-eNBID           bigint,
-mrName          string,
-cellID          bigint,
-meaTime         string,
-kpi1            bigint,
-kpi2            bigint,
-kpi3            bigint,
-kpi4            bigint,
-kpi5            bigint,
-kpi6            bigint,
-kpi7            bigint,
-kpi8            bigint,
-kpi9            bigint,
-kpi10           bigint,
-kpi11           bigint,
-kpi12           bigint,
-kpi13           bigint,
-kpi14           bigint,
-kpi15           bigint,
-kpi16           bigint,
-kpi17           bigint,
-kpi18           bigint,
-kpi19           bigint,
-kpi20           bigint,
-kpi21           bigint,
-kpi22           bigint,
-kpi23           bigint,
-kpi24           bigint,
-kpi25           bigint,
-kpi26           bigint,
-kpi27           bigint,
-kpi28           bigint,
-length          bigint,
-City            string,
-Interface       int,
-XDRID           string,
-RAT             int
+objectid string,
+  vid bigint,
+  fileformatversion string,
+  starttime bigint,
+  endtime bigint,
+  period bigint,
+  enbid bigint,
+  userlabel string,
+  mrname string,
+  cellid bigint,
+  earfcn bigint,
+  subframenbr bigint,
+  prbnbr bigint,
+  mmeues1apid bigint,
+  mmegroupid bigint,
+  mmecode bigint,
+  meatime string,
+  eventtype string,
+  gridcenterlongitude string,
+  gridcenterlatitude string,
+  kpi1 bigint,
+  kpi2 bigint,
+  kpi3 bigint,
+  kpi4 bigint,
+  kpi5 bigint,
+  kpi6 bigint,
+  kpi7 bigint,
+  kpi8 bigint,
+  kpi9 bigint,
+  kpi10 bigint,
+  kpi11 bigint,
+  kpi12 bigint,
+  kpi13 bigint,
+  kpi14 bigint,
+  kpi15 bigint,
+  kpi16 bigint,
+  kpi17 bigint,
+  kpi18 bigint,
+  kpi19 bigint,
+  kpi20 bigint,
+  kpi21 bigint,
+  kpi22 bigint,
+  kpi23 bigint,
+  kpi24 bigint,
+  kpi25 bigint,
+  kpi26 bigint,
+  kpi27 bigint,
+  kpi28 bigint,
+  kpi29 bigint,
+  kpi30 bigint,
+  kpi31 bigint,
+  kpi32 bigint,
+  kpi33 bigint,
+  kpi34 bigint,
+  kpi35 bigint,
+  kpi36 bigint,
+  kpi37 bigint,
+  kpi38 bigint,
+  kpi39 bigint,
+  kpi40 bigint,
+  kpi41 bigint,
+  kpi42 bigint,
+  kpi43 bigint,
+  kpi44 bigint,
+  kpi45 bigint,
+  kpi46 bigint,
+  kpi47 bigint,
+  kpi48 bigint,
+  kpi49 bigint,
+  kpi50 bigint,
+  kpi51 bigint,
+  kpi52 bigint,
+  kpi53 bigint,
+  kpi54 bigint,
+  kpi55 bigint,
+  kpi56 bigint,
+  kpi57 bigint,
+  kpi58 bigint,
+  kpi59 bigint,
+  kpi60 bigint,
+  kpi61 bigint,
+  kpi62 bigint,
+  kpi63 bigint,
+  kpi64 bigint,
+  kpi65 bigint,
+  kpi66 bigint,
+  kpi67 bigint,
+  kpi68 bigint,
+  kpi69 bigint,
+  kpi70 bigint,
+  kpi71 bigint,
+  length bigint,
+  city string,
+  xdrtype bigint,
+  interface bigint,
+  xdrid string,
+  rat bigint,
+  imsi string,
+  imei string,
+  msisdn string,
+  mrtype bigint,
+  neighborcellnumber bigint,
+  gsmneighborcellnumber bigint,
+  tdsneighborcellnumber bigint,
+  v_enb bigint,
+  mrtime bigint
 )
 PARTITIONED BY (
   dt string,
@@ -117,7 +285,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ','
 LOCATION
-  'hdfs://dtcluster//datang2/output/xdrnew/volte_gtuser_data';
+  'hdfs://dtcluster//${DB_PATH}/output/xdrnew/volte_gtuser_data';
 
 -- 小区统计表(分钟级)
 drop table if exists gt_pulse_detail;
@@ -503,7 +671,7 @@ wbdownflow                 bigint,
 wbdowntime                 bigint,
 navigationsucc             bigint,
 navigationreq              bigint,
-navigationresptimeall      bigint,
+navigationresptimeall      bigint
 navigationresp             bigint,
 navigationdownflow         bigint,
 navigationdowntime         bigint,
@@ -7773,6 +7941,7 @@ CREATE TABLE volte_gt_user_ana_base60(
   MSISDN                 string,
   CELLID                bigint,
   TTIME                  string,
+  RAILLINE               string,
   DIR_STATE             bigint,
   VOLTEMCSUCC           bigint,
   VOLTEMCATT            bigint,
@@ -7835,6 +8004,7 @@ CREATE TABLE volte_gt_user_ana_baseday(
   MSISDN                 string,
   CELLID                bigint,
   TTIME                  string,
+  RAILLINE               string,
   DIR_STATE             bigint,
   VOLTEMCSUCC           bigint,
   VOLTEMCATT            bigint,
@@ -8412,7 +8582,6 @@ CREATE external TABLE tb_xdr_ifc_s1mme_new(
  bearer5enbgtpteid int,
  bearer5sgwgtpteid int,
  rangetime string,
- etype int,
  gridid int,
  slong string,
  slat string,
@@ -8426,13 +8595,14 @@ CREATE external TABLE tb_xdr_ifc_s1mme_new(
  flag int,
  beforeflag int,
  eupordown int,
+ railline string,
  echk4gtype int,
  echk4g23type int)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_s1mme';
 
@@ -8544,7 +8714,6 @@ CREATE EXTERNAL TABLE lte_mro_source_new(
   tdsneighborcellnumber int,
   v_enb int,
   mrtime bigint,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8557,7 +8726,8 @@ CREATE EXTERNAL TABLE lte_mro_source_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8705,7 +8875,6 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   bearer5id int,
   bearer5status int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8718,7 +8887,8 @@ CREATE external TABLE tb_xdr_ifc_uu_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8765,7 +8935,6 @@ length int,
   bearer5id int,
   bearer5status int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8778,7 +8947,8 @@ length int,
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8865,7 +9035,6 @@ CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   cmsisdn string,
   ssi string,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8878,12 +9047,13 @@ CREATE external TABLE tb_xdr_ifc_gmmwmgmimjisc_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 location
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/tb_xdr_ifc_mw';
 
@@ -8916,7 +9086,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   experimentalresultcode int,
   sessionreleasecause int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -8929,12 +9098,13 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_gxrx_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/gxrx';
 
@@ -9692,7 +9862,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   vlrnamelength int,
   vlrname string,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -9705,12 +9874,13 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sgs_new(
   falurecause string,
   flag int,
   beforeflag int,
-  eupordown int)
+  eupordown int,
+  railline string)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sgs';
 
@@ -9756,7 +9926,6 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   respdelay int,
   svdelay int,
   rangetime string,
-  etype int,
   gridid int,
   slong string,
   slat string,
@@ -9770,12 +9939,13 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_sv_new(
   flag int,
   beforeflag int,
   eupordown int,
+  railline string,
   echksvtype int)
 PARTITIONED BY (
   dt string,
   h string)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ','
+  FIELDS TERMINATED BY '|'
 LOCATION
   'hdfs://dtcluster/${DB_PATH}/output/xdrnew/sv_xdr';
 
@@ -10603,6 +10773,7 @@ drop  table kpi_mid_imsi_cell_day;
   imsi string,
   msisdn string,
   cellid int,
+  railline string,
   dir_state int,
   kpi001 int,
   kpi002 int,
@@ -10915,6 +11086,7 @@ CREATE TABLE kpi_mid_imsi_cell_hour(
   imsi string,
   msisdn string,
   cellid int,
+  railline string,
   dir_state int,
   kpi001 int,
   kpi002 int,

@@ -18,5 +18,6 @@ enbid,
 targetenbid,
 dir_state,
 seqnum,
-ispub
+ispub,
+linename
 )

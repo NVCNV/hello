@@ -1,7 +1,7 @@
 LOAD DATA
 characterset UTF8
 APPEND INTO TABLE tb_xdr_ifc_sv_new
-FIELDS TERMINATED BY ','
+FIELDS TERMINATED BY '|'
 trailing nullcols
 (
 length,
@@ -43,7 +43,6 @@ postfailurecause,
 respdelay,
 svdelay,
 rangetime date "yyyy-mm-dd hh24:mi:ss",
-etype,
 gridid,
 slong,
 slat,
@@ -57,5 +56,7 @@ falurecause,
 flag,
 beforeflag,
 eupordown,
-echksvtype
+railline,
+echksvtype,
+etype
 )

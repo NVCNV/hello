@@ -15,5 +15,6 @@ procedurestarttime,
 procedureendtime,
 dir_state,
 seqnum,
-ispub
+ispub,
+linename
 )
