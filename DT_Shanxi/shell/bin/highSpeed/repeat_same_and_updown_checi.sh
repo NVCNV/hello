@@ -169,18 +169,19 @@ ${u3_u2}/u2u3relation.csv \
 ${second_t} \
 ${reducers}
 
-rm -rf ${local_path_upordown}
-hdfs dfs -rm -R -skipTrash ${upordown_for_checi}
-hdfs dfs -get ${updowntrain_ouput} ${local_path_upordown}
-cat ${local_path_upordown}/* > /home/hadoop/upordown.csv
-hdfs dfs -put /home/hadoop/upordown.csv ${upordown_for_checi}  
+#rm -rf ${local_path_upordown}
+#hdfs dfs -rm -R -skipTrash ${upordown_for_checi}
+#hdfs dfs -get ${updowntrain_ouput} ${local_path_upordown}
+#cat ${local_path_upordown}/* > /home/hadoop/upordown.csv
+#hdfs dfs -put /home/hadoop/upordown.csv ${upordown_for_checi}
 
 # number identified
-trainstations=/datang2/parameter/stations.txt
-trainstationtimes=/datang2/parameter/stationTimes.txt
-size=10
-trainiden_output=/datang2/output/trainiden/${ANALY_DATE}
-hdfs dfs -rm -R ${trainiden_output}
-hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output}/u4* ${upordown_for_checi} ${trainstations} ${trainstationtimes} ${size} ${trainiden_output}
+#trainstations=/datang2/parameter/stations.txt
+#trainstationtimes=/datang2/parameter/stationTimes.txt
+#size=10
+#trainiden_output=/datang2/output/trainiden/${ANALY_DATE}
+#hdfs dfs -rm -R ${trainiden_output}
+#hadoop jar ${jar_file} cn.com.dtmobile.hadoop.biz.train.job.numberiden.NumberIdenJob ${u4_2_output}/u4*
+# ${upordown_for_checi} ${trainstations} ${trainstationtimes} ${size} ${trainiden_output}
 
 
