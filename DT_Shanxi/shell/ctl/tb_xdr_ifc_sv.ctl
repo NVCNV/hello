@@ -57,6 +57,5 @@ flag,
 beforeflag,
 eupordown,
 railline,
-echksvtype,
-etype
+echksvtype
 )

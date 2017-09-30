@@ -94,5 +94,5 @@ flag,
 beforeflag,
 eupordown,
 railline,
-etype
+rangetime date "yyyy-mm-dd hh24:mi:ss"
 )
