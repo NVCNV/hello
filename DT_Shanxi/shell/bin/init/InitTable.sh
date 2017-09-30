@@ -108,7 +108,8 @@ CREATE EXTERNAL TABLE tb_xdr_ifc_http_new(
   flag int,
   beforeflag int,
   eupordown int,
-  railline string)
+  railline string,
+  rangetime string)
 PARTITIONED BY (
   dt string,
   h string)
