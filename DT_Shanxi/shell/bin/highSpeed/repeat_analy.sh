@@ -43,6 +43,7 @@ echo ${ANALY_HOUR}
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} ${INIT_PATH} ${RESULT_PATH} ${SOURCE_PATH} >>  job_logs.log 2>&1
 ./EtypeFill.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
 #NewEtypeToOracle.sh
+sh NewEtypeToOracle.sh  ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} ${RESULT_PATH} >> new_to_oracle.log
 ./ExceptionAanaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${VERSION} >> job_logs.log 2>&1
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} ${ORACLE_NAME} >> job_logs.log 2>&1
 
