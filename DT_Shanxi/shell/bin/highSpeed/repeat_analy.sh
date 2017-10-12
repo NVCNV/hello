@@ -42,11 +42,11 @@ echo ${ANALY_HOUR}
 ./bushu/repeat_addpartion.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} >> job_logs.log 2>&1
 sh cellMrFilter.sh  ${ANALY_DATE} ${ANALY_HOUR} ${INIT_PATH} ${RESULT_PATH} ${SOURCE_PATH} >>  job_logs.log 2>&1
 ./EtypeFill.sh ${ANALY_DATE} ${ANALY_HOUR} >> job_logs.log 2>&1
-#NewEtypeToOracle.sh
-sh NewEtypeToOracle.sh  ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} ${RESULT_PATH} >> new_to_oracle.log
 ./ExceptionAanaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${VERSION} >> job_logs.log 2>&1
+#NewEtypeToOracle.sh have etype and exception to oracle
+sh NewEtypeToOracle.sh  ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} ${RESULT_PATH} >> new_to_oracle.log 2>&1
 ./bushu/kpiAnaly.sh ${ANALY_DATE} ${ANALY_HOUR} ${RESULT_PATH} ${INIT_PATH} ${ORACLE_NAME} >> job_logs.log 2>&1
 
 # 日期 小时 Oracle数据库
-sh HightSpeedUserToOracle.sh ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} >> HighSpeed_to_oracle.log
+sh HightSpeedUserToOracle.sh ${ANALY_DATE} ${ANALY_HOUR} ${ORACLE_NAME} >> HighSpeed_to_oracle.log 2>&1
 
