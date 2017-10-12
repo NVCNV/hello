@@ -17,6 +17,76 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+DROP TABLE IF EXISTS EXCEPTION_ANALYSIS;
+CREATE external TABLE IF NOT EXISTS EXCEPTION_ANALYSIS(
+event_name    string,
+procedurestarttime   bigint,
+imsi   string,
+proceduretype    int,
+etype    int,
+cellid    bigint,
+targetcellid    bigint,
+falurecause     string,
+celltype     string,
+cellregion     string,
+cellkey     string,
+interface   int,
+prointerface   string,
+rangetime  string,
+elong      double,
+elat      double,
+eupordown   int,
+exceptioncode   string,
+xdrid   string,
+excertiontype    string,
+interfacetype   string,
+exceptionstarttime    string,
+exceptionxdrid    string,
+pci       bigint,
+cellrsrp       double,
+rip       double,
+phr      double,
+upsinr      double,
+highestcellid   bigint,
+highestcellrsrp        double,
+secondcellid   bigint,
+secondcellrsrp       double,
+thirdcellid   bigint,
+thirdcellrsrp       double,
+actualrange       double,
+equivalentdistance       double,
+modelThreeNCellId   bigint,
+modelThreeNPci     bigint,
+modelThreeNRSRP    bigint,
+modelthreeactualrange       double,
+modelthreeequivdistance       double,
+targetPci    bigint,
+targetCellRip      double,
+targetCellRSRP      double,
+targetHighestCellId       bigint,
+targetHighestCellRSRP      double,
+targetSecondCellId       bigint,
+targetSecondCellRSRP      double,
+targetThirdCellId       bigint,
+targetThirdCellRSRP      double,
+targetActualRange      double,
+targetEquivalentDistance      double,
+targetModelThreeNCellId       bigint,
+targetModelThreeNPci       bigint,
+targetModelThreeNRSRP     double,
+targetModelThreeActualRange     double,
+targetModelThreeEquivDistance     double,
+MRType     String,
+resultDesc String,
+wirelessResultDesc String
+)
+PARTITIONED BY (
+  DT STRING,
+  H STRING)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+location '${WAREHOUSE}/exception_analysis';
+
 DROP TABLE IF EXISTS tb_xdr_ifc_http_new;
 CREATE EXTERNAL TABLE tb_xdr_ifc_http_new(
   length int,
