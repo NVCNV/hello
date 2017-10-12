@@ -41,6 +41,13 @@ hdfs dfs -getmerge /user/hive/warehouse/${RESULTDB}.db/lte_cellmr_source/dt=${TA
 mkdir -p /dt/sqlldrLog/lte_cellmr_source/${TAKING_DATE}
 sqlldr ${DB_ADDR} control=${CTLDIR}/lte_cellmr_source.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/lte_cellmr_source.dat log=/dt/sqlldrLog/lte_cellmr_source/${TAKING_DATE}/${TAKING_HOUR}
 
+echo "hdfs dfs -getmerge /user/hive/warehouse/${RESULTDB}.db/exception_analysis/dt=${TAKING_DATE}/h=${TAKING_HOUR}/* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/t_event_msg.dat"
+hdfs dfs -getmerge /user/hive/warehouse/${RESULTDB}.db/exception_analysis/dt=${TAKING_DATE}/h=${TAKING_HOUR}/* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/t_event_msg.dat
+mkdir -p /dt/sqlldrLog/t_event_msg/${TAKING_DATE}
+sqlldr ${DB_ADDR} control=${CTLDIR}/exception_analysis.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/t_event_msg.dat log=/dt/sqlldrLog/t_event_msg/${TAKING_DATE}/${TAKING_HOUR}
+
+echo "------------> rm ETYPE_OUT <--------------- "
+hdfs dfs -rm -R -skipTrash ${HDFS_ADDR}
 exit 0
 
 
