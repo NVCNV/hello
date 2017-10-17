@@ -50,6 +50,5 @@ falurecause,
 flag,
 beforeflag,
 eupordown,
-railline,
-etype
+railline
 )

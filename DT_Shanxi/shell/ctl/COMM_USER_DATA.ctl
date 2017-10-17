@@ -17,7 +17,7 @@ procedureendtime,
 enbid,
 targetenbid,
 dir_state,
-sequm,
+seqnum,
 ispub,
 linename
 )

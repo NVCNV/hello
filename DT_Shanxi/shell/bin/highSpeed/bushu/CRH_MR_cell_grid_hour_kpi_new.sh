@@ -57,6 +57,7 @@ set mapreduce.map.memory.mb=4096;set mapreduce.reduce.memory.mb=8192;set mapredu
 USE ${DB};
 alter table mro_kpi_mid_cell_grid_hour drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table mro_kpi_mid_cell_grid_hour add partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
+alter table mro_kpi_mid_cell_grid_hour set serdeproperties('serialization.null.format' = '');
 insert into mro_kpi_mid_cell_grid_hour partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
 (ttime,cellid,rruid,gridid,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi010,kpi011,kpi012,
 kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
