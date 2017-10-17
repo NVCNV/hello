@@ -114,6 +114,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.spark</groupId>
+                <artifactId>spark-mllib_${scala.binary.version}</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
                 <artifactId>spark-tags_${scala.binary.version}</artifactId>
                 <version>${spark.version}</version>
             </dependency>
@@ -204,6 +209,7 @@
                 <artifactId>ojdbc6</artifactId>
                 <version>11.2.0.3</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
     <build>
