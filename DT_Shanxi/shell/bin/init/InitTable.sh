@@ -7890,6 +7890,7 @@ PARTITIONED BY (
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY ',';
 
+
 drop table if exists volte_gt_cell_ana_base60;
 CREATE TABLE volte_gt_cell_ana_base60(
   TTIME                  string,
