@@ -21,5 +21,6 @@ updiststroy,
 model3diststrox,
 model3diststroy,
 uebootx,
-uebooty
+uebooty,
+upsinrHighRatex
 )
