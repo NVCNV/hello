@@ -7854,7 +7854,8 @@ CREATE TABLE mr_gt_grid_ana_base60(
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -7882,7 +7883,8 @@ drop table if exists mr_gt_grid_ana_baseday;
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string)
 ROW FORMAT DELIMITED
@@ -8148,7 +8150,8 @@ CREATE TABLE mr_gt_cell_ana_base60(
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8174,7 +8177,8 @@ CREATE TABLE mr_gt_cell_ana_baseday(
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string)
 ROW FORMAT DELIMITED
@@ -8206,7 +8210,8 @@ CREATE TABLE mr_gt_user_ana_base60(
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string,
   h string)
@@ -8239,7 +8244,8 @@ CREATE TABLE mr_gt_user_ana_baseday(
   model3diststrox int,
   model3diststroy int,
   uebootx int,
-  uebooty int)
+  uebooty int,
+  upsinrHighRatex int)
 PARTITIONED BY (
   dt string)
 ROW FORMAT DELIMITED
