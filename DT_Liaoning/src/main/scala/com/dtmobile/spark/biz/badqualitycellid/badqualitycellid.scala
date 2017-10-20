@@ -39,11 +39,11 @@ class badqualitycellid(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
          |(case when weakcoverratex / commy < 0.1 then 1 else 0 end)etype
          |from mr_gt_cell_ana_base60 where dt=$ANALY_DATE and h=$ANALY_HOUR
        """.stripMargin)
-//    val highganlao_table=sql(
-//      s"""
-//         |select cellid,(case when ((case when updiststrox<-105 then 1 else 0 end)/count(1)))>0.3 then 2 else 0 end)etype
-//         |from mr_gt_cell_ana_base60 where dt=$ANALY_DATE and h=$ANALY_HOUR
-//       """.stripMargin)
+    val highganlao_table=sql(
+      s"""
+         |select cellid,(case when (upsinrHighRatex/upsigrateavgy)>0.3 then 2 else 0 end)etype
+         |from mr_gt_cell_ana_base60 where dt=$ANALY_DATE and h=$ANALY_HOUR
+       """.stripMargin)
 
     val IMSIREG_table=sql(
       s"""
@@ -92,18 +92,18 @@ class badqualitycellid(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
 
 
     IMSIREG_table.union(attachyfaile_table).union(tauattfaile_table).union(lteswattfaile_table).union(wirelessfaile_table).union(srvccattfaile_table)
-      .union(voltefaile_table).union(voltemchandoverfaile_table).union(srqattfaile_table).union(weakcovernum_table).union(lowspeed_table)
+      .union(voltefaile_table).union(voltemchandoverfaile_table).union(srqattfaile_table).union(weakcovernum_table).union(lowspeed_table).union(highganlao_table)
       .createOrReplaceTempView("untable")
-    sql(
-      s"""
-         |select "$cal_date",cellid,etype from untable
-       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_cell_data_hour/dt=$ANALY_DATE/h=$ANALY_HOUR")
-
-
 //    sql(
 //      s"""
-//         |select "$cal_date",cellid,etype from untable where etype<> 0
-//       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_cell_data_hour/dt=$ANALY_DATE/h=$ANALY_HOUR/")
+//         |select "$cal_date",cellid,etype from untable
+//       """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_cell_data_hour/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
+
+    sql(
+      s"""
+         |select "$cal_date",cellid,etype from untable where etype<> 0
+       """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_cell_data_hour/dt=$ANALY_DATE/h=$ANALY_HOUR/")
   }
 
 }
