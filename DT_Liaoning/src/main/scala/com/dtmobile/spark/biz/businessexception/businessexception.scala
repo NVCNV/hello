@@ -126,7 +126,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
         """.stripMargin)
      sql(
        s"""
-          |select city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
+          |select distinct city,xdrid,procedurestarttime,from_unixtime(cast(round(procedurestarttime/1000000) as int)),procedureendtime,imsi,imei,substring(imei,1,8)TEtac,msisdn,
           |ecgi,sgwipaddr,appserveripipv4,apptype,appsubtype,appstatus,etype,errorcode,
           |(case when errorcode="1" then "11"
           |when errorcode="2" then "22"
