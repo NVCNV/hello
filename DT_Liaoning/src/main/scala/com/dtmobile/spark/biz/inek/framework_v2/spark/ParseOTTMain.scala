@@ -4,12 +4,10 @@ package com.dtmobile.spark.biz.inek.framework_v2.spark
   * Created by zhoudehu on 2017/10/17.
   */
 
-import java.sql.Timestamp
-import java.util
+
 import java.util.UUID
 
 import com.dtmobile.spark.biz.inek.model.Geometry
-import com.sun.xml.bind.v2.TODO
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.SparkConf
 
@@ -21,31 +19,30 @@ case class S1UClass(OID: String, CellID: Long, BeginTime: Long, EndTime: Long, U
 case class s1_u_inner_s1_mme_lnglatOffset(t11_host: String, host: String, s1_uoid: String, enodebid: Int, reporttime: Long,
                                           objectid: Int, imsi: String, imei: String, msisdn: String, starttime: Long, endtime: Long,
                                           mmes1apueid: String, radius: String, positiontype: String, datatype: String, longitude: Double, latitude: Double, uri: String)
-case class InitS1MMEClass(OID: String, BeginTime: java.sql.Timestamp, EndTime: java.sql.Timestamp, /*ENodeBID: Int, */ Mmes1apUEId: String, UEipV4: String, /*EarbDLteId: Double, EarbULteId: Double,*/
-                          IMSI: String, IMEI: String, MSISDN: String, Eci: Int)
+case class InitS1MMEClass(OID: String, procedurestarttime: Long, procedureendtime: Long, /*ENodeBID: Int, */ mmeues1apid: Long, UEipV4: String, /*EarbDLteId: Double, EarbULteId: Double,*/
+                          IMSI: String, IMEI: String, MSISDN: Int, cellid: Int)
 
 
 object ParseOTTMain {
   def main(args: Array[String]): Unit = {
 
-//    var beginTime_TimeStamp = "1500871293906"
-//    var endTime_TimeStamp = "1500875854821"
 
-
-    //TODO : 暂时写死
-    val city = "liaoning"
    /* // 分区开始与结束
     val begin_p_time = new SimpleDateFormat("yyyyMMdd").format(now_date)
     val end_p_time = new SimpleDateFormat("yyyyMMdd").format(afterOneDay)
     // 正常的一天日期范围限定
     val beginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now_date)
     val endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(afterOneDay)*/
+   //TODO : 暂时写死
+    val city = "liaoning"
+    val begin_p_time = "20170921"
+    val end_p_time = "11"
 
-    val begin_p_time = "20170724"
-    val end_p_time = "20170725"
-    val beginTime = "2017-07-24 13:00:00"
-    val endTime = "2017-07-25 13:00"
-    val p_city = "415"  //TODO : 根据城市猜测
+
+   /* val beginTime = "2017-07-24 11:00:00"
+    val endTime = "2017-07-24 12:00:00"*/
+
+
 
 
     val conf = new SparkConf().setAppName("ParserOTT").setMaster("spark://datanode01:7077")
@@ -81,7 +78,7 @@ object ParseOTTMain {
 
 
     //hiveContext.sql("create table if not exists d_ens_http_4g_(oid string,cellid int,begintime timestamp,endtime timestamp,userip string,imsi string,imei string,msisdn string,host string,uri string,radius string,positiontype string,datatype string,longitude double,latitude double)")
-    sql("create table if not exists d_ens_s1_mme_(oid string,begintime bigint,endtime bigint,mmes1apueid string,ueipv4 string,imsi string,imei string,msisdn string,eci int)")
+//    sql("create table if not exists d_ens_s1_mme_(oid string,begintime bigint,endtime bigint,mmes1apueid string,ueipv4 string,imsi string,imei string,msisdn string,eci int)")
     sql("create table if not exists S1_U_Inner_S1_MME_Offset_(s1_uoid string,enodebid int,reporttime timestamp,objectid int,imsi string,imei string,msisdn string,starttime timestamp,endtime timestamp,mmes1apueid string,host string,radius string,positiontype string,datatype string,longitude double,latitude double,olng string,olat string,lngoffset string,latoffset string)")
     sql("create table if not exists S1_U_Inner_S1_MME_Offset__s1u(s1_uoid string,enodebid int,reporttime string,objectid int,imsi string,imei string,msisdn string,starttime string,endtime string,mmes1apueid string,host string,radius string,positiontype string,datatype string,longitude double,latitude double,olng string,olat string,lngoffset string,latoffset string)")
 
@@ -110,7 +107,7 @@ object ParseOTTMain {
       "mmes1apueid string,radius string,positiontype string,datatype string,longitude string,latitude string,uri string)")
 
     sql("truncate table d_ens_http_4g_")
-    sql("truncate table d_ens_s1_mme_")
+//    sql("truncate table d_ens_s1_mme_")
     sql("truncate table S1_U_Inner_S1_MME_Offset__s1u")
     sql("truncate table S1_U_Inner_S1_MME_Offset_")
     sql("truncate table ott_baidu_lnglatItems_s1u")
@@ -140,7 +137,7 @@ object ParseOTTMain {
       //"where t10.PROCEDURESTARTTIME>=" + beginTime_TimeStamp + " and t10.PROCEDUREENDTIME<" + endTime_TimeStamp + " and t10.dt=20170724 and h=13"
       //"where t10.dt=20170724 and h=13"
     )*/
-//TODO  修改分区时间为动态
+
     val s1_u_rdd = hiveContext.sql(
       s"""
          |select   cast (cast(t10.PROCEDURESTARTTIME/1000 as bigint)  as string) as procedure_start_time
@@ -153,7 +150,7 @@ object ParseOTTMain {
          |,t10.host
          |,t10.uri
          |,'N' as http_content
-         | from liaoning.tb_xdr_ifc_http t10  where dt="20170921" and h="11"
+         | from liaoning.tb_xdr_ifc_http t10  where dt="$begin_p_time" and h="$end_p_time"
         """.stripMargin)
 
 
@@ -210,7 +207,7 @@ object ParseOTTMain {
 
 
 
-    val s1u_df = s1u_http_content.union(s1u_http_uri).repartition(1000).persist()
+    val s1u_df = s1u_http_content.union(s1u_http_uri).repartition(500).persist()
 
     s1u_df.createOrReplaceTempView("temp_d_ens_uri_http_content_4g_")
 
@@ -222,7 +219,7 @@ object ParseOTTMain {
       "t10.begintime as starttime,t10.endtime,'' as mmes1apueid,t10.radius,t10.positiontype,t10.datatype,t10.longitude,t10.latitude,t10.uri " +
       "from d_ens_http_4g_ as t10 " +
       "left outer join global_baidu_host as t11 on t10.host=t11.host ")
-      .map(s => new s1_u_inner_s1_mme_lnglatOffset(
+      .map(s => s1_u_inner_s1_mme_lnglatOffset(
         s.getAs[String]("t11_host"),
         s.getAs[String]("host"),
         s.getAs[String]("s1_uoid"),
@@ -322,10 +319,10 @@ object ParseOTTMain {
       "from ott_gps_lnglatItems_s1u t10 ")
 
 
-    //TODO : 融合段加俊代码
+    //融合段加俊代码
     hiveContext.sql("create table if not exists temp_S1_U_JOIN_S1_MME_FIRST_RESULT_Temp10_(s1_uoid string,cellid int ,s1_u_begin bigint,s1_u_end bigint,imsi string,imei string,msisdn string,latitude double,longitude double,uri string,host string,radius string,positiontype string,datatype string,s1_mmeoid string,s1_mme_begin bigint,mmes1apueid string,s1_u_diff_s1_mme bigint)")
     hiveContext.sql("create table if not exists temp_S1_U_JOIN_S1_MME_SECOND_RESULT_Temp11_(s1_uoid string,min_s1_u_diff_s1_mme bigint)")
-    hiveContext.sql("create table if not exists res_cell_liaoning(oid int,objectid int,objectidx16 string,siteoid int,cgi string,cellname string,longitude string,latitude string,pci string,earfcn string,horizonangletoeast string,verticalangletohorizontal string,eangletohorizontal string,angletohorizontal string,antheight string,rstxpower string,tac string) row format delimited fields terminated by ',' stored as textfile ")
+    hiveContext.sql("create table if not exists res_cell_liaoning(oid int,objectid int,siteoid int,cgi string,cellname string,longitude string,latitude string,pci string,earfcn string,horizonangletoeast string,verticalangletohorizontal string,eangletohorizontal string,angletohorizontal string,antheight string,rstxpower string,tac string) row format delimited fields terminated by ',' stored as textfile ")
     hiveContext.sql("create table if not exists temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_(s1_uoid string,cellid int ,s1_u_begin bigint,s1_u_end bigint,imsi string,imei string,msisdn string,latitude double,longitude double,uri string,s1_mmeoid string,s1_mme_begin bigint,mmes1apueid string,host string,radius string,positiontype string,datatype string)")
     hiveContext.sql("create table if not exists temp_S1_U_JOIN_S1_MME_FORTH_RESULT_Temp13_(s1_uoid string,hashkey string)")
     hiveContext.sql("create table if not exists temp_S1_U_JOIN_S1_MME_FifTH_RESULT_Temp14_(s1_uoid string)")
@@ -333,8 +330,6 @@ object ParseOTTMain {
     hiveContext.sql("create table if not exists S1_U_Inner_S1_MME_Offset_(s1_uoid string,enodebid int,reporttime bigint,objectid int,imsi string,imei string,msisdn string,starttime bigint,endtime bigint,mmes1apueid string,host string,radius string,positiontype string,datatype string,longitude double,latitude double,olng string,olat string,lngoffset string,latoffset string)")
     hiveContext.sql("create table if not exists S1_U_Inner_S1_MME_Offset__s1u(s1_uoid string,enodebid int,reporttime bigint,objectid int,imsi string,imei string,msisdn string,starttime bigint,endtime bigint,mmes1apueid string,host string,radius string,positiontype string,datatype string,longitude double,latitude double,olng string,olat string,lngoffset string,latoffset string)")
 
-//    hiveContext.sql("truncate table d_ens_http_4g_")
-//    hiveContext.sql("truncate table d_ens_s1_mme_")
     hiveContext.sql("truncate table temp_S1_U_JOIN_S1_MME_FIRST_RESULT_Temp10_")
     hiveContext.sql("truncate table temp_S1_U_JOIN_S1_MME_SECOND_RESULT_Temp11_")
     hiveContext.sql("truncate table temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_")
@@ -351,27 +346,42 @@ object ParseOTTMain {
     hiveContext.sql("truncate table ott_gps_lnglatItems")
 
 
+    val s1_mme_rdd =  sql(
+      s"""
+         |select t10.procedurestarttime
+         |,t10.procedureendtime
+         |,t10.imsi
+         |,t10.imei
+         |,cast (t10.cellid/256 as int) msisdn
+         |,t10.mmeues1apid
+         |,t10.cellid
+         |,t10.useripv4
+         |from liaoning.tb_xdr_ifc_s1mme t10
+         |inner join res_cell_$city t11
+         |on t10.cellid=t11.objectid
+         |where t10.dt= $begin_p_time and t10.h= $end_p_time
+         |
+       """.stripMargin)
 
-    //    0: jdbc:hive2://10.78.152.52:21066/> select procedure_start_time from default.d_ens_s1_mme limit 10;
-    //    +------------------------+--+
-    //    |  procedure_start_time  |
-    //    +------------------------+--+
-    //    | 2017-02-08 13:50:49.0  |
-   /* val s1_mme_rdd = hiveContext.sql(
-      "select t10.procedure_start_time,t10.procedure_end_time,t10.imsi,t10.imei,t10.msisdn,t10.mme_ue_s1ap_id,t10.cell_id,t10.user_ipv4 " +
-        " from liaoning.d_ens_s1_mme_ t10 inner join res_cell_" + city + " t11 on t10.cell_id=t11.objectidx16 " +
-        " where t10.p_hour>='" + begin_p_time + "' and t10.p_hour<'" + end_p_time + "' and t10.procedure_start_time>='" + beginTime + "' and t10.procedure_start_time<'" + endTime + "' "
-    )
-    val s1_mme = s1_mme_rdd //.rdd.filter(s =>Try(s.getAs[String]("imsi").toLong).isSuccess&& Try(s.getAs[String]("imei").toLong).isSuccess&& Try(s.getAs[String]("msisdn").toLong).isSuccess&& Try(s.getAs[String]("cell_id").length > 0).isSuccess&& Try(s.getAs[String]("procedure_start_time").length > 0).isSuccess&& Try(s.getAs[String]("procedure_end_time").length > 0).isSuccess)
-      .map(s => InitS1MMEClass(UUID.randomUUID.toString, s.getAs[Timestamp]("procedure_start_time"), s.getAs[Timestamp]("procedure_end_time"), s.getAs[String]("mme_ue_s1ap_id"), s.getAs[String]("user_ipv4"), s.getAs[String]("imsi"), s.getAs[String]("imei"), s.getAs[String]("msisdn"), Integer.parseInt(s.getAs[String]("cell_id"), 16)))
-      .toDF()
+  /* 已经在数据过滤中完成进行校验   and t10.procedurestarttime>= $beginTime and t10.procedureendtime< $endTime*/
+
+
+    //.rdd.filter(s =>Try(s.getAs[String]("imsi").toLong).isSuccess&& Try(s.getAs[String]("imei").toLong).isSuccess&& Try(s.getAs[String]("msisdn").toLong).isSuccess&& Try(s.getAs[String]("cell_id").length > 0).isSuccess&& Try(s.getAs[String]("procedure_start_time").length > 0).isSuccess&& Try(s.getAs[String]("procedure_end_time").length > 0).isSuccess)
+     s1_mme_rdd
+      .map(s => InitS1MMEClass(UUID.randomUUID.toString,
+        s.getAs[Long]("procedurestarttime"),
+      s.getAs[Long]("procedureendtime"),
+      s.getAs[Long]("mmeues1apid"),
+      s.getAs[String]("useripv4"),
+      s.getAs[String]("imsi"),
+      s.getAs[String]("imei"),
+      s.getAs[Int]("msisdn"),
+      Integer.parseInt(s.getAs[Long]("cellid").toString)))
+      .toDF().createOrReplaceTempView("tb_xdr_ifc_s1mme_temp")
 
 
 
-    // 8167766081
-    s1_mme.repartition(4000).persist().createOrReplaceTempView("temp_d_ens_s1_mme_")
-
-
+    /*s1_mme.repartition(500).persist().createOrReplaceTempView("temp_d_ens_s1_mme_")
     hiveContext.sql("insert into d_ens_s1_mme_ select * from temp_d_ens_s1_mme_")*/
 
     // do s1_u inner join s1_mme and insert result to hive table's S1_U_Inner_S1_MME_20161115_20161115_
@@ -388,37 +398,37 @@ object ParseOTTMain {
 //      "where (unix_timestamp( cast(t10.endtime as string),'yyyy-MM-dd HH:mm:ss')-unix_timestamp(cast(t10.begintime as string),'yyyy-MM-dd HH:mm:ss'))<=10 and T10.BeginTime>T11.BeginTime")
     //oid cellid/256 取整
 
-    //  TODO : 修改为动态分区
+
 
     sql(
       s"""
          |insert into temp_S1_U_JOIN_S1_MME_FIRST_RESULT_Temp10_
          |select T10.OID as S1_UOID
-         |,T10.CellID,T10.BeginTime as S1_U_Begin
+         |,T10.CellID
+         |,T10.BeginTime as S1_U_Begin
          |,T10.EndTime as S1_U_End
-         |,T10.IMSI,T10.IMEI,T10.MSISDN,T10.Latitude,T10.Longitude
-         |,T10.Uri,T10.Host,T10.Radius,T10.PositionType,T10.DataType
+         |,T10.IMSI
+         |,T10.IMEI
+         |,T10.MSISDN
+         |,T10.Latitude
+         |,T10.Longitude
+         |,T10.Uri
+         |,T10.Host
+         |,T10.Radius
+         |,T10.PositionType
+         |,T10.DataType
          |, (cast (T11.cellid/256 as int )) as S1_MMEOID
          |,T11.procedurestarttime as S1_MME_Begin
          |,T11.mmeues1apid
-         |,(begintime-t11.procedurestarttime )as S1_U_Diff_S1_MME
-         |
+         |,(T10.begintime-t11.procedurestarttime )as S1_U_Diff_S1_MME
          |from d_ens_http_4g_ T10
-         |inner join liaoning.tb_xdr_ifc_s1mme T11
+         |inner join tb_xdr_ifc_s1mme_temp T11
          |on T10.IMSI=T11.IMSI AND T10.IMEI=T11.IMEI AND T10.CellID=T11.cellid
-         |where (t10.endtime-begintime)<=1000 and T10.BeginTime>T11.procedurestarttime
-         |and T11.dt=20170921 and T11.h=11
+         |where (t10.endtime-T10.begintime)<=1000 and T10.BeginTime>T11.procedurestarttime
+
        """.stripMargin)
 
 
-
-
-
-
-
-
-    //"-- 38537932 "
-    // 36306705
     sql(
       s"""
          |insert into temp_S1_U_JOIN_S1_MME_SECOND_RESULT_Temp11_
@@ -429,20 +439,19 @@ object ParseOTTMain {
 
 
 
-    hiveContext.sql("insert into temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_ " +
+    sql("insert into temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_ " +
       "select T11.S1_UOID,CellID,S1_U_Begin,S1_U_End,T10.IMSI,T10.IMEI,T10.MSISDN,T10.Latitude,T10.Longitude,T10.Uri,S1_MMEOID,S1_MME_Begin,Mmes1apUEId,T10.Host,T10.Radius,T10.PositionType,T10.DataType " +
       "from temp_S1_U_JOIN_S1_MME_SECOND_RESULT_Temp11_ as T11 " +
       "inner join temp_S1_U_JOIN_S1_MME_FIRST_RESULT_Temp10_ as T10 on T10.S1_UOID=T11.S1_UOID and T11.MIN_S1_U_Diff_S1_MME=T10.S1_U_Diff_S1_MME ")
 
-    //  TODO : 修改为动态分区
+
     sql(
       s"""
          |insert into temp_S1_U_JOIN_S1_MME_FORTH_RESULT_Temp13_
          |      select T12.S1_UOID,concat(T13.IMEI,'_',T13.IMSI,'_',T13.MSISDN) as HashKey
          |      from temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_ as T12
-         |      inner join tb_xdr_ifc_s1mme as T13 on ((T12.CellID=T13.cellid) and (T12.Mmes1apUEId=T13.mmeues1apid ))
+         |      inner join tb_xdr_ifc_s1mme_temp as T13 on ((T12.CellID=T13.cellid) and (T12.Mmes1apUEId=T13.mmeues1apid ))
          |      where (T13.procedurestarttime>=T12.s1_mme_begin) and (T13.procedurestarttime<=T12.s1_u_begin)
-         |      and T13.dt=20170921 and T13.h=11
        """.stripMargin)
 
 
@@ -453,15 +462,35 @@ object ParseOTTMain {
       "	  group By S1_UOID,HashKey " +
       ") as T15 " +
       "group By S1_UOID having(COUNT(HashKey)=1)")
-    //"--  39762224 "
-    //  38420145
-    hiveContext.sql("insert into temp_S1_U_JOIN_S1_MME_SixTH_RESULT_Temp15_ " +
-      "select distinct t12.S1_UOID,cast(t12.CellID/256 as int) as ENodeBID,T12.S1_U_Begin as ReportTime,t12.CellID as ObjectID,T12.IMSI,T12.IMEI,T12.MSISDN " +
-      "	  ,cast(from_unixtime(unix_timestamp(cast( T12.S1_U_Begin as string),'yyyy-MM-dd HH:mm:ss')-60,'yyyy-MM-dd HH:mm:ss') as bigint) StartTime " +
-      "	  ,cast(from_unixtime(unix_timestamp(cast( T12.S1_U_Begin as string),'yyyy-MM-dd HH:mm:ss')+60,'yyyy-MM-dd HH:mm:ss') as bigint) EndTime " +
-      "	  ,T12.Mmes1apUEId,T12.Latitude,T12.Longitude,T12.Uri,T12.Host,T12.Radius,T12.PositionType,T12.DataType " +
-      "from temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_ as T12 " +
-      "inner join temp_S1_U_JOIN_S1_MME_FifTH_RESULT_Temp14_ AS T14 ON T12.S1_UOID=T14.S1_UOID")
+
+
+
+    sql(
+      s"""
+         |insert into temp_S1_U_JOIN_S1_MME_SixTH_RESULT_Temp15_
+         |select distinct t12.S1_UOID
+         |,cast(t12.CellID/256 as int) as ENodeBID
+         |,T12.S1_U_Begin as ReportTime
+         |,t12.CellID as ObjectID
+         |,T12.IMSI
+         |,T12.IMEI
+         |,T12.MSISDN
+         |,T12.S1_U_Begin-60 StartTime
+         |,T12.S1_U_Begin+60 EndTime
+         |,T12.Mmes1apUEId
+         |,T12.Latitude
+         |,T12.Longitude
+         |,T12.Uri
+         |,T12.Host
+         |,T12.Radius
+         |,T12.PositionType
+         |,T12.DataType
+         |from temp_S1_U_JOIN_S1_MME_Third_RESULT_Temp12_ as T12
+         |inner join temp_S1_U_JOIN_S1_MME_FifTH_RESULT_Temp14_ AS T14
+         | ON T12.S1_UOID=T14.S1_UOID
+         |
+       """.stripMargin)
+
 
     // first do offset longitude latitude,then do other business, global_lnglatoffset(oid bigint,gcj02lng string,gcj02lat string,lngoffset string,latoffset string)
     //    hiveContext.sql("insert into S1_U_Inner_S1_MME_Offset_ " +
@@ -489,7 +518,7 @@ object ParseOTTMain {
     val all_lnglatItems = hiveContext.sql("select t11.host as t11_host,t10.host,t10.s1_uoid,t10.enodebid,t10.reporttime,t10.objectid,t10.imsi,t10.imei,t10.msisdn,t10.starttime,t10.endtime,t10.mmes1apueid,t10.radius,t10.positiontype,t10.datatype,t10.longitude,t10.latitude,t10.uri " +
       "from temp_S1_U_JOIN_S1_MME_SixTH_RESULT_Temp15_ as t10 " +
       "left outer join global_baidu_host as t11 on t10.host=t11.host ")
-      .map(s => new s1_u_inner_s1_mme_lnglatOffset(                   //TODO : Three time type from timestamp to long
+      .map(s => new s1_u_inner_s1_mme_lnglatOffset(
         s.getAs[String]("t11_host"), s.getAs[String]("host"), s.getAs[String]("s1_uoid"), s.getAs[Int]("enodebid"), s.getAs[Long]("reporttime"),
         s.getAs[Int]("objectid"), s.getAs[String]("imsi"), s.getAs[String]("imei"), s.getAs[String]("msisdn"), s.getAs[Long]("starttime"), s.getAs[Long]("endtime"),
         s.getAs[String]("mmes1apueid"), s.getAs[String]("radius"), s.getAs[String]("positiontype"), s.getAs[String]("datatype"), s.getAs[Double]("longitude"), s.getAs[Double]("latitude"), s.getAs[String]("uri"))
