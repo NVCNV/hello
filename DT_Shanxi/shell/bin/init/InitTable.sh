@@ -118,7 +118,8 @@ targetModelThreeActualRange     double,
 targetModelThreeEquivDistance     double,
 MRType     String,
 resultDesc String,
-wirelessResultDesc String
+wirelessResultDesc String,
+gridid bigint
 )
 PARTITIONED BY (
   DT STRING,
