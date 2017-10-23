@@ -17,6 +17,46 @@ hive<<EOF
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 
+drop table if exists grid;
+CREATE EXTERNAL TABLE if not exists  grid(
+  gridid int,
+  lon double,
+  lat double,
+  distance double,
+  railline string
+  )
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster//${DB_PATH}/parameter/grid/'
+
+drop table if exists T_PROFESS_NET_CELL;
+create EXTERNAL table if not exists T_PROFESS_NET_CELL
+(
+  LINE_NAME   string,
+  TAC         int,
+  CELL_NAME   string,
+  CELL_ID     int,
+  ENODEB_ID   int,
+  ENODEB_NAME string,
+  LAT         double,
+  LON         double,
+  CELLLAT     int,
+  CELLLON     int,
+  DIR         int,
+  RRUNUM      int,
+  SEQNUM      int,
+  CITY        string,
+  SECTORTYPE  int,
+  BEAMWIDTH   int,
+  RRU_NAME    int,
+  FREQ        int,
+  PCI         int
+)ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+LOCATION
+  'hdfs://dtcluster//${DB_PATH}/parameter/profess'
+
 DROP TABLE IF EXISTS EXCEPTION_ANALYSIS;
 CREATE external TABLE IF NOT EXISTS EXCEPTION_ANALYSIS(
 event_name    string,
