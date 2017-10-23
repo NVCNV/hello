@@ -3,7 +3,7 @@ package com.dtmobile.spark.biz.excepitonsection
 import java.util
 import java.util.Collections
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
   * Created by shenkaili on 2017/10/12.
@@ -17,6 +17,19 @@ class exceptionsection(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
       //      "highdistgrid", "高干扰路段");
       //      "freqswgrid", "频繁切换路段");
       //      "weakcovergrid","弱覆盖路段");
+      sql(
+        s"""
+           |alter table $DDB.gt_quesroad_base60 drop if exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         """.stripMargin)
+      sql(
+        s"""
+           |alter table $DDB.gt_quesroad_base60 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         """.stripMargin)
+      sql(
+        s"""
+           |select gridid,min(distance),rrunum from
+           |(select t1.gridid,(power(t1.lat-t2.lat,2)+power(t1.lon-t2.lon,2))distance,t2.rrunum from $DDB.grid t1 cross join $DDB.T_PROFESS_NET_CELL t2)t3 group by gridid,rrunum
+         """.stripMargin).createOrReplaceTempView("gridrru")
       val gridMap =new com.dtmobile.spark.biz.excepitonsection.GetGridMap(ANALY_DATE,ANALY_HOUR,SDB,DDB,warhouseDir)
 //      sparkSession.udf.register("getdpnetgrid", (gridid:Int)=>gridMap.getGridMap(sparkSession,"dpnetgrid").get(gridid.toString))
 //      sparkSession.udf.register("gethighdpmcgrid", (gridid:Int)=>gridMap.getGridMap(sparkSession,"highdpmcgrid").get(gridid.toString))
@@ -27,41 +40,62 @@ class exceptionsection(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB:
       gridMap.getGridMap(sparkSession,"dpnetgrid")
       sql(
         s"""
-           |select gridid,",",value,midgrid from griddatatable
+           |select gridid,value,midgrid,cnt from griddatatable
        """.stripMargin).show(10)
 
       sql(
         s"""
-           |select t2.value,t1.gridid,t2.midgrid from
-           |(select gridid from result.exception_analysis where dt=20170724 and h=13  group by gridid having sum(case when ETYPE=14 or ETYPE=15 then 1 else 0 end)>2)t1
-           |left join griddatatable t2 on t1.gridid=t2.gridid
-         """.stripMargin).show(10)
-//
-//      sql(
-//        s"""
-//           |select "$cal_date",gethighdpmcgrid(gridid),"高掉话路段","highdpmcgrid",gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR group by gridid having having sum(case when ETYPE=5 or ETYPE=7 then 1 else 0 end)>3
-//           |
-//         """.stripMargin)
-//
-//
-//      sql(
-//        s"""
-//           |select "$cal_date",gethighdistgrid(gridid),"高干扰路段","highdistgrid",gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR group by gridid having sum(case when upsinr<3 and upsinr is not null and upsinr<>''  then 1 else 0 end)>2 order by gridid
-//           |
-//         """.stripMargin).show(100)
+           |select "$cal_date",gridids,"dpnetgrid","脱网路段",t4.rrunum,t5.lon,t5.lat from
+           |(select (t2.value)gridids,t1.gridid,(t2.midgrid)midgrid from
+           |(select gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR  group by gridid having sum(case when ETYPE=14 or ETYPE=15 then 1 else 0 end)>2 order by gridid)t1
+           |left join griddatatable t2 on t1.gridid=t2.gridid)t3
+           |left join gridrru t4 on t4.gridid=t3.midgrid
+           |left join $DDB.grid t5 on t5.gridid=t3.midgrid
+         """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/gt_quesroad_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
-//      sql(
-//        s"""
-//           |select "$cal_date",getfreqswgrid(gridid),"频繁切换路段","freqswgrid",gridid from exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR group by gridid having sum(case when upsinr<3 then 1 else 0 end)>2 order by gridid
-//           |
-//         """.stripMargin)
-//
-//      sql(
-//        s"""
-//           |select "$cal_date",getweakcovergrid(gridid),"弱覆盖路段","weakcovergrid",gridid from exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR group by gridid having sum(case when upsinr<3 then 1 else 0 end)>2 order by gridid
-//           |
-//         """.stripMargin)
+      println("=======================SUCCESS============================")
+      gridMap.getGridMap(sparkSession,"highdpmcgrid")
+      sql(
+        s"""
+           |select "$cal_date",gridids,"highdpmcgrid","高掉话路段",t4.rrunum,t5.lon,t5.lat from
+           |(select (t2.value)gridids,t1.gridid,(t2.midgrid)midgrid from
+           |(select gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR  group by gridid having sum(case when ETYPE=5 or ETYPE=7 then 1 else 0 end)>3 order by gridid)t1
+           |left join griddatatable t2 on t1.gridid=t2.gridid)t3
+           |left join gridrru t4 on t4.gridid=t3.midgrid
+           |left join $DDB.grid t5 on t5.gridid=t3.midgrid
+         """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/gt_quesroad_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
+      gridMap.getGridMap(sparkSession,"highdistgrid")
+      sql(
+        s"""
+           |select "$cal_date",gridids,"highdistgrid","高干扰路段",t4.rrunum,t5.lon,t5.lat from
+           |(select (t2.value)gridids,t1.gridid,(t2.midgrid)midgrid from
+           |(select gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR  group by gridid having sum(case when upsinr<3 and upsinr is not null then 1 else 0 end)>2 order by gridid)t1
+           |left join griddatatable t2 on t1.gridid=t2.gridid)t3
+           |left join gridrru t4 on t4.gridid=t3.midgrid
+           |left join $DDB.grid t5 on t5.gridid=t3.midgrid
+         """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/gt_quesroad_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
 
+      gridMap.getGridMap(sparkSession,"freqswgrid")
+      sql(
+        s"""
+           |select "$cal_date",gridids,"freqswgrid","频繁切换路段",t4.rrunum,t5.lon,t5.lat from
+           |(select (t2.value)gridids,t1.procedurestarttime,(t2.midgrid)midgrid from
+           |(select procedurestarttime from result.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR  group by procedurestarttime having sum(case when upsinr<3 and upsinr is not null then 1 else 0 end)>2 order by procedurestarttime)t1
+           |left join griddatatable t2 on t1.procedurestarttime=t2.procedurestarttime)t3
+           |left join gridrru t4 on t4.gridid=t3.midgrid
+           |left join $DDB.grid t5 on t5.gridid=t3.midgrid
+         """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/gt_quesroad_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
+      gridMap.getGridMap(sparkSession,"weakcovergrid")
+      sql(
+        s"""
+           |select "$cal_date",gridids,"weakcovergrid","弱覆盖路段",t4.rrunum,t5.lon,t5.lat from
+           |(select (t2.value)gridids,t1.gridid,(t2.midgrid)midgrid from
+           |(select gridid from $DDB.exception_analysis where dt=$ANALY_DATE and h=$ANALY_HOUR  group by gridid having avg(cellrsrp)<-110 order by gridid)t1
+           |left join griddatatable t2 on t1.gridid=t2.gridid)t3
+           |left join gridrru t4 on t4.gridid=t3.midgrid
+           |left join $DDB.grid t5 on t5.gridid=t3.midgrid
+         """.stripMargin).write.mode(SaveMode.Append).csv(s"$warhouseDir/gt_quesroad_base60/dt=$ANALY_DATE/h=$ANALY_HOUR")
     }
 }
