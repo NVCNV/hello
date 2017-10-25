@@ -220,7 +220,7 @@ class businessexception (ANALY_DATE: String,ANALY_HOUR: String,SDB: String, DDB:
           |on t.cellid = s.cellid
           |where t.dt=$ANALY_DATE and t.h=$ANALY_HOUR
           |group by t.cellid,t.etype,t.city)t2
-          |where t2.speed >$tiemdelay/100 or t2.delay>$vsdelay/100 or t2.inst>$timeandvsdelay/100
+          |where t2.delay >$tiemdelay/100 or t2.speed>$vsdelay/100 or t2.inst>$timeandvsdelay/100
        """.stripMargin).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/zc_city_data/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 
