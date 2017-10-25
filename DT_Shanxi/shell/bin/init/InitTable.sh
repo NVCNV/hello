@@ -783,7 +783,7 @@ wbdownflow                 bigint,
 wbdowntime                 bigint,
 navigationsucc             bigint,
 navigationreq              bigint,
-navigationresptimeall      bigint
+navigationresptimeall      bigint,
 navigationresp             bigint,
 navigationdownflow         bigint,
 navigationdowntime         bigint,
