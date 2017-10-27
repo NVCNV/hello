@@ -2,13 +2,13 @@ package com.dtmobile.spark.biz.inek.framework_v2.spark
 
 import java.sql.Timestamp
 
-
-import com.dtmobile.spark.biz.inek.configuration.{DBConnectionManager, DBHelper}
+import com.dtmobile.spark.biz.inek.configuration.{AppSettings, DBConnectionManager, DBHelper}
 import com.dtmobile.spark.biz.inek.model.{S1MMEClass, S1UClass}
 import com.dtmobile.spark.biz.inek.utils.{geoUtil, httpParser}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkConf, SparkContext}
+import com.dtmobile.spark.biz.inek.utils
 
 import scala.util.Try
 
@@ -22,7 +22,7 @@ import scala.util.Try
  * 6. gcj2wgs
  */
 object generate_ott_adjust {
-  def main(args: Array[String]) {
+ /* def main(args: Array[String]) {
     val time = args(0)
     val day = time.substring(0, 8)
     val hour = time.substring(8, 10)
@@ -57,12 +57,19 @@ object generate_ott_adjust {
       "'bd09' as coordinate, s1_u.msisdn from base_parameter_cell cell inner join (select * from s1_u where start_time = '" + time + "' and host not in (" + hostStringBuilder.toString() + ")) s1_u " +
       "on cell.objectid = s1_u.cell_id")
 
-    val s1_u_rdd = s1u_bd.unionAll(s1u_gcj)
+    val s1_u_rdd = s1u_bd.union(s1u_gcj)
 
-    val s1u_http = s1_u_rdd.map(s => (httpParser.parse_uri(s.getAs[String](6)), s))
+
+    //todo add a .rdd
+    val s1u_http = s1_u_rdd.rdd.map(s => (httpParser.parse_uri(s.getAs[String](6)), s))
       .filter(s => Try(s._1.head._1.toDouble).isSuccess && Try(s._1.head._2.toDouble).isSuccess)
       .filter(s => !utils.geoUtil.outOfChina(s._1.head._1.toDouble, s._1.head._2.toDouble))
       .zipWithUniqueId().map(s => (s._1._1, s._1._2, s._2))
+
+
+
+
+
 
     val s1u_http_uri_bd09 = s1u_http.filter(s => s._2.getAs[String](7) == "bd09")
       .map(s => (geoUtil.bd_decrypt(s._1.head._1.toDouble, s._1.head._2.toDouble), s._2, s._3))
@@ -165,5 +172,5 @@ object generate_ott_adjust {
     println("=======" + time + "===success=======")
 
     sc.stop()
-  }
+  }*/
 }
