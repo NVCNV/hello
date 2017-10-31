@@ -16,7 +16,7 @@ SOURCE_SVR="hdfs://dtcluster/datang2/"
 LTE_MRO_SOURCE=${SOURCE_SVR}/output/xdrnew/lte_mro_source/${ANALY_DATE}/${ANALY_HOUR}/*
 SV_TABLE=${SOURCE_SVR}/output/xdrnew/tb_xdr_ifc_sv/${ANALY_DATE}/${ANALY_HOUR}/*
 EXCEPTION_MAP="${SOURCE_SVR}/parameter/exception_map/EXCEPTIONMAP.csv"
-cellMR=hdfs://dtcluster/user/hive/warehouse/${RESULTDB}/lte_cellmr_source/dt=${ANALY_DATE}/h=${ANALY_HOUR}/*
+cellMR=hdfs://dtcluster/user/hive/warehouse/${RESULTDB}.db/lte_cellmr_source/dt=${ANALY_DATE}/h=${ANALY_HOUR}/*
 ETYPE_OUT=${SOURCE_SVR}/ETYPE_OUT/${ANALY_DATE}/${ANALY_HOUR}
 ltecell="${SOURCE_SVR}/parameter/ltcell/shanxi.csv"
 NCELLINFO="${SOURCE_SVR}/parameter/nCellInfo/NCellInfo.csv"   #小区与邻区关系表
