@@ -8,8 +8,8 @@ alter table mr_gt_cell_ana_baseday drop partition(dt="$ANALY_DATE");
 alter table mr_gt_cell_ana_baseday add partition(dt="$ANALY_DATE");
 
 insert into mr_gt_cell_ana_baseday partition(dt="$ANALY_DATE")
-(cellid,ttime,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,updiststrox,updiststroy,upsigrateavgx,upsigrateavgy,uebootx,uebooty,model3diststrox,model3diststroy)
-select cellid,ttime,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi011,kpi012,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
+(cellid,ttime,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,updiststrox,updiststroy,upsigrateavgx,upsigrateavgy,uebootx,uebooty,model3diststrox,model3diststroy,upsinrHighRatex)
+select cellid,ttime,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi011,kpi012,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019,kpi020
 from mro_kpi_mid_cell_day
 where dt="$ANALY_DATE";
 EOF
