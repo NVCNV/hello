@@ -1,12 +1,14 @@
 package com.dtmobile.spark.job
 
 import com.dtmobile.spark.Analyse
+import com.dtmobile.spark.biz.badqualitycellid.{badqualitycellid, badqualitycellidday}
 import com.dtmobile.spark.biz.kpi.{KpiDayAnaly, KpiHourAnaly, KpibusinessDayAnaly, KpibusinessHourAnaly}
 import com.dtmobile.spark.biz.nssp.NsspAnaly
 import com.dtmobile.util.DateUtils
 import org.apache.spark.sql.SparkSession
 import com.dtmobile.spark.biz.businessexception.businessexception
 import com.dtmobile.spark.biz.businesstypedetail.businesstypedetail
+import com.dtmobile.spark.biz.excepitonsection.exceptionsection
 import com.dtmobile.spark.biz.gridanalyse._
 import com.dtmobile.spark.biz.fakedata._
 
@@ -29,11 +31,18 @@ class AnalyJob(args: Array[String]) extends Analyse {
     val nsspAnaly = new NsspAnaly(args(0), args(1), args(2), args(3), sourceDir, warhouseDir)
     val kpiHourAnaly = new KpiHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
     val kpibusinessHourAnaly = new KpibusinessHourAnaly(args(0), args(1), args(2), args(3), warhouseDir,onoff)
-
+    val badqulitycellidhour=new badqualitycellid(args(0), args(1), args(2), args(3), warhouseDir)
+    val badqulitycellidday=new badqualitycellidday(args(0), args(2), args(3), warhouseDir)
+    val exceptionsectionhour=new exceptionsection(args(0), args(1), args(2), args(3), warhouseDir)
     val exception=new businessexception(args(0),args(1), args(2), args(3), warhouseDir,args(5))
     val typedetail=new businesstypedetail(args(0),args(1), args(2), args(3), warhouseDir)
     nsspAnaly.analyse
     kpibusinessHourAnaly.analyse
+
+    badqulitycellidhour.analyse
+    exceptionsectionhour.analyse
+
+
 
 //    kpiHourAnaly.analyse
     exception.analyse
@@ -79,6 +88,7 @@ class AnalyJob(args: Array[String]) extends Analyse {
       val kpibusinessDayAnaly = new KpibusinessDayAnaly(DateUtils.addDay(args(0), -1, "yyyyMMdd"), args(2), args(3), warhouseDir)
 //      kpiDayAnALY.analyse
       kpibusinessDayAnaly.analyse
+      badqulitycellidday.analyse
     }
   }
 }
