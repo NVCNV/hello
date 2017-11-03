@@ -9,7 +9,7 @@ alter table mr_gt_grid_ana_base60 drop partition(dt="$ANALY_DATE",h="$ANALY_HOUR
 alter table mr_gt_grid_ana_base60 add partition(dt="$ANALY_DATE",h="$ANALY_HOUR");
 alter table mr_gt_grid_ana_base60 set serdeproperties('serialization.null.format' = '');
 insert into mr_gt_grid_ana_base60 partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
-(ttime,cellid,rruid,gridid,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,updiststrox,updiststroy,upsigrateavgx,upsigrateavgy,uebootx,uebooty,model3diststrox,model3diststroy,upsinrHighRatex)
+(ttime,cellid,rruid,gridid,dir_state,avgrsrpx,commy,avgrsrqx,ltecoverratex,weakcoverratex,overlapcoverratex,overlapcoverratey,updiststrox,updiststroy,upsigrateavgx,upsigrateavgy,uebootx,uebooty,model3diststrox,model3diststroy,upsinrhighratex)
 select ttime,cellid,rruid,gridid,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi011,kpi012,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019,kpi020
 from mro_kpi_mid_cell_grid_hour
 where dt="$ANALY_DATE" and h="$ANALY_HOUR";
