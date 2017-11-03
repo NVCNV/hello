@@ -9,10 +9,10 @@ USE ${DB};
 alter table mro_kpi_mid_imsi_cell_grid_day drop partition(dt="$ANALY_DATE");
 alter table mro_kpi_mid_imsi_cell_grid_day add partition(dt="$ANALY_DATE");
 insert into mro_kpi_mid_imsi_cell_grid_day partition(dt="$ANALY_DATE")
-(imsi,msisdn,cellid,rruid,gridid,ttime,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi010,kpi011,kpi012,kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
+(imsi,msisdn,cellid,rruid,gridid,ttime,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi010,kpi011,kpi012,kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019,kpi020
 )
 select imsi,msisdn,cellid,rruid,gridid,"$CAL_DATE",dir_state,sum(kpi001),sum(kpi002),sum(kpi003),sum(kpi004),sum(kpi005),sum(kpi006),sum(kpi007),sum(kpi010),
-sum(kpi011),sum(kpi012),sum(kpi013),sum(kpi014),sum(kpi015),sum(kpi016),sum(kpi017),sum(kpi018),sum(kpi019)
+sum(kpi011),sum(kpi012),sum(kpi013),sum(kpi014),sum(kpi015),sum(kpi016),sum(kpi017),sum(kpi018),sum(kpi019),sum(kpi020)
 from mro_kpi_mid_imsi_cell_grid_hour
 where dt="$ANALY_DATE"
 group by imsi,msisdn,cellid,rruid,gridid,dir_state;

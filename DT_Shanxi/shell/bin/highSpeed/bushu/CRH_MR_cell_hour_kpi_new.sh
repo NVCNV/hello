@@ -22,7 +22,8 @@ sum(case when MRNAME='MR.LteScRSRP' AND KPI6 is not NULL THEN 1 else 0 end)ueboo
 sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not null and KPI2 is not null AND (kpi1-141)>-110 AND
 abs(KPI1 - KPI2) < 6 and KPI10=KPI12 then 1 else 0 end) model3diststrox,
 sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not null and KPI2 is not null AND (kpi1-141)>-110 AND
-abs(KPI1 - KPI2) < 6 then 1 else 0 end)model3diststroy
+abs(KPI1 - KPI2) < 6 then 1 else 0 end)model3diststroy,
+sum(case when mrName = 'MR.LteScRSRP' and kpi8-11<=3 then 1 else 0 end)upsinrHighRatex
           from lte_mro_source_new
           WHERE dt="$ANALY_DATE" and h="$ANALY_HOUR"
                  group by
@@ -50,7 +51,8 @@ sum(case when MRNAME='MR.LteScRIP0' AND KPI7 is not NULL AND KPI2 is not NULL TH
 sum(case when MRNAME='MR.LteScRIP0' AND KPI8 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox8,
 sum(case when MRNAME='MR.LteScRIP0' AND KPI9 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox9,
 sum(case when MRNAME='MR.LteScRIP0' AND KPI10 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox10,
-sum(case when MRNAME='MR.LteScRIP0' AND KPI2 is not NULL THEN 1 else 0 end)updiststroy
+sum(case when MRNAME='MR.LteScRIP0' AND KPI2 is not NULL THEN 1 else 0 end)updiststroy,
+0 as upsinrHighRatex
           from ${DEFAULT}.lte_mro_source
           WHERE dt="$ANALY_DATE" and h="$ANALY_HOUR"
                  group by
@@ -79,7 +81,8 @@ sum(case when MRNAME='MR.LteScRIP0' AND KPI7 is not NULL AND KPI2 is not NULL TH
 sum(case when MRNAME='MR.LteScRIP0' AND KPI8 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox8,
 sum(case when MRNAME='MR.LteScRIP0' AND KPI9 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox9,
 sum(case when MRNAME='MR.LteScRIP0' AND KPI10 is not NULL AND KPI2 is not NULL THEN 1 else 0 end)updiststrox10,
-sum(case when MRNAME='MR.LteScRIP0' AND KPI2 is not NULL THEN 1 else 0 end)updiststroy
+sum(case when MRNAME='MR.LteScRIP0' AND KPI2 is not NULL THEN 1 else 0 end)updiststroy,
+0 as upsinrHighRatex
           from ${DEFAULT}.lte_mro_source
           WHERE dt="$ANALY_DATE" and h="$ANALY_HOUR"
                  group by CELLID,xdrid"
@@ -138,10 +141,10 @@ alter table mro_kpi_mid_cell_hour add partition(dt="$ANALY_DATE",h="$ANALY_HOUR"
 
 insert into mro_kpi_mid_cell_hour partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
 (ttime,cellid,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi010,kpi011,kpi012,
-kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
+kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019,kpi020
 )
 select "$CAL_DATE",cellid,dir_state,sum(avgrsrpx),sum(commy),sum(avgrsrqx),sum(ltecoverratex),sum(weakcoverratex),sum(overlapcoverratex),sum(overlapcoverratey),sum(updiststromax),
-sum(updiststrox),sum(updiststroy),sum(upsigrateavgmax),sum(upsigrateavgx),sum(upsigrateavgy),sum(uebootx),sum(uebooty),sum(model3diststrox),sum(model3diststroy)
+sum(updiststrox),sum(updiststroy),sum(upsigrateavgmax),sum(upsigrateavgx),sum(upsigrateavgy),sum(uebootx),sum(uebooty),sum(model3diststrox),sum(model3diststroy),sum(upsinrHighRatex)
 from 
 (
    $ltemr_new

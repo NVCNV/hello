@@ -48,7 +48,8 @@ sum(case when MRNAME='MR.LteScRSRP' AND KPI6 is not NULL THEN 1 else 0 end)ueboo
 sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not null and KPI2 is not null AND (kpi1-141)>-110 AND
 abs(KPI1 - KPI2) < 6 and KPI10=KPI12 then 1 else 0 end) model3diststrox,
 sum(case when MRNAME='MR.LteScRSRP' AND KPI1 is not null and KPI2 is not null AND (kpi1-141)>-110 AND
-abs(KPI1 - KPI2) < 6 then 1 else 0 end)model3diststroy
+abs(KPI1 - KPI2) < 6 then 1 else 0 end)model3diststroy,
+sum(case when mrName = 'MR.LteScRSRP' and kpi8-11<=3 then 1 else 0 end)upsinrHighRatex
           from $addRRUID
                  group by
                   imsi,msisdn,CELLID,rruid,gridid,eupordown,xdrid)t
@@ -62,7 +63,7 @@ alter table mro_kpi_mid_imsi_cell_grid_hour add partition(dt="$ANALY_DATE",h="$A
 
 insert into mro_kpi_mid_imsi_cell_grid_hour partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
 (ttime,imsi,msisdn,cellid,rruid,gridid,dir_state,kpi001,kpi002,kpi003,kpi004,kpi005,kpi006,kpi007,kpi010,kpi011,kpi012,
-kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019
+kpi013,kpi014,kpi015,kpi016,kpi017,kpi018,kpi019,kpi020
 )
 select "$CAL_DATE",imsi,msisdn,cellid,rruid,gridid,dir_state,sum(avgrsrpx),sum(commy),sum(avgrsrqx),sum(ltecoverratex),sum(weakcoverratex),
 sum(case when overlapcoverratex>=3 THEN 1 else 0 end)overlapcoverratex,
@@ -75,7 +76,8 @@ sum(updiststrox1+updiststrox2+updiststrox3+updiststrox4+updiststrox5+updiststrox
 MAX(upsigrateavgmax),sum(upsigrateavgx),sum(upsigrateavgy),
 sum(uebootx),sum(uebooty),
 sum(model3diststrox)model3diststrox,
-sum(model3diststrox)model3diststroy
+sum(model3diststrox)model3diststroy,
+sum(upsinrHighRatex)upsinrHighRatex
 from $MRSQL group by imsi,msisdn,cellid,rruid,gridid,dir_state;
 EOF
 
