@@ -44,9 +44,18 @@ object fingerprint_adjust_ott {
 
 
     val conf = new SparkConf().setAppName("fingerprint_adjust_ott")
+    conf.setMaster("spark://datanode01:7077")
+    conf.set("spark.driver.memory","100m")
+    conf.set("spark.testing.memory", "2147480000")
+
+//    conf.setJars(List("E:\\gitspace\\DT_Analy\\DT_Liaoning\\target\\DT_Liaoning-1.0-SNAPSHOT.jar"))
+//    conf.set("spark.executor.memory","4G")
+//    conf.set("spark.executor.cores","2")
+
 //      .set("spark.akka.timeout", "10000")
 //      .set("spark.network.timeout", "10000")
 //      .set("spark.akka.askTimeout", "10000")
+
 
     val sc = new SparkContext(conf)
     val hiveContext = new HiveContext(sc)
@@ -60,12 +69,33 @@ object fingerprint_adjust_ott {
 
     //提取校准数据OTT
     //提取校准数据OTT
-    val ott_adjust = hiveContext.sql("select longitude, latitude, grid_longitude, grid_latitude, gridx, gridy, ltescrsrp, gridid, ott_grid_result.objectid, " +
+/*    val ott_adjust = hiveContext.sql("select longitude, latitude, grid_longitude, grid_latitude, gridx, gridy, ltescrsrp, gridid, ott_grid_result.objectid, " +
       " base_parameter_cell.longitude as cell_longitude, base_parameter_cell.latitude as cell_latitude, base_parameter_cell.CellHorizonAngleToEast" +
       " ltencobjectid, ltencrsrp, c2.longitude as ncell_longitude, c2.latitude as ncell_latitude, c2.nCellHorizonAngleToEast" +
       " from ott_grid_result inner join base_parameter_cell on ott_grid_result.objectid = base_parameter_cell.objectid " +
-      " inner join base_parameter_cell c2 on ott_grid_result.ltencobjectid = base_parameter_cell.objectid")
-      .withColumn("calibrategridid", udfFunctions.getCalibrateGridId($"longitude", $"latitude", $"cell_longitude", $"cell_latitude", $"CellHorizonAngleToEast", lit(angleGridCount), lit(distanceGridCount), lit(distanceGridStep)))
+      " inner join base_parameter_cell c2 on ott_grid_result.ltencobjectid = base_parameter_cell.objectid")*/
+    val ott_adjust = hiveContext.sql("select otgr.longitude,"+
+      " otgr.latitude,"+
+      " otgr.grid_longitude,"+
+      " otgr.grid_latitude,"+
+      " otgr.gridx,"+
+      " otgr.gridy,"+
+      " otgr.ltescrsrp,"+
+      " otgr.gridid,"+
+      " otgr.objectid,"+
+      " c1.longitude as cell_longitude,"+
+      " c1.latitude as cell_latitude,"+
+      " c1.CellHorizonAngleToEast ltencobjectid,"+
+      " otgr.ltencrsrp,"+
+      " c2.longitude as ncell_longitude,"+
+      " c2.latitude as ncell_latitude,"+
+      " c2.nCellHorizonAngleToEast"+
+      " from ott_grid_result otgr"+
+      " inner join base_parameter_cell c1"+
+      " on otgr.objectid = c1.objectid"+
+      " inner join base_parameter_cell c2"+
+      " on otgr.ltencobjectid = c1.objectid")
+      .withColumn("calibrategridid", udfFunctions.getCalibrateGridId($"longitude", $"latitude", $"cell_longitude", $"cell_latitude", $"ltencobjectid", lit(angleGridCount), lit(distanceGridCount), lit(distanceGridStep)))
       .withColumn("ncalibrategridid", udfFunctions.getCalibrateGridId($"longitude", $"latitude", $"ncell_longitude", $"ncell_latitude", $"nCellHorizonAngleToEast", lit(angleGridCount), lit(distanceGridCount), lit(distanceGridStep)))
 
 
@@ -80,8 +110,8 @@ object fingerprint_adjust_ott {
 
     val measure_avgrsrp = sql("select calibrategridid, avg(ltescrsrp), objectid as rsrp from ott_adjust_outdoor group by calibrategridid, objectid")
     val simulate_avgrsrp = sql("select calibrategridid, avg(ltescrsrp), objectid as rsrp from finger_total0 group by calibrategridid, objectid")
-    val linklossCalibrate = measure_avgrsrp.join(simulate_avgrsrp, measure_avgrsrp("calibrategridid") === simulate_avgrsrp("calibrategridid") && measure_avgrsrp("objectid") === simulate_avgrsrp("objectid"))
-      .select(measure_avgrsrp("objectid"), measure_avgrsrp("calibrategridid"),
+    val linklossCalibrate = measure_avgrsrp.join(simulate_avgrsrp, measure_avgrsrp("calibrategridid") === simulate_avgrsrp("calibrategridid") && measure_avgrsrp("rsrp") === simulate_avgrsrp("rsrp"))
+      .select(measure_avgrsrp("rsrp"), measure_avgrsrp("calibrategridid"),
         udfFunctions.parseCalibrateGridId2Angle(measure_avgrsrp("calibrategridid"), lit(distanceGridCount), lit(angleGridCount)).as("angle"),
         measure_avgrsrp("rsrp") - simulate_avgrsrp("rsrp").as("deltarsrp"),
         udfFunctions.log10(udfFunctions.parseCalibrateGridId2Distance(measure_avgrsrp("calibrategridid"), lit(distanceGridCount), lit(distanceGridStep))).as("distance"),
