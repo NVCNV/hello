@@ -45,8 +45,8 @@ object fingerprint_adjust_ott {
 
     val conf = new SparkConf().setAppName("fingerprint_adjust_ott")
     conf.setMaster("spark://datanode01:7077")
-    conf.set("spark.driver.memory","100m")
-    conf.set("spark.testing.memory", "2147480000")
+//    conf.set("spark.driver.memory","100m")
+//    conf.set("spark.testing.memory", "2147480000")
 
 //    conf.setJars(List("E:\\gitspace\\DT_Analy\\DT_Liaoning\\target\\DT_Liaoning-1.0-SNAPSHOT.jar"))
 //    conf.set("spark.executor.memory","4G")
