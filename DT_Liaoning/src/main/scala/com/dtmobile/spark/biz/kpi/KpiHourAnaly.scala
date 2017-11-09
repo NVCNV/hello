@@ -284,14 +284,27 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) swx,
-         |	sum(
+         | sum(
          |		CASE
-         |		WHEN ProcedureType = 1 THEN
+         |		WHEN ProcedureType = 1
+         |		AND (
+         |			ProcedureStatus = 0
+         |			OR (
+         |				(
+         |					ProcedureStatus BETWEEN 1
+         |					AND 255
+         |				)
+         |				AND (
+         |					failurecause != 1000
+         |					OR failurecause IS NULL
+         |				)
+         |			)
+         |		) THEN
          |			1
          |		ELSE
          |			0
          |		END
-         |	) swy,
+         |	)swy,
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
@@ -1462,9 +1475,22 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) swx,
-         |	sum(
+         | sum(
          |		CASE
-         |		WHEN ProcedureType = 1 THEN
+         |		WHEN ProcedureType = 1
+         |		AND (
+         |			ProcedureStatus = 0
+         |			OR (
+         |				(
+         |					ProcedureStatus BETWEEN 1
+         |					AND 255
+         |				)
+         |				AND (
+         |					failurecause != 1000
+         |					OR failurecause IS NULL
+         |				)
+         |			)
+         |		) THEN
          |			1
          |		ELSE
          |			0
