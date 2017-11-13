@@ -105,10 +105,9 @@ object ParseOTTMain {
     sql("create table if not exists temp_S1_U_JOIN_S1_MME_FifTH_RESULT_Temp14_(s1_uoid string)")
     sql("create table if not exists temp_S1_U_JOIN_S1_MME_SixTH_RESULT_Temp15_(s1_uoid string,enodebid int,reporttime bigint,objectid int,imsi string,imei string,msisdn string,starttime bigint,endtime bigint,mmes1apueid string,latitude double,longitude double,uri string,host string,radius string,positiontype string,datatype string)")
     sql("create table if not exists S1_U_Inner_S1_MME_Offset_(s1_uoid string,enodebid int,reporttime bigint,objectid int,imsi string,imei string,msisdn string,starttime bigint,endtime bigint,mmes1apueid string,host string,radius string,positiontype string,datatype string,longitude double,latitude double,olng string,olat string,lngoffset string,latoffset string)")
-    sql("create table if not exists mr_join_signal_server_re_result_(mro_group_key string,s1_uoid string,msisdn string,enodebid int, ecellid int, objectid int, city string, longitude string, latitude string,ltescrsrp double, ltescrsrq double, ltescsinrul double, ltesctadv double,time_stamp timestamp)")
+    sql("create table if not exists mr_join_signal_server_re_result_(mro_group_key string,s1_uoid string,msisdn string,enodebid int, ecellid int, objectid int, city string, longitude string, latitude string,ltescrsrp double, ltescrsrq double, ltescsinrul double, ltesctadv double,time_stamp timestamp ,imsi bigint,starttime bigint,ltencoid int,ltencrsrp bigint)")
     sql("create table if not exists mr_join_signal_neighbour_re_result_(mro_group_key string,ltencoid int,enodebid int,ecellid int,ltescrsrp double)")
-    sql("create table if not exists mr_join_signal_server_real_result(key string,city string,objectid int,enodebid int,ecellid int,longitude string,latitude string,ltesctadv double,AverageLteScRSRP double,AverageLteScRSRQ double,AverageLteScSinrUL double,SameCount int)")
-
+    sql("create table if not exists mr_join_signal_server_real_result(key string,city string,objectid int,enodebid int,ecellid int,longitude string,latitude string,ltesctadv double, imsi bigint,starttime bigint,ltencoid int,ltencrsrp bigint,AverageLteScRSRP double,AverageLteScRSRQ double,AverageLteScSinrUL double,SameCount int)")
 
 
     sql("truncate table d_ens_http_4g_")
@@ -602,8 +601,9 @@ object ParseOTTMain {
          |  ,(case when t10.kpi5>1200 then null else t10.kpi5 end) as ltesctadv
          |  ,(t10.kpi8-11) as ltescsinrul
          |  ,t10.kpi10 ltescpci
-         |  ,cellid as ltencoid
-         |  from lte_mro_source t10
+         |  ,t10.kpi25 as ltencoid
+         |  ,t10.kpi2 as ltencrsrp
+         |  from result.lte_mro_source t10
          |  where  t10.dt=$begin_p_time and t10.h= $end_p_time
          |  ) t10
          |  on t10.objectid=t11.objectid
@@ -611,7 +611,7 @@ object ParseOTTMain {
          |
        """.stripMargin)
 
-      mro.createOrReplaceTempView("mro")
+    mro.createOrReplaceTempView("mro")
 
 
 
@@ -672,10 +672,9 @@ object ParseOTTMain {
     val mr_join_signal = s1u_inner_s1mme.join(mro, mro("objectid") === s1u_inner_s1mme("objectid")
       && mro("mmeues1apid") === s1u_inner_s1mme("mmes1apueid")
       && mro("time_stamp") >= s1u_inner_s1mme("starttime")
-      && mro("time_stamp") <= s1u_inner_s1mme("endtime"))
+      && mro("time_stamp") <= s1u_inner_s1mme("starttime")+120000)
       .join(res_cell_liaoning, mro("objectid") === res_cell_liaoning("objectid"))
-      .where(mro("ltesctadv").isNotNull
-        && isS1PointInCellUdf(s1u_inner_s1mme("latitude")
+      .where( mro("ltesctadv").isNotNull && isS1PointInCellUdf(s1u_inner_s1mme("latitude")
         , s1u_inner_s1mme("longitude")
         , res_cell_liaoning("latitude")
         , res_cell_liaoning("longitude"), mro("ltesctadv")))
@@ -686,6 +685,8 @@ object ParseOTTMain {
         , res_cell_liaoning("city")
         , s1u_inner_s1mme("latitude")
         , s1u_inner_s1mme("longitude")
+        , s1u_inner_s1mme("imsi")
+        , s1u_inner_s1mme("starttime")
         , mro("enodebid")
         , mro("objectid")
         , mro("ltescrsrp")
@@ -694,11 +695,77 @@ object ParseOTTMain {
         , mro("ltesctadv")
         , abs((mro("time_stamp") - s1u_inner_s1mme("starttime"))).alias("timediff")
         , mro("ltencoid")
-        , mro("ltescrsrp"))
+        , mro("ltencrsrp"))
 
 
+    mr_join_signal.createOrReplaceTempView("ott_result")
+    sql(
+      """
+        |create table if not exists ott_grid_result
+        |(
+        |time_stamp              bigint,
+        |mro_group_key           string,
+        |s1_uoid                 string,
+        |msisdn                  string,
+        |city                    string,
+        |latitude                double,
+        |longitude               double,
+        |imsi                    string,
+        |starttime               bigint,
+        |enodebid                int,
+        |objectid                bigint,
+        |ltescrsrp               bigint,
+        |ltescrsrq               decimal(23,1),
+        |ltescsinrul             bigint,
+        |ltesctadv               bigint,
+        |timediff                bigint,
+        |ltencoid                bigint,
+        |ltencrsrp               bigint,
+        |gridid                  string,
+        |grid_longitude          double,
+        |grid_latitude           double
+        |)
+      """.stripMargin)
 
+    sql(
+      """
+        |truncate table ott_grid_result
+      """.stripMargin)
 
+    sql(
+      """ insert into table ott_grid_result
+        |select t10.*,t11.gridid,t11.longitude as grid_longitude ,t11.latitude as grid_latitude
+        | from ott_result t10  inner join fingerprintdatabase_service_0 as t11
+        | on rpad(t10.latitude+0.00005,7,'0')=rpad(t11.latitude+0.00005,7,'0')
+        | and rpad(t10.longitude,8,'0')=rpad(t11.longitude,8,'0')
+      """.stripMargin)
+
+    sql(
+      """ insert into table ott_grid_result
+        |select t10.*,t11.gridid,t11.longitude as grid_longitude ,t11.latitude as grid_latitude
+        | from ott_result t10  inner join fingerprintdatabase_service_0 as t11
+        |on rpad(t10.latitude+0.00005,7,'0')=rpad(t11.latitude+0.00005,7,'0')
+        |and rpad(t10.longitude+0.00005,8,'0')=rpad(t11.longitude+0.00005,8,'0')
+        |
+      """.stripMargin)
+
+    sql(
+      """ insert into table ott_grid_result
+        |select t10.*,t11.gridid,t11.longitude as grid_longitude ,t11.latitude as grid_latitude
+        | from ott_result t10  inner join fingerprintdatabase_service_0  as t11
+        |on rpad(t10.latitude,7,'0')=rpad(t11.latitude,7,'0')
+        |and rpad(t10.longitude+0.00005,8,'0')=rpad(t11.longitude+0.00005,8,'0')
+      """.stripMargin)
+
+    sql(
+      """ insert into table ott_grid_result
+        |select t10.*,t11.gridid,t11.longitude as grid_longitude ,t11.latitude as grid_latitude
+        | from ott_result t10  inner join fingerprintdatabase_service_0 as t11
+        |on rpad(t10.latitude,7,'0')=rpad(t11.latitude,7,'0')
+        |and rpad(t10.longitude,8,'0')=rpad(t11.longitude,8,'0')
+      """.stripMargin)
+
+    hiveContext.stop()
 
 
 
@@ -710,13 +777,17 @@ object ParseOTTMain {
         , mr_join_signal("city")
         , mr_join_signal("latitude")
         , mr_join_signal("longitude")
+        , mr_join_signal("imsi")
+        , mr_join_signal("starttime")
         , mr_join_signal("enodebid")
         , mr_join_signal("objectid")
         , mr_join_signal("ltescrsrp")
         , mr_join_signal("ltescrsrq")
         , mr_join_signal("ltescsinrul")
         , mr_join_signal("ltesctadv")
-        , mr_join_signal("timediff"))
+        , mr_join_signal("timediff")
+        , mr_join_signal("ltencoid")
+        , mr_join_signal("ltencrsrp"))
       .distinct()
 
     val minTimeDiff = server.groupBy("s1_uoid")
@@ -741,7 +812,11 @@ object ParseOTTMain {
         , server("ltescrsrq")
         , server("ltescsinrul")
         , server("ltesctadv")
-        , server("time_stamp"))
+        , server("time_stamp")
+        , server("imsi")
+        , server("starttime")
+        , server("ltencoid")
+        , server("ltencrsrp"))
 
 
     // 6135170
@@ -778,6 +853,10 @@ object ParseOTTMain {
          |,enodebid
          |,ecellid
          |,ltesctadv
+         |,imsi
+         |,starttime
+         |,ltencoid
+         |,ltencrsrp
          |,pow(10
          |,(ltescrsrp/10)) as ltescrsrp
          |,pow(10,(ltescrsrq/10)) as ltescrsrq
@@ -794,6 +873,10 @@ object ParseOTTMain {
         , first("enodebid").alias("enodebid1")
         , first("ecellid").alias("ecellid1")
         , first("ltesctadv").alias("ltesctadv1")
+        ,first("imsi").alias("imsi1")
+        ,first("starttime").alias("starttime1")
+        ,first("ltencoid").alias("ltencoid1")
+        ,first("ltencrsrp").alias("ltencrsrp1")
         , (log10(avg("ltescrsrp")) * 10).alias("AverageLteScRSRP")
         , (log10(avg("ltescrsrq")) * 10).alias("AverageLteScRSRQ")
         , (log10(avg("ltescsinrul")) * 10).alias("AverageLteScSinrUL")
@@ -806,6 +889,10 @@ object ParseOTTMain {
         , "longitude1 as longitude"
         , "latitude1 as latitude"
         , "ltesctadv1 as ltesctadv"
+        , "imsi1 as imsi"
+        , "starttime1 as starttime"
+        , "ltencoid1 as ltencoid"
+        , "ltencrsrp1 as ltencrsrp"
         , "AverageLteScRSRP"
         , "AverageLteScRSRQ"
         , "AverageLteScSinrUL"
@@ -825,9 +912,15 @@ object ParseOTTMain {
          |,t10.objectid
          |,t10.longitude
          |,t10.latitude
+         |,t10.imsi
+         |,t10.starttime
+         |,t10.ltencoid
+         |,t10.ltencrsrp
          |,cast(((t10.longitude-t11.longitude)*(t10.longitude-t11.longitude)+(t10.latitude-t11.latitude)*(t10.latitude-t11.latitude))*10000000000000 as decimal(38,5)) distans
          |,t10.averageltescrsrp as rsrp
          |,t10.samecount
+         |,t11.longitude as gridlongitude
+         |,t11.latitude as gridlatitude
          |from mr_join_signal_server_real_result t10
          |inner join fingerprintdatabase_service_0 as t11
          | on rpad(t10.latitude+0.00005,7,'0')=rpad(t11.latitude+0.00005,7,'0')
@@ -852,9 +945,15 @@ object ParseOTTMain {
          |,t10.objectid
          |,t10.longitude
          |,t10.latitude
+         |,t10.imsi
+         |,t10.starttime
+         |,t10.ltencoid
+         |,t10.ltencrsrp
          |,cast(((t10.longitude-t11.longitude)*(t10.longitude-t11.longitude)+(t10.latitude-t11.latitude)*(t10.latitude-t11.latitude))*10000000000000 as decimal(38,5)) distans
          |,t10.averageltescrsrp as rsrp
          |,t10.samecount
+         |,t11.longitude as gridlongitude
+         |,t11.latitude as gridlatitude
          |from mr_join_signal_server_real_result as t10
          |inner join fingerprintdatabase_service_0 as t11
          |on rpad(t10.latitude+0.00005,7,'0')=rpad(t11.latitude+0.00005,7,'0')
@@ -863,10 +962,10 @@ object ParseOTTMain {
        """.stripMargin).repartition(200).persist()
 
 
-      ott_fingerlibrary_update_server_re_df01.createOrReplaceTempView(s"""temp_ott_fingerlibrary_update_server_re_df01$city """)
+    ott_fingerlibrary_update_server_re_df01.createOrReplaceTempView(s"""temp_ott_fingerlibrary_update_server_re_df01$city """)
 
 
-      sql(s""" insert into fingerlib_join_ott_server_re$city   select * from temp_ott_fingerlibrary_update_server_re_df01$city """)
+    sql(s""" insert into fingerlib_join_ott_server_re$city   select * from temp_ott_fingerlibrary_update_server_re_df01$city """)
 
 
     val ott_fingerlibrary_update_server_re_df02 = sql(
@@ -876,9 +975,15 @@ object ParseOTTMain {
          |,t10.objectid
          |,t10.longitude
          |,t10.latitude
+         |,t10.imsi
+         |,t10.starttime
+         |,t10.ltencoid
+         |,t10.ltencrsrp
          |,cast(((t10.longitude-t11.longitude)*(t10.longitude-t11.longitude)+(t10.latitude-t11.latitude)*(t10.latitude-t11.latitude))*10000000000000 as decimal(38,5)) distans
          |,t10.averageltescrsrp as rsrp
          |,t10.samecount
+         |,t11.longitude as gridlongitude
+         |,t11.latitude as gridlatitude
          |from mr_join_signal_server_real_result  as t10
          |inner join fingerprintdatabase_service_0  as t11
          |on rpad(t10.latitude,7,'0')=rpad(t11.latitude,7,'0')
@@ -902,9 +1007,15 @@ object ParseOTTMain {
          |,t10.objectid
          |,t10.longitude
          |,t10.latitude
+         |,t10.imsi
+         |,t10.starttime
+         |,t10.ltencoid
+         |,t10.ltencrsrp
          |,cast(((t10.longitude-t11.longitude)*(t10.longitude-t11.longitude)+(t10.latitude-t11.latitude)*(t10.latitude-t11.latitude))*10000000000000 as decimal(38,5)) distans
          |,t10.averageltescrsrp as rsrp
          |,t10.samecount
+         |,t11.longitude as gridlongitude
+         |,t11.latitude as gridlatitude
          |from mr_join_signal_server_real_result  as t10
          |inner join fingerprintdatabase_service_0 as t11
          |on rpad(t10.latitude,7,'0')=rpad(t11.latitude,7,'0')
@@ -916,7 +1027,7 @@ object ParseOTTMain {
     ott_fingerlibrary_update_server_re_df10.createOrReplaceTempView(s""" temp_ott_fingerlibrary_update_server_re_df11$city """)
 
 
-    hiveContext.stop()
+    //    hiveContext.stop()
     sql(s""" insert into fingerlib_join_ott_server_re$city  select * from temp_ott_fingerlibrary_update_server_re_df11$city """)
 
 
@@ -960,16 +1071,16 @@ object ParseOTTMain {
 
   }
 
-   /* def getDistanceByLatAndLon(lat: Double, lon: Double, lat1: Double, lon1: Double): Double = {
-      val mercator = lonLat2Mercator(lon, lat)
-      val mercator1 = lonLat2Mercator(lon1, lat1)
-      var doubleResult = math.sqrt((mercator._1 - mercator1._1) * (mercator._1 - mercator1._1) + (mercator._2 - mercator1._2) * (mercator._2 - mercator1._2))
-      if (doubleResult < 0.0 || doubleResult.toString.toUpperCase() == "NAN") {
-        // println(doubleResult)
-        doubleResult = 3001.0
-      }
-      doubleResult
-    }*/
+  /* def getDistanceByLatAndLon(lat: Double, lon: Double, lat1: Double, lon1: Double): Double = {
+     val mercator = lonLat2Mercator(lon, lat)
+     val mercator1 = lonLat2Mercator(lon1, lat1)
+     var doubleResult = math.sqrt((mercator._1 - mercator1._1) * (mercator._1 - mercator1._1) + (mercator._2 - mercator1._2) * (mercator._2 - mercator1._2))
+     if (doubleResult < 0.0 || doubleResult.toString.toUpperCase() == "NAN") {
+       // println(doubleResult)
+       doubleResult = 3001.0
+     }
+     doubleResult
+   }*/
 
 
 
@@ -1023,8 +1134,8 @@ object ParseOTTMain {
 
   def transformLat(x: Double, y: Double) = {
     val pi = 3.1415926535897932384626
-//    val a = 6378245.0
-//    val ee = 0.00669342162296594323
+    //    val a = 6378245.0
+    //    val ee = 0.00669342162296594323
     var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y  + 0.2 * Math.sqrt(Math.abs(x))
     ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0
     ret += (20.0 * Math.sin(y * pi) + 40.0 * Math.sin(y / 3.0 * pi)) * 2.0 / 3.0
@@ -1506,7 +1617,7 @@ object ParseOTTMain {
     else {
       val splitstr: String = "\\?|%3F|%3f|&|%26|%22%2c%22|%22%2C%22|%22%7d%2c%7b%22|%22%7D%2C%7B%22|%7b%22|%3B|%3b|%257C"
       val uriItems: Array[String] = uri.split(splitstr)
-//      var uriItem: String = ""
+      //      var uriItem: String = ""
       breakable {
         for (uriItem <- uriItems) {
           val uriItemLowerCase: String = uriItem.toLowerCase()
@@ -1536,12 +1647,12 @@ object ParseOTTMain {
     else {
       val splitstr: String = "\\?|%3F|%3f|&|%26|%22%2c%22|%22%2C%22|%22%7d%2c%7b%22|%22%7D%2C%7B%22|%7b%22|%3B|%3b|%257C"
       val uriItems: Array[String] = uri.split(splitstr)
-//      var uriItem: String = ""
+      //      var uriItem: String = ""
       breakable {
         for (uriItem <- uriItems) {
           val uriItemLowerCase: String = uriItem.toLowerCase()
           if (uriItemLowerCase.startsWith(lngEqualsChar.toLowerCase())) {
-//            var tempValue: String = uriItemLowerCase.substring(uriItem.toLowerCase().indexOf(lngEqualsChar.toLowerCase()) + lngEqualsChar.length)
+            //            var tempValue: String = uriItemLowerCase.substring(uriItem.toLowerCase().indexOf(lngEqualsChar.toLowerCase()) + lngEqualsChar.length)
             val tempArray: Array[String] = uri.split("%2C|%2c|,")
             if (tempArray != null && tempArray.length >= 2) {
               lat = tempArray(latIndex) //tempArray[latIndex]
