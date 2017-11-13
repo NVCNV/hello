@@ -302,7 +302,7 @@ public class DBUtil {
 
     public static void main(String ags[]) throws SQLException {
 
-        DBUtil db = new DBUtil("jdbc:oracle:thin:@172.30.4.159:1521/umv602");
+        DBUtil db = new DBUtil("jdbc:oracle://172.30.4.159:1521/morpho0712");
 
 //        HashMap<String,Integer> r = db.select() ;
 //
@@ -311,7 +311,7 @@ public class DBUtil {
         String[] p = new String[2];
         p[0] = "1";
         p[1] = "2";
-        db.executeQueryRS("select * from  ltepci_degree_condition", p);
+        db.executeQueryRS("select * from  volte_gt_user_ana_base60", p);
 
 
     }
