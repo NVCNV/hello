@@ -611,7 +611,7 @@ object ParseOTTMain {
          |
        """.stripMargin)
 
-      mro.createOrReplaceTempView("mro")
+    mro.createOrReplaceTempView("mro")
 
 
 
@@ -756,7 +756,6 @@ object ParseOTTMain {
         |on rpad(t10.latitude,7,'0')=rpad(t11.latitude,7,'0')
         |and rpad(t10.longitude+0.00005,8,'0')=rpad(t11.longitude+0.00005,8,'0')
       """.stripMargin)
-
 
     sql(
       """ insert into table ott_grid_result
@@ -963,10 +962,10 @@ object ParseOTTMain {
        """.stripMargin).repartition(200).persist()
 
 
-      ott_fingerlibrary_update_server_re_df01.createOrReplaceTempView(s"""temp_ott_fingerlibrary_update_server_re_df01$city """)
+    ott_fingerlibrary_update_server_re_df01.createOrReplaceTempView(s"""temp_ott_fingerlibrary_update_server_re_df01$city """)
 
 
-      sql(s""" insert into fingerlib_join_ott_server_re$city   select * from temp_ott_fingerlibrary_update_server_re_df01$city """)
+    sql(s""" insert into fingerlib_join_ott_server_re$city   select * from temp_ott_fingerlibrary_update_server_re_df01$city """)
 
 
     val ott_fingerlibrary_update_server_re_df02 = sql(
@@ -1028,7 +1027,7 @@ object ParseOTTMain {
     ott_fingerlibrary_update_server_re_df10.createOrReplaceTempView(s""" temp_ott_fingerlibrary_update_server_re_df11$city """)
 
 
-//    hiveContext.stop()
+    //    hiveContext.stop()
     sql(s""" insert into fingerlib_join_ott_server_re$city  select * from temp_ott_fingerlibrary_update_server_re_df11$city """)
 
 
@@ -1072,16 +1071,16 @@ object ParseOTTMain {
 
   }
 
-   /* def getDistanceByLatAndLon(lat: Double, lon: Double, lat1: Double, lon1: Double): Double = {
-      val mercator = lonLat2Mercator(lon, lat)
-      val mercator1 = lonLat2Mercator(lon1, lat1)
-      var doubleResult = math.sqrt((mercator._1 - mercator1._1) * (mercator._1 - mercator1._1) + (mercator._2 - mercator1._2) * (mercator._2 - mercator1._2))
-      if (doubleResult < 0.0 || doubleResult.toString.toUpperCase() == "NAN") {
-        // println(doubleResult)
-        doubleResult = 3001.0
-      }
-      doubleResult
-    }*/
+  /* def getDistanceByLatAndLon(lat: Double, lon: Double, lat1: Double, lon1: Double): Double = {
+     val mercator = lonLat2Mercator(lon, lat)
+     val mercator1 = lonLat2Mercator(lon1, lat1)
+     var doubleResult = math.sqrt((mercator._1 - mercator1._1) * (mercator._1 - mercator1._1) + (mercator._2 - mercator1._2) * (mercator._2 - mercator1._2))
+     if (doubleResult < 0.0 || doubleResult.toString.toUpperCase() == "NAN") {
+       // println(doubleResult)
+       doubleResult = 3001.0
+     }
+     doubleResult
+   }*/
 
 
 
@@ -1135,8 +1134,8 @@ object ParseOTTMain {
 
   def transformLat(x: Double, y: Double) = {
     val pi = 3.1415926535897932384626
-//    val a = 6378245.0
-//    val ee = 0.00669342162296594323
+    //    val a = 6378245.0
+    //    val ee = 0.00669342162296594323
     var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y  + 0.2 * Math.sqrt(Math.abs(x))
     ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0
     ret += (20.0 * Math.sin(y * pi) + 40.0 * Math.sin(y / 3.0 * pi)) * 2.0 / 3.0
@@ -1618,7 +1617,7 @@ object ParseOTTMain {
     else {
       val splitstr: String = "\\?|%3F|%3f|&|%26|%22%2c%22|%22%2C%22|%22%7d%2c%7b%22|%22%7D%2C%7B%22|%7b%22|%3B|%3b|%257C"
       val uriItems: Array[String] = uri.split(splitstr)
-//      var uriItem: String = ""
+      //      var uriItem: String = ""
       breakable {
         for (uriItem <- uriItems) {
           val uriItemLowerCase: String = uriItem.toLowerCase()
@@ -1648,12 +1647,12 @@ object ParseOTTMain {
     else {
       val splitstr: String = "\\?|%3F|%3f|&|%26|%22%2c%22|%22%2C%22|%22%7d%2c%7b%22|%22%7D%2C%7B%22|%7b%22|%3B|%3b|%257C"
       val uriItems: Array[String] = uri.split(splitstr)
-//      var uriItem: String = ""
+      //      var uriItem: String = ""
       breakable {
         for (uriItem <- uriItems) {
           val uriItemLowerCase: String = uriItem.toLowerCase()
           if (uriItemLowerCase.startsWith(lngEqualsChar.toLowerCase())) {
-//            var tempValue: String = uriItemLowerCase.substring(uriItem.toLowerCase().indexOf(lngEqualsChar.toLowerCase()) + lngEqualsChar.length)
+            //            var tempValue: String = uriItemLowerCase.substring(uriItem.toLowerCase().indexOf(lngEqualsChar.toLowerCase()) + lngEqualsChar.length)
             val tempArray: Array[String] = uri.split("%2C|%2c|,")
             if (tempArray != null && tempArray.length >= 2) {
               lat = tempArray(latIndex) //tempArray[latIndex]
