@@ -757,6 +757,7 @@ object ParseOTTMain {
         |and rpad(t10.longitude+0.00005,8,'0')=rpad(t11.longitude+0.00005,8,'0')
       """.stripMargin)
 
+
     sql(
       """ insert into table ott_grid_result
         |select t10.*,t11.gridid,t11.longitude as grid_longitude ,t11.latitude as grid_latitude
