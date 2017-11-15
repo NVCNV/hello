@@ -159,6 +159,7 @@ object fingerprint_adjust_ott {
         s =>  new LabeledPoint(s.deltarsrp, Vectors.dense(s.angle, s.distancelog10))
       }
 
+
       trainData.foreach(println(_))
       System.exit(1)
       //TODO : add a .rdd
