@@ -148,6 +148,7 @@ object fingerprint_adjust_ott {
       }
     }
 
+
     var predictData:RDD[LinkLossCalibrateModel] = null
 
 
