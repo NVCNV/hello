@@ -3,11 +3,13 @@ package com.dtmobile.spark.biz.inek.framework_v2.spark
 import java.io.FileInputStream
 import java.util.Properties
 
+import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.optimization.LBFGS
 import org.apache.spark.mllib.regression.{LabeledPoint, LinearRegressionWithSGD}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.functions._
@@ -137,7 +139,7 @@ object fingerprint_adjust_ott {
 
     //最小二乘法进行曲线拟合，每个小区拟合一个二元多次方程。计算出小区所有校准栅格deltarsrp
     // deltarsrp入hive表，表名：LinkLossCalibrateDatabase， 字段名："CalibrateGridID"，"DeltRSRP"，"ObjectID"，"SimulateRSRP"，"MeasureRSRP"
-    val cells = linklossCalibrate.groupByKey(s => s.objectid).count().filter(t => t._2 > 1).map(s => s._1).collect().toList
+    val cells = linklossCalibrate.groupByKey(s => s.objectid).count().filter(t => t._2 > 2).map(s => s._1).collect().toList
 
     val listBuffer = new ListBuffer[(Int, Int)]
     for(a <- 0 until angleGridCount)
@@ -148,34 +150,48 @@ object fingerprint_adjust_ott {
       }
     }
 
-
     var predictData:RDD[LinkLossCalibrateModel] = null
 
 
     for(cellId <- cells) {
       val linklossCalibrateEachCell = linklossCalibrate.filter(s => s.objectid == cellId)
 
-      val trainData = linklossCalibrateEachCell.rdd.map{
-        s =>  new LabeledPoint(s.deltarsrp, Vectors.dense(s.angle, s.distancelog10))
-      }
+//      val trainData = linklossCalibrateEachCell.map(s => (s.angle, s.distancelog10, s.deltarsrp))
+//          .toDF("angle", "distance", "deltarsrp")
+//
+//      val colArray = Array("angle", "distance")
+//      val assembler = new VectorAssembler().setInputCols(colArray).setOutputCol("features")
+//
+//      val vecDF: DataFrame = assembler.transform(trainData)
+//       // 设置线性回归参数
+//      val lr1 = new LinearRegression()
+//      val lr2 = lr1.setFeaturesCol("features").setLabelCol("deltarsrp").setFitIntercept(true)
+//      // RegParam：正则化
+//      val lr3 = lr2.setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+//      val lr = lr3
+//
+//      val lrModel = lr.fit(vecDF)
+//
+//      val data_predict = sc.makeRDD(listBuffer).map(s => (s._1 * 360 / angleGridCount, math.log10((s._2 + 0.5) * distanceGridStep), 0))
+//        .toDF("angle", "distance", "deltarsrp")
+//      val vecDF_predict: DataFrame = assembler.transform(data_predict)
+//      val predictions = lrModel.transform(vecDF)
+//
+//      predictions.show()
+//      System.exit(-1)
 
-
-      trainData.foreach(println(_))
-      System.exit(1)
-      //TODO : add a .rdd
-      val model = org.apache.spark.mllib.regression.LinearRegressionWithSGD.train(trainData,100)
-
-/*      val lr1 = new LinearRegression()
-      val lr2 = lr1.setFeaturesCol("features").setLabelCol("Murder").setFitIntercept(true)
-      val lr3 = lr2.setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
-      val lr = lr3
-      val model = lr.fit(trainData)*/
+      val trainData = linklossCalibrateEachCell.rdd.map(s => new LabeledPoint(s.deltarsrp, Vectors.dense(s.angle, s.distancelog10))).cache()
+      val numIterations = 100
+      val stepSize = 0.00000001
+      val model = org.apache.spark.mllib.regression.LinearRegressionWithSGD.train(trainData, numIterations, stepSize)
 
       //TODO : remove toSwq
       val predictDataEachCell =  sc.makeRDD(listBuffer).map(s => LinkLossCalibrateModel(cellId, s._1 * distanceGridCount + s._2, s._1,
         model.predict(Vectors.dense(s._1 * 360 / angleGridCount, math.log10((s._2 + 0.5) * distanceGridStep))),
         s._2, -1))
 
+      predictDataEachCell.foreach(println(_))
+      System.exit(0)
       if(predictData == null)
         predictData = predictDataEachCell
       else
