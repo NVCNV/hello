@@ -31,16 +31,16 @@ object ParseOTTMain {
 
 
     //TOD : 暂时写死
-    val city = "liaoning"
-    val begin_p_time = "20170921"
-    val end_p_time = "11"
-
+    val city = args(0)
+    val begin_p_time = args(1)
+    val end_p_time = args(2)
+    val master = args(3)
 
     /* val beginTime = "2017-07-24 11:00:00"
     val endTime = "2017-07-24 12:00:00"*/
 
 
-    val conf = new SparkConf().setAppName("ParserOTT").setMaster("spark://datanode01:7077")
+    val conf = new SparkConf().setAppName("ParserOTT").setMaster(master)
     val hiveContext = SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
 
 
