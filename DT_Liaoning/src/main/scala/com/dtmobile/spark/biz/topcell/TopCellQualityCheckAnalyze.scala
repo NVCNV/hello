@@ -11,7 +11,8 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   * TOP/质检小区分析
   *
   * @param analyDate 分析日期
-  * @param dcl 数据库
+  * @param dcl hive数据库
+  * @param warhouseDir 数据保存路径
   */
 class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:String) {
   val hourCond = "(08,09,10,11,12,13,14,15,16,17,18,19,20,21,22)"
@@ -40,34 +41,34 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     var strSQL:String = ""
     if ( isDispatch == 1){
       strSQL =s"""
-             |select exx.cellid, ${eType} eType, exx.falurecause, exx.cellregion, exx.prointerface, exx.exceptioncode,
+             |select exx.cellid, $eType eType, exx.falurecause, exx.cellregion, exx.prointerface, exx.exceptioncode,
              |sum(1)over(partition by exx.cellid) as cellcount,
              |mapf.meaning descf,mapf.suggestion suggestionf,mapw.meaning descw,mapw.suggestion suggestionw,
-             |'${topTip}' topTip, '${qualityTip}' qualityTip from (
-             |select * from ${dcl}.exception_analysis_w ex where ex.etype = ${eType} and (${exDate}) and ex.h in ${hourCond}
+             |'$topTip' topTip, '$qualityTip' qualityTip from (
+             |select * from $dcl.exception_analysis ex where ex.etype = $eType and ($exDate) and ex.h in $hourCond
              |) exx inner join (
              |select cellid from (
-             |select cellid, count(1), sum(case when hourcount >= ${hourNum} then 1 else 0 end) as daycount from (
-             |select cellid, dt, count(1) as hourcount from ${dcl}.volte_gt_cell_ana_base60_w vgu
-             |where (${date}) and vgu.h in ${hourCond} and
-             |${strConSQL}
+             |select cellid, count(1), sum(case when hourcount >= $hourNum then 1 else 0 end) as daycount from (
+             |select cellid, dt, count(1) as hourcount from $dcl.volte_gt_cell_ana_base60 vgu
+             |where ($date) and vgu.h in $hourCond and
+             |$strConSQL
              |group by cellid, dt) t1
              |group by cellid) t2
-             |where daycount >= ${dayNum}
+             |where daycount >= $dayNum
              |) kpi
              |on exx.cellid = kpi.cellid
-             |left join ${dcl}.EXCEPTIONMAP mapf on exx.prointerface=mapf.interface and exx.falurecause=mapf.code
-             |left join ${dcl}.EXCEPTIONMAP mapw on "UU"=mapw.interface and exx.exceptioncode=mapw.code
+             |left join $dcl.EXCEPTIONMAP mapf on exx.prointerface=mapf.interface and exx.falurecause=mapf.code
+             |left join $dcl.EXCEPTIONMAP mapw on "UU"=mapw.interface and exx.exceptioncode=mapw.code
              |where (exx.exceptioncode is not null and exx.exceptioncode <> '')
              |or (exx.falurecause is not null and exx.falurecause <> '')
              |or (exx.cellregion is not null and exx.cellregion <> '')
              |""".stripMargin
     }else{
       strSQL =s"""
-             |select 0 cellid, ${eType} eType, '' falurecause, '' cellregion, '' prointerface, '' exceptioncode,
+             |select 0 cellid, $eType eType, '' falurecause, '' cellregion, '' prointerface, '' exceptioncode,
              |0 cellcount,
              |'' descf,'' suggestionf,'' descw,'' suggestionw,
-             |'${topTip}' topTip, '${qualityTip}' qualityTip from ltecell where cellid=-1
+             |'$topTip' topTip, '$qualityTip' qualityTip from ltecell where cellid=-1
              |""".stripMargin
     }
 
@@ -82,18 +83,18 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     var strSQL:String = ""
     if ( isDispatch == 1){
       strSQL =s"""
-             |select cellid, ${eType} eType from (
-             |select cellid, count(1), sum(case when hourcount >= ${hourNum} then 1 else 0 end) as daycount from (
-             |select cellid, dt, count(1) as hourcount from ${dcl}.volte_gt_cell_ana_base60_w vgu
-             |where (${date}) and vgu.h in ${hourCond} and
-             |${strConSQL}
+             |select cellid, $eType eType from (
+             |select cellid, count(1), sum(case when hourcount >= $hourNum then 1 else 0 end) as daycount from (
+             |select cellid, dt, count(1) as hourcount from $dcl.volte_gt_cell_ana_base60 vgu
+             |where ($date) and vgu.h in $hourCond and
+             |$strConSQL
              |group by cellid, dt) t1
              |group by cellid) t2
-             |where daycount >= ${dayNum}
+             |where daycount >= $dayNum
              |""".stripMargin
     }else{
       strSQL =s"""
-             |select 0 cellid, ${eType} eType from ltecell where cellid=-1
+             |select 0 cellid, $eType eType from ltecell where cellid=-1
              |""".stripMargin
     }
 
@@ -121,13 +122,13 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_s1ContextTip = ""
   var z_s1ContextSQL = ""
   def GetS1ContextSQLInfo(analyDate:String):Unit ={
-    s1ContextTip = s"告警门限：小时级S1初始上下文建立成功率<${s1ContextSuccRatio}%，小时级S2初始上下文建立失败次数>${s1ContextFailCnt}次，质差小时数>=${s1ContextHour}小时，连续质差天数>=${s1ContextDay}天；\n"
-    z_s1ContextTip = s"；\n质检门限：小时级S1初始上下文建立成功率>=${z_s1ContextSuccRatio}%，达标小时数>=${z_s1ContextHour}小时，连续达标天数>=${z_s1ContextDay}天；"
+    s1ContextTip = s"告警门限：小时级S1初始上下文建立成功率<$s1ContextSuccRatio%，小时级S2初始上下文建立失败次数>${s1ContextFailCnt}次，质差小时数>=${s1ContextHour}小时，连续质差天数>=${s1ContextDay}天；\n"
+    z_s1ContextTip = s"；\n质检门限：小时级S1初始上下文建立成功率>=$z_s1ContextSuccRatio%，达标小时数>=${z_s1ContextHour}小时，连续达标天数>=${z_s1ContextDay}天；"
     s1ContextSQL = s"""
                   |(srqatt-srqsucc) > ${s1ContextFailCnt} and
                   |srqatt > 0 and (srqsucc/srqatt)*100 < ${s1ContextSuccRatio}""".stripMargin
     z_s1ContextSQL = s"""
-                  |(srqatt = 0 or (srqsucc/srqatt)*100 >= ${s1ContextSuccRatio})""".stripMargin
+                  |(srqatt = 0 or (srqsucc/srqatt)*100 >= ${z_s1ContextSuccRatio})""".stripMargin
     s1ContextDate = GetDateSQL(analyDate, s1ContextDay)
     s1ContextExDate = s1ContextDate.replace("vgu","ex")
     z_s1ContextDate = GetDateSQL(analyDate, z_s1ContextDay)
@@ -161,7 +162,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |(tauatt-tausucc) > ${tauFailCnt} and
              |tauatt > 0 and (tausucc/tauatt)*100 < ${tauSuccRatio}""".stripMargin
     z_tauSQL = s"""
-             |(tauatt = 0 or (tausucc/tauatt)*100 >= ${s1ContextSuccRatio})""".stripMargin
+             |(tauatt = 0 or (tausucc/tauatt)*100 >= ${z_tauSuccRatio})""".stripMargin
     tauDate = GetDateSQL(analyDate, tauDay)
     tauExDate = tauDate.replace("vgu","ex")
     z_tauDate = GetDateSQL(analyDate, z_tauDay)
@@ -193,9 +194,9 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     z_ueContextTip = s"；\n质检门限：小时级UE上下文异常释放率<=${z_ueContextAbnormalRatio}%，达标小时数>=${z_ueContextHour}小时，连续达标天数>=${z_ueContextDay}天；"
     ueContextSQL = s"""
                   |wirelessdrop > ${ueContextAbnormalCnt} and
-                  |wireless > 0 and (wirelessdrop/wireless)*100 > ${ueContextAbnormalRatio}""".stripMargin
+                  |wireless > 0 and (wirelessdrop/wireless)*100 > $ueContextAbnormalRatio""".stripMargin
     z_ueContextSQL = s"""
-                  |(wireless = 0 or (wirelessdrop/wireless)*100 >= ${s1ContextSuccRatio})""".stripMargin
+                  |(wireless = 0 or (wirelessdrop/wireless)*100 <= $z_ueContextAbnormalRatio)""".stripMargin
     ueContextDate = GetDateSQL(analyDate, ueContextDay)
     ueContextExDate = ueContextDate.replace("vgu","ex")
     z_ueContextDate = GetDateSQL(analyDate, z_ueContextDay)
@@ -227,9 +228,11 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     z_handoverTip = s"；\n质检门限：小时级切换成功率>=${z_handoverSuccRatio}%，达标小时数>=${z_handoverHour}小时，连续达标天数>=${z_handoverDay}天；"
     handoverSQL = s"""
                  |(lteswatt+enbx2swy+eabs1swy-lteswsucc-enbx2swx-eabs1swx) > ${handoverFailCnt} and
-                 |(lteswatt+enbx2swy+eabs1swy) > 0 and (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 < ${handoverSuccRatio}""".stripMargin
+                 |(lteswatt+enbx2swy+eabs1swy) > 0
+                 |and (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 < ${handoverSuccRatio}""".stripMargin
     z_handoverSQL = s"""
-                 |((lteswatt+enbx2swy+eabs1swy) = 0 or (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 >= ${s1ContextSuccRatio})""".stripMargin
+                 |((lteswatt+enbx2swy+eabs1swy) = 0
+                 |or (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 >= ${z_handoverSuccRatio})""".stripMargin
     handoverDate = GetDateSQL(analyDate, handoverDay)
     handoverExDate = handoverDate.replace("vgu","ex")
     z_handoverDate = GetDateSQL(analyDate, z_handoverDay)
@@ -263,7 +266,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                |imsiregatt > ${imsRegCnt} and
                |imsiregatt > 0 and (imsiregsucc/imsiregatt)*100 < ${imsRegSuccRatio}""".stripMargin
     z_imsRegSQL = s"""
-               |(imsiregatt = 0 or (imsiregsucc/imsiregatt)*100 >= ${s1ContextSuccRatio})""".stripMargin
+               |(imsiregatt = 0 or (imsiregsucc/imsiregatt)*100 >= ${z_imsRegSuccRatio})""".stripMargin
     imsRegDate = GetDateSQL(analyDate, imsRegDay)
     imsRegExDate = imsRegDate.replace("vgu","ex")
     z_imsRegDate = GetDateSQL(analyDate, z_imsRegDay)
@@ -297,7 +300,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                    |voltemcatt > ${voLteVoiceCnt} and
                    |voltemcatt > 0 and (voltemcsucc/voltemcatt)*100 < ${voLteVoiceSuccRatio}""".stripMargin
     z_voLteVoiceSQL = s"""
-                   |(voltemcatt = 0 or (voltemcsucc/voltemcatt)*100 >= ${s1ContextSuccRatio})""".stripMargin
+                   |(voltemcatt = 0 or (voltemcsucc/voltemcatt)*100 >= ${z_voLteVoiceSuccRatio})""".stripMargin
     voLteVoiceDate = GetDateSQL(analyDate, voLteVoiceDay)
     voLteVoiceExDate = voLteVoiceDate.replace("vgu","ex")
     z_voLteVoiceDate = GetDateSQL(analyDate, z_voLteVoiceDay)
@@ -328,11 +331,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     voLteVoiceDropTip = s"告警门限：小时级VoLTE语音掉话率>${voLteVoiceDropRatio}%，小时级VoLTE语音掉话次数>${voLteVoiceDropCnt}次，质差小时数>=${voLteVoiceDropHour}小时，连续质差天数>=${voLteVoiceDropDay}天；\n"
     z_voLteVoiceDropTip = s"；\n质检门限：小时级VoLTE语音掉话率<=${z_voLteVoiceDropRatio}%，达标小时数>=${z_voLteVoiceDropHour}小时，连续达标天数>=${z_voLteVoiceDropDay}天；"
     voLteVoiceDropSQL = s"""
-                      |-- (contextcount - contextsucc) > ${voLteVoiceDropCnt} and
-                      |contextcount > 0 and (contextsucc / contextcount)*100 > ${voLteVoiceDropRatio}""".stripMargin
+                      |voltemchandover > ${voLteVoiceDropCnt} and
+                      |(voltemcsucc) > 0 and (voltemchandover / (voltemcsucc))*100 > ${voLteVoiceDropRatio}""".stripMargin
     z_voLteVoiceDropSQL = s"""
-                      |-- (contextcount - contextsucc) > ${s1ContextFailCnt} and
-                      |(contextcount = 0 or (contextsucc / contextcount)*100 >= ${s1ContextSuccRatio})""".stripMargin
+                      |((voltemcsucc) = 0 or (voltemchandover / (voltemcsucc))*100 <= ${z_voLteVoiceDropRatio})""".stripMargin
     voLteVoiceDropDate = GetDateSQL(analyDate, voLteVoiceDropDay)
     voLteVoiceDropExDate = voLteVoiceDropDate.replace("vgu","ex")
     z_voLteVoiceDropDate = GetDateSQL(analyDate, z_voLteVoiceDropDay)
@@ -363,10 +365,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     eSrvccTip = s"告警门限：小时级eSRVCC成功率<${eSrvccSuccRatio}%，小时级eSRVCC请求次数>${eSrvccCnt}次，质差小时数>=${eSrvccHour}小时，连续质差天数>=${eSrvccDay}天；\n"
     z_eSrvccTip = s"；\n质检门限：小时级eSRVCC成功率>=${z_eSrvccSuccRatio}%，达标小时数>=${z_eSrvccHour}小时，连续达标天数>=${z_eSrvccDay}天；"
     eSrvccSQL = s"""
-               |voltemchandover > ${eSrvccCnt} and
-               |volteanswer > 0 and (voltemchandover/volteanswer)*100 < ${eSrvccSuccRatio}""".stripMargin
+               |srvccatt > ${eSrvccCnt} and
+               |srvccatt > 0 and (srvccsucc/srvccatt)*100 < ${eSrvccSuccRatio}""".stripMargin
     z_eSrvccSQL = s"""
-               |(volteanswer = 0 or (voltemchandover/volteanswer)*100 >= ${s1ContextSuccRatio})""".stripMargin
+               |(srvccatt = 0 or (srvccsucc/srvccatt)*100 >= ${z_eSrvccSuccRatio})""".stripMargin
     eSrvccDate = GetDateSQL(analyDate, eSrvccDay)
     eSrvccExDate = eSrvccDate.replace("vgu","ex")
     z_eSrvccDate = GetDateSQL(analyDate, z_eSrvccDay)
@@ -554,7 +556,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |where t3.r1 <= 1
          |) t4
          |) t5 group by cellid,eType,topTip,qualityTip
-         |) t6 left join ltecell lte on t6.cellid = lte.cellid
+         |) t6 inner join ltecell lte on t6.cellid = lte.cellid
       """.stripMargin).repartition(1).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/topcell/dt=${analyDate}")//.show() //createOrReplaceTempView("note_tmp") //show()
 
     sql(
@@ -585,7 +587,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |${z_strVoLteVoiceDropSQL}
          |union all
          |${z_streSrvccSQL}
-         |) t6 left join ltecell lte on t6.cellid = lte.cellid
+         |) t6 inner join ltecell lte on t6.cellid = lte.cellid
        """.stripMargin).repartition(1).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/qualityCheck/dt=${analyDate}")//.show()
 
     return
@@ -612,7 +614,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
 object TopCellQualityCheck {
 
   def main(args: Array[String]): Unit = {
-    val analysis = new TopCellQualityCheckAnalyze("20170503","result","/user/hive/warehouse/liaoning.db/")
+    val analysis = new TopCellQualityCheckAnalyze("20170427","result","/user/hive/warehouse/liaoning.db/")
     val conf = new SparkConf().setAppName("TopCell")
     val sparkSession = SparkSessionSingleton.getInstance(conf)
     analysis.analyse(sparkSession)
