@@ -12,12 +12,14 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
   *
   * @param analyDate 分析日期
   * @param dcl hive数据库
-  * @param warhouseDir 数据保存路径
+  * @param warhouseDir 数据结果保存路径
+  * @param orcl 门限Oracle数据库
   */
-class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:String) {
+class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:String, orcl:String) {
   val hourCond = "(08,09,10,11,12,13,14,15,16,17,18,19,20,21,22)"
   val wirelesscode = "(1,2,3,4,11,15,17,18,19,23,24,25,26,27,28)"
 
+  //获取时间SQL
   def GetDateSQL(analyDate:String, dayNum:Int):String ={
     var date=""
     var dayTmp=""
@@ -63,7 +65,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |or (exx.falurecause is not null and exx.falurecause <> '')
              |or (exx.cellregion is not null and exx.cellregion <> '')
              |""".stripMargin
-    }else{
+    }else{ //这个是一个查询为空的SQL，为了后面的union all
       strSQL =s"""
              |select 0 cellid, $eType eType, '' falurecause, '' cellregion, '' prointerface, '' exceptioncode,
              |0 cellcount,
@@ -92,7 +94,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |group by cellid) t2
              |where daycount >= $dayNum
              |""".stripMargin
-    }else{
+    }else{ //这个是一个查询为空的SQL，为了后面的union all
       strSQL =s"""
              |select 0 cellid, $eType eType from ltecell where cellid=-1
              |""".stripMargin
@@ -375,14 +377,102 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     z_eSrvccExDate = z_eSrvccDate.replace("vgu","ex")
   }
 
+  def getCondition(sparkSession: SparkSession): Unit = {
+    val oracle:String = "jdbc:oracle:thin:@"+orcl
+    sparkSession.read.format("jdbc").option("url", s"$oracle")
+      .option("dbtable","NUMBERIDEN")
+      .option("user", "scott")
+      .option("password", "tiger")
+      .option("driver", "oracle.jdbc.driver.OracleDriver")
+      .load().createOrReplaceTempView("NUMBERIDEN")
+
+    val t = sparkSession.sql("select LINENAME,UPORDOWN from NUMBERIDEN").collectAsList()
+    var i = 0
+    var field = ""
+    val size = t.size()-1
+    if ( !t.isEmpty ) {
+      for ( i <- 0 to size ) {
+        field = t.get(i).getString(0)
+        if (field.equals("")) s1ContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) s1ContextSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) s1ContextFailCnt = t.get(i).getInt(1)
+        else if (field.equals("")) s1ContextHour = t.get(i).getInt(1)
+        else if (field.equals("")) s1ContextDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_s1ContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_s1ContextSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_s1ContextHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_s1ContextDay = t.get(i).getInt(1)
+        else if (field.equals("")) tauDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) tauSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) tauFailCnt = t.get(i).getInt(1)
+        else if (field.equals("")) tauHour = t.get(i).getInt(1)
+        else if (field.equals("")) tauDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_tauDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_tauSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_tauHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_tauDay = t.get(i).getInt(1)
+        else if (field.equals("")) ueContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) ueContextAbnormalRatio = t.get(i).getInt(1)
+        else if (field.equals("")) ueContextAbnormalCnt = t.get(i).getInt(1)
+        else if (field.equals("")) ueContextHour = t.get(i).getInt(1)
+        else if (field.equals("")) ueContextDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_ueContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_ueContextAbnormalRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_ueContextHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_ueContextDay = t.get(i).getInt(1)
+        else if (field.equals("")) handoverDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) handoverSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) handoverFailCnt = t.get(i).getInt(1)
+        else if (field.equals("")) handoverHour = t.get(i).getInt(1)
+        else if (field.equals("")) handoverDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_handoverDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_handoverSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_handoverHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_handoverDay = t.get(i).getInt(1)
+        else if (field.equals("")) imsRegDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) imsRegSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) imsRegCnt = t.get(i).getInt(1)
+        else if (field.equals("")) imsRegHour = t.get(i).getInt(1)
+        else if (field.equals("")) imsRegDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_imsRegDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_imsRegSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_imsRegHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_imsRegDay = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceCnt = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceHour = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDay = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDropDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDropRatio = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDropCnt = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDropHour = t.get(i).getInt(1)
+        else if (field.equals("")) voLteVoiceDropDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDropDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDropRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDropHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_voLteVoiceDropDay = t.get(i).getInt(1)
+        else if (field.equals("")) eSrvccDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) eSrvccSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) eSrvccCnt = t.get(i).getInt(1)
+        else if (field.equals("")) eSrvccHour = t.get(i).getInt(1)
+        else if (field.equals("")) eSrvccDay = t.get(i).getInt(1)
+        else if (field.equals("")) z_eSrvccDispatch = t.get(i).getInt(1)
+        else if (field.equals("")) z_eSrvccSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("")) z_eSrvccHour = t.get(i).getInt(1)
+        else if (field.equals("")) z_eSrvccDay = t.get(i).getInt(1)
+      }
+    }
+  }
+
   def analyse(implicit sparkSession: SparkSession): Unit ={
     import sparkSession.sql
-    var date=""
-    var dayTmp=""
-    var exDate = ""
-    var i = 1
-    //根据天数动态拼接查询天数
 
+    //注册方法getNote，用于格式化Top小区的描述字段
     sparkSession.udf.register("getNote", (strTxt:String)=>{
       var strNote = strTxt
       var i = 1
@@ -393,52 +483,64 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
       strNote
     })
 
+    //获取数据库里面指标门限设置
+    getCondition(sparkSession)
+
+    //获取 S1初始上下文建立失败 相关SQL等
     GetS1ContextSQLInfo(analyDate)
     val strS1ContextSQL = GetExceptionTmpSQL(dcl, s1ContextDate, s1ContextExDate,s1ContextHour,s1ContextDay,s1ContextSQL,
       s1Context, s1ContextTip, z_s1ContextTip, s1ContextDispatch) //3
     val z_strS1ContextSQL = GetExceptionTmpSQL_z(dcl, z_s1ContextDate, z_s1ContextExDate,z_s1ContextHour,z_s1ContextDay,
         z_s1ContextSQL, s1Context, z_s1ContextDispatch) //3
 
+    //获取 TAU失败 相关SQL等
     GetTauSQLInfo(analyDate)
     val strTauSQL = GetExceptionTmpSQL(dcl, tauDate, tauExDate, tauHour, tauDay, tauSQL, tau, tauTip, z_tauTip,tauDispatch) //8
     val z_strTauSQL = GetExceptionTmpSQL_z(dcl, z_tauDate, z_tauExDate, z_tauHour, z_tauDay, z_tauSQL, tau,z_tauDispatch) //8
 
+    //获取 UE上下文异常释放 相关SQL等
     GetUeContextSQLInfo(analyDate)
     val strUeContextSQL = GetExceptionTmpSQL(dcl, ueContextDate, ueContextExDate, ueContextHour, ueContextDay,
       ueContextSQL, ueContext, ueContextTip, z_ueContextTip,ueContextDispatch) //9
     val z_strUeContextSQL = GetExceptionTmpSQL_z(dcl, z_ueContextDate, z_ueContextExDate, z_ueContextHour, z_ueContextDay,
         z_ueContextSQL, ueContext,z_ueContextDispatch) //9
 
+    //获取 切换失败 相关SQL等
     GetHandoverSQLInfo(analyDate)
     val strHandoverSQL = GetExceptionTmpSQL(dcl, handoverDate, handoverExDate, handoverHour, handoverDay, handoverSQL,
       handover, handoverTip, z_handoverTip,handoverDispatch) //10
     val z_strHandoverSQL = GetExceptionTmpSQL_z(dcl, z_handoverDate, z_handoverExDate, z_handoverHour, z_handoverDay,
         z_handoverSQL, handover,z_handoverDispatch) //10
 
+    //获取 IMS注册失败 相关SQL等
     GetImsRegSQLInfo(analyDate)
     val strImsRegSQL = GetExceptionTmpSQL(dcl, imsRegDate, imsRegExDate, imsRegHour, imsRegDay, imsRegSQL, imsReg,
       imsRegTip, z_imsRegTip,imsRegDispatch) //1
     val z_strImsRegSQL = GetExceptionTmpSQL_z(dcl, z_imsRegDate, z_imsRegExDate, z_imsRegHour, z_imsRegDay, z_imsRegSQL,
         imsReg,z_imsRegDispatch) //1
 
+    //获取 VoLTE语音未接通 相关SQL等
     GetVolteVoiceSQLInfo(analyDate)
     val strVoLteVoiceSQL = GetExceptionTmpSQL(dcl, voLteVoiceDate, voLteVoiceExDate, voLteVoiceHour, voLteVoiceDay,
       voLteVoiceSQL, voLteVoice, voLteVoiceTip, z_voLteVoiceTip,voLteVoiceDispatch) //4
     val z_strVoLteVoiceSQL = GetExceptionTmpSQL_z(dcl, z_voLteVoiceDate, z_voLteVoiceExDate, z_voLteVoiceHour, z_voLteVoiceDay,
         z_voLteVoiceSQL, voLteVoice,z_voLteVoiceDispatch) //4
 
+    //获取 VoLTE语音掉话 相关SQL等
     GetVolteVoiceDropSQLInfo(analyDate)
     val strVoLteVoiceDropSQL = GetExceptionTmpSQL(dcl, voLteVoiceDropDate, voLteVoiceDropExDate, voLteVoiceDropHour,
       voLteVoiceDropDay, voLteVoiceDropSQL, voLteVoiceDrop, voLteVoiceDropTip, z_voLteVoiceDropTip,voLteVoiceDropDispatch) //5
     val z_strVoLteVoiceDropSQL = GetExceptionTmpSQL_z(dcl, z_voLteVoiceDropDate, z_voLteVoiceDropExDate, z_voLteVoiceDropHour,
         z_voLteVoiceDropDay, z_voLteVoiceDropSQL, voLteVoiceDrop,z_voLteVoiceDropDispatch) //5
 
+    //获取 eSRVCC切换失败 相关SQL等
     GeteSrvccSQLInfo(analyDate)
     val streSrvccSQL = GetExceptionTmpSQL(dcl, eSrvccDate, eSrvccExDate, eSrvccHour, eSrvccDay, eSrvccSQL, eSrvcc,
       eSrvccTip, z_eSrvccTip,eSrvccDispatch) //13
     val z_streSrvccSQL = GetExceptionTmpSQL_z(dcl, z_eSrvccDate, z_eSrvccExDate, z_eSrvccHour, z_eSrvccDay, z_eSrvccSQL,
         eSrvcc,z_eSrvccDispatch) //13
 
+    //etype 与 问题 映射SQL
     var strEType:String = ""
     strEType =
       s"""
@@ -453,6 +555,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |     else null end
        """.stripMargin
 
+    //查出TopCell相对应的异常事件
     sql(
       s"""
          |${strS1ContextSQL}
@@ -472,6 +575,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |${streSrvccSQL}
        """.stripMargin).createOrReplaceTempView("context_tmp")
 
+    //统计并生成Top小区表
     sql(
       s"""
          |select "辽宁" province,
@@ -559,6 +663,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |) t6 inner join ltecell lte on t6.cellid = lte.cellid
       """.stripMargin).repartition(1).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/topcell/dt=${analyDate}")//.show() //createOrReplaceTempView("note_tmp") //show()
 
+    //统计并生成质检小区表
     sql(
       s"""
          |select "辽宁" province,
@@ -613,8 +718,20 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
 
 object TopCellQualityCheck {
 
+  /**
+    * args(0) 分析日期
+    * args(1) hive数据库
+    * args(2) 数据结果保存路径
+    * args(3) 门限Oracle数据库
+    */
   def main(args: Array[String]): Unit = {
-    val analysis = new TopCellQualityCheckAnalyze("20170427","result","/user/hive/warehouse/liaoning.db/")
+    if (args.length < 4 ){
+      println(s"Please input four parameters, Thank you!\n")
+      return
+    }
+
+//    val analysis = new TopCellQualityCheckAnalyze("20170427","result","/user/hive/warehouse/liaoning.db/","172.30.4.159:1521/ahh")
+    val analysis = new TopCellQualityCheckAnalyze(args(0),args(1),args(2),args(3))
     val conf = new SparkConf().setAppName("TopCell")
     val sparkSession = SparkSessionSingleton.getInstance(conf)
     analysis.analyse(sparkSession)
