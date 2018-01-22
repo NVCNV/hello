@@ -1688,7 +1688,13 @@ swy int,
 attachx int,
 attachy int,
 voltesucc int,
-srvccsuccS1 int)
+srvccsuccS1 int,
+s1contextbuild bigint,
+enbrelese bigint,
+nenbrelese bigint,
+remaincontext bigint,
+srvccsucc_Sv bigint,
+srvccatt_Sv bigint)
 PARTITIONED BY ( 
   dt string, 
   h string)
@@ -1745,7 +1751,13 @@ swy int,
 attachx int,
 attachy int,
 voltesucc int,
-srvccsuccS1 int)
+srvccsuccS1 int,
+s1contextbuild bigint,
+enbrelese bigint,
+nenbrelese bigint,
+remaincontext bigint,
+srvccsucc_Sv bigint,
+srvccatt_Sv bigint)
 PARTITIONED BY ( 
   dt string)
 ROW FORMAT DELIMITED 
@@ -1804,7 +1816,13 @@ swy int,
 attachx int,
 attachy int,
 voltesucc int,
-srvccsuccS1 int)
+srvccsuccS1 int,
+s1contextbuild bigint,
+enbrelese bigint,
+nenbrelese bigint,
+remaincontext bigint,
+srvccsucc_Sv bigint,
+srvccatt_Sv bigint)
 PARTITIONED BY ( 
   dt string, 
   h string)
@@ -1864,7 +1882,13 @@ swy int,
 attachx int,
 attachy int,
 voltesucc int,
-srvccsuccS1 int)
+srvccsuccS1 int,
+s1contextbuild bigint,
+enbrelese bigint,
+nenbrelese bigint,
+remaincontext bigint,
+srvccsucc_Sv bigint,
+srvccatt_Sv bigint)
 PARTITIONED BY ( 
   dt string)
 ROW FORMAT DELIMITED 
