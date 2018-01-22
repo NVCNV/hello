@@ -185,7 +185,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         |  0 AS srvccsuccS1
+         |  0 AS srvccsuccS1,
+         |  0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	 $DDB.TB_XDR_IFC_UU
          |WHERE
@@ -305,7 +311,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |sum(case when interface=2 and ProcedureType=1 and cellid=targetcellid then 1
+         |when interface=2 and ProcedureType=1 and cellid<>targetcellid then -1
+         |else 0 end)remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$DDB.TB_XDR_IFC_X2
          |WHERE
@@ -383,7 +397,29 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         |  0 AS srvccsuccS1
+         |  0 AS srvccsuccS1,
+         |  0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |		AND RESULT = 0 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	)srvccsucc_Sv,
+         |sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |  THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	)srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -429,7 +465,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -439,7 +479,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = $procedurestatussuccess THEN
+         |		AND ProcedureStatus = $procedurestatussuccess
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -464,7 +508,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -487,7 +537,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypeaudio
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -497,7 +550,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypeaudio THEN
+         |		AND ServiceType = $ServiceTypeaudio AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -508,7 +564,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -518,7 +577,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypevideo THEN
+         |		AND ServiceType = $ServiceTypevideo AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -615,7 +677,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -625,7 +691,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = $procedurestatussuccess THEN
+         |		AND ProcedureStatus = $procedurestatussuccess
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -659,7 +729,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -683,7 +759,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypeaudio
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -693,7 +772,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypeaudio THEN
+         |		AND ServiceType = $ServiceTypeaudio AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -704,7 +786,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -714,7 +799,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypevideo THEN
+         |		AND ServiceType = $ServiceTypevideo AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -811,7 +899,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -821,7 +912,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = $procedurestatussuccess THEN
+         |		AND ProcedureStatus = $procedurestatussuccess
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -855,7 +950,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_mw
          |WHERE
@@ -1074,7 +1175,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |1
          |ELSE
          |0
-         |END)srvccsuccS1
+         |END)srvccsuccS1,
+         |sum(case when interface=5 and ProcedureType=18 then 1 else 0 end)s1contextbuild,
+         |sum(case when interface=5 and ProcedureType=20 and Keyword1=1 then 1 else 0 end)enbrelese,
+         |sum(case when interface=5 and proceduretype=20 and Keyword1=1 and requestcause in (20,23,24,28,128) then 1 else 0 end)nenbrelese,
+         |sum(case when interface=5 and (ProcedureType=15 or ProcedureType=18)and Procedurestatus=1 then 1
+         |when interface=5 and (ProcedureType=16 or ProcedureType=20)and Procedurestatus=1 then -1
+         |else 0 end)remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -1138,7 +1247,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	(
          |		SELECT DISTINCT
@@ -1234,7 +1349,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS attachx,
          |0 AS attachy,
          |0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |$SDB.tb_xdr_ifc_gxrx
          |WHERE
@@ -1301,7 +1422,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(attachx) as attachx,
          |	sum(attachy) as attachy,
          |	sum(voltesucc) as voltesucc,
-         |  sum(srvccsuccS1) as srvccsuccS1
+         |  sum(srvccsuccS1) as srvccsuccS1,
+         |  sum(s1contextbuild) as s1contextbuild,
+         |sum(enbrelese) as enbrelese,
+         |sum(nenbrelese) as nenbrelese,
+         |sum(remaincontext) as remaincontext,
+         |sum(srvccsucc_Sv) as srvccsucc_Sv,
+         |sum(srvccatt_Sv) as srvccatt_Sv
          |from temp_kpi
          |group by imsi,
          |	msisdn,
@@ -1456,7 +1583,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_UU
          |WHERE
@@ -1571,7 +1704,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |sum(case when interface=2 and ProcedureType=1 and cellid=targetcellid then 1
+         |when interface=2 and ProcedureType=1 and cellid=targetcellid then -1
+         |else 0 end)remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_X2
          |WHERE
@@ -1644,7 +1785,29 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |		AND RESULT = 0 THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	)srvccsucc_Sv,
+         |sum(
+         |		CASE
+         |		WHEN ProcedureType = 1
+         |THEN
+         |			1
+         |		ELSE
+         |			0
+         |		END
+         |	)srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_SV
          |WHERE
@@ -1685,7 +1848,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1695,7 +1861,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 1 THEN
+         |		AND ProcedureStatus = 1 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1720,7 +1889,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -1738,7 +1913,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = 1
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1748,7 +1926,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1759,7 +1940,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1769,7 +1953,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypevideo THEN
+         |		AND ServiceType = $ServiceTypevideo AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1866,7 +2053,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1876,7 +2066,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 0 THEN
+         |		AND ProcedureStatus = 0 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1910,7 +2103,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -1929,7 +2128,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = 1
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1939,7 +2141,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = 1 THEN
+         |		AND ServiceType = 1 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1950,7 +2155,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo
-         |		AND alertingtime <> 4294967295 THEN
+         |		AND alertingtime <> 4294967295 AND sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -1960,7 +2168,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypevideo THEN
+         |		AND ServiceType = $ServiceTypevideo AND sourceneip in
+('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -2057,7 +2268,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN ProcedureType = 1
-         |		AND interface = 14 THEN
+         |		AND interface = 14
+         |  and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -2067,7 +2282,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 0 THEN
+         |		AND ProcedureStatus = 0 and sourceneip in
+         |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
+         |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
+         |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
          |			1
          |		ELSE
          |			0
@@ -2101,7 +2319,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			0
          |		END
          |	) voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_MW
          |WHERE
@@ -2317,7 +2541,15 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |			1
          |		ELSE
          |			0
-         |		END)srvccsuccS1
+         |		END)srvccsuccS1,
+         |sum(case when interface=5 and ProcedureType=18 then 1 else 0 end)s1contextbuild,
+         |sum(case when interface=5 and ProcedureType=20 and Keyword1=1 then 1 else 0 end)enbrelese,
+         |sum(case when interface=5 and proceduretype=20 and Keyword1=1 and requestcause in (20,23,24,28,128) then 1 else 0 end)nenbrelese,
+         |sum(case when interface=5 and (ProcedureType=15 or ProcedureType=18)and Procedurestatus=1 then 1
+         |when interface=5 and (ProcedureType=16 or ProcedureType=20)and Procedurestatus=1 then -1
+         |else 0 end)remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	$SDB.TB_XDR_IFC_S1MME T
          |WHERE
@@ -2376,7 +2608,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	0 AS attachx,
          |	0 AS attachy,
          |	0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |	(
          |		SELECT DISTINCT
@@ -2467,7 +2705,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS attachx,
          |0 AS attachy,
          |0 AS voltesucc,
-         | 0 AS srvccsuccS1
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_Sv
          |FROM
          |$SDB.tb_xdr_ifc_gxrx
          |WHERE
@@ -2529,7 +2773,13 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(attachx) as attachx,
          |	sum(attachy) as attachy,
          |	sum(voltesucc) as voltesucc,
-         | sum(srvccsuccS1) as srvccsuccS1
+         | sum(srvccsuccS1) as srvccsuccS1,
+         | sum(s1contextbuild) as s1contextbuild,
+         |sum(enbrelese) as enbrelese,
+         |sum(nenbrelese) as nenbrelese,
+         |sum(remaincontext) as remaincontext,
+         |sum(srvccsucc_Sv) as srvccsucc_Sv,
+         |sum(srvccatt_Sv) as srvccatt_Sv
          |FROM
          |	temp_kpi
          |GROUP BY

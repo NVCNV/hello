@@ -75,7 +75,13 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |	sum(attachx),
          |	sum(attachy),
          |	sum(voltesucc),
-         | sum(srvccsuccS1)
+         | sum(srvccsuccS1),
+         | sum(s1contextbuild),
+         |sum(enbrelese),
+         |sum(nenbrelese),
+         |sum(remaincontext),
+         |sum(srvccsucc_Sv),
+         |sum(srvccatt_Sv)
          |from volte_gt_user_ana_base60
          |where dt=$ANALY_DATE
          |group by
@@ -142,7 +148,13 @@ class KpiDayAnaly(ANALY_DATE: String,SDB: String, DDB: String, warhouseDir: Stri
          |	sum(attachx),
          |	sum(attachy),
          |	sum(voltesucc),
-         | sum(srvccsuccS1)
+         | sum(srvccsuccS1),
+         | sum(s1contextbuild),
+         |sum(enbrelese),
+         |sum(nenbrelese),
+         |sum(remaincontext),
+         |sum(srvccsucc_Sv),
+         |sum(srvccatt_Sv)
          |FROM
          |volte_gt_cell_ana_base60
          |where dt=$ANALY_DATE
