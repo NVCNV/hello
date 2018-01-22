@@ -127,10 +127,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     s1ContextTip = s"告警门限：小时级S1初始上下文建立成功率<$s1ContextSuccRatio%，小时级S2初始上下文建立失败次数>${s1ContextFailCnt}次，质差小时数>=${s1ContextHour}小时，连续质差天数>=${s1ContextDay}天；\n"
     z_s1ContextTip = s"；\n质检门限：小时级S1初始上下文建立成功率>=$z_s1ContextSuccRatio%，达标小时数>=${z_s1ContextHour}小时，连续达标天数>=${z_s1ContextDay}天；"
     s1ContextSQL = s"""
-                  |(srqatt-srqsucc) > ${s1ContextFailCnt} and
-                  |srqatt > 0 and (srqsucc/srqatt)*100 < ${s1ContextSuccRatio}""".stripMargin
+                  |(s1contextbuild-wireless) > ${s1ContextFailCnt} and
+                  |wireless > 0 and ((s1contextbuild-wireless)/wireless)*100 < ${s1ContextSuccRatio}""".stripMargin
     z_s1ContextSQL = s"""
-                  |(srqatt = 0 or (srqsucc/srqatt)*100 >= ${z_s1ContextSuccRatio})""".stripMargin
+                  |(wireless > 0 and ((s1contextbuild-wireless)/wireless)*100 >= ${z_s1ContextSuccRatio})""".stripMargin
     s1ContextDate = GetDateSQL(analyDate, s1ContextDay)
     s1ContextExDate = s1ContextDate.replace("vgu","ex")
     z_s1ContextDate = GetDateSQL(analyDate, z_s1ContextDay)
@@ -164,7 +164,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |(tauatt-tausucc) > ${tauFailCnt} and
              |tauatt > 0 and (tausucc/tauatt)*100 < ${tauSuccRatio}""".stripMargin
     z_tauSQL = s"""
-             |(tauatt = 0 or (tausucc/tauatt)*100 >= ${z_tauSuccRatio})""".stripMargin
+             |(tauatt > 0 and (tausucc/tauatt)*100 >= ${z_tauSuccRatio})""".stripMargin
     tauDate = GetDateSQL(analyDate, tauDay)
     tauExDate = tauDate.replace("vgu","ex")
     z_tauDate = GetDateSQL(analyDate, z_tauDay)
@@ -195,10 +195,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     ueContextTip = s"告警门限：小时级UE上下文异常释放率>${ueContextAbnormalRatio}%，小时级UE上下文异常释放次数>${ueContextAbnormalCnt}次，质差小时数>=${ueContextHour}小时，连续质差天数>=${ueContextDay}天；\n"
     z_ueContextTip = s"；\n质检门限：小时级UE上下文异常释放率<=${z_ueContextAbnormalRatio}%，达标小时数>=${z_ueContextHour}小时，连续达标天数>=${z_ueContextDay}天；"
     ueContextSQL = s"""
-                  |wirelessdrop > ${ueContextAbnormalCnt} and
-                  |wireless > 0 and (wirelessdrop/wireless)*100 > $ueContextAbnormalRatio""".stripMargin
+                  |(enbrelese-nenbrelese) > ${ueContextAbnormalCnt} and
+                  |(wireless+remaincontext) > 0 and ((enbrelese-nenbrelese)/(wireless+remaincontext))*100 > $ueContextAbnormalRatio""".stripMargin
     z_ueContextSQL = s"""
-                  |(wireless = 0 or (wirelessdrop/wireless)*100 <= $z_ueContextAbnormalRatio)""".stripMargin
+                  |((wireless+remaincontext) > 0 and ((enbrelese-nenbrelese)/(wireless+remaincontext))*100 <= $z_ueContextAbnormalRatio)""".stripMargin
     ueContextDate = GetDateSQL(analyDate, ueContextDay)
     ueContextExDate = ueContextDate.replace("vgu","ex")
     z_ueContextDate = GetDateSQL(analyDate, z_ueContextDay)
@@ -233,8 +233,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                  |(lteswatt+enbx2swy+eabs1swy) > 0
                  |and (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 < ${handoverSuccRatio}""".stripMargin
     z_handoverSQL = s"""
-                 |((lteswatt+enbx2swy+eabs1swy) = 0
-                 |or (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 >= ${z_handoverSuccRatio})""".stripMargin
+                 |((lteswatt+enbx2swy+eabs1swy) > 0
+                 |and (lteswsucc+enbx2swx+eabs1swx)/(lteswatt+enbx2swy+eabs1swy)*100 >= ${z_handoverSuccRatio})""".stripMargin
     handoverDate = GetDateSQL(analyDate, handoverDay)
     handoverExDate = handoverDate.replace("vgu","ex")
     z_handoverDate = GetDateSQL(analyDate, z_handoverDay)
@@ -268,7 +268,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                |imsiregatt > ${imsRegCnt} and
                |imsiregatt > 0 and (imsiregsucc/imsiregatt)*100 < ${imsRegSuccRatio}""".stripMargin
     z_imsRegSQL = s"""
-               |(imsiregatt = 0 or (imsiregsucc/imsiregatt)*100 >= ${z_imsRegSuccRatio})""".stripMargin
+               |(imsiregatt > 0 and (imsiregsucc/imsiregatt)*100 >= ${z_imsRegSuccRatio})""".stripMargin
     imsRegDate = GetDateSQL(analyDate, imsRegDay)
     imsRegExDate = imsRegDate.replace("vgu","ex")
     z_imsRegDate = GetDateSQL(analyDate, z_imsRegDay)
@@ -302,7 +302,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                    |voltemcatt > ${voLteVoiceCnt} and
                    |voltemcatt > 0 and (voltemcsucc/voltemcatt)*100 < ${voLteVoiceSuccRatio}""".stripMargin
     z_voLteVoiceSQL = s"""
-                   |(voltemcatt = 0 or (voltemcsucc/voltemcatt)*100 >= ${z_voLteVoiceSuccRatio})""".stripMargin
+                   |(voltemcatt > 0 and (voltemcsucc/voltemcatt)*100 >= ${z_voLteVoiceSuccRatio})""".stripMargin
     voLteVoiceDate = GetDateSQL(analyDate, voLteVoiceDay)
     voLteVoiceExDate = voLteVoiceDate.replace("vgu","ex")
     z_voLteVoiceDate = GetDateSQL(analyDate, z_voLteVoiceDay)
@@ -336,7 +336,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
                       |voltemchandover > ${voLteVoiceDropCnt} and
                       |(voltemcsucc) > 0 and (voltemchandover / (voltemcsucc))*100 > ${voLteVoiceDropRatio}""".stripMargin
     z_voLteVoiceDropSQL = s"""
-                      |((voltemcsucc) = 0 or (voltemchandover / (voltemcsucc))*100 <= ${z_voLteVoiceDropRatio})""".stripMargin
+                      |((voltemcsucc) > 0 and (voltemchandover / (voltemcsucc))*100 <= ${z_voLteVoiceDropRatio})""".stripMargin
     voLteVoiceDropDate = GetDateSQL(analyDate, voLteVoiceDropDay)
     voLteVoiceDropExDate = voLteVoiceDropDate.replace("vgu","ex")
     z_voLteVoiceDropDate = GetDateSQL(analyDate, z_voLteVoiceDropDay)
@@ -367,10 +367,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     eSrvccTip = s"告警门限：小时级eSRVCC成功率<${eSrvccSuccRatio}%，小时级eSRVCC请求次数>${eSrvccCnt}次，质差小时数>=${eSrvccHour}小时，连续质差天数>=${eSrvccDay}天；\n"
     z_eSrvccTip = s"；\n质检门限：小时级eSRVCC成功率>=${z_eSrvccSuccRatio}%，达标小时数>=${z_eSrvccHour}小时，连续达标天数>=${z_eSrvccDay}天；"
     eSrvccSQL = s"""
-               |srvccatt > ${eSrvccCnt} and
-               |srvccatt > 0 and (srvccsucc/srvccatt)*100 < ${eSrvccSuccRatio}""".stripMargin
+               |srvccatt_Sv > ${eSrvccCnt} and
+               |srvccatt_Sv > 0 and (srvccsucc_Sv/srvccatt_Sv)*100 < ${eSrvccSuccRatio}""".stripMargin
     z_eSrvccSQL = s"""
-               |(srvccatt = 0 or (srvccsucc/srvccatt)*100 >= ${z_eSrvccSuccRatio})""".stripMargin
+               |(srvccatt_Sv = 0 or (srvccsucc_Sv/srvccatt_Sv)*100 >= ${z_eSrvccSuccRatio})""".stripMargin
     eSrvccDate = GetDateSQL(analyDate, eSrvccDay)
     eSrvccExDate = eSrvccDate.replace("vgu","ex")
     z_eSrvccDate = GetDateSQL(analyDate, z_eSrvccDay)
@@ -380,91 +380,91 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   def getCondition(sparkSession: SparkSession): Unit = {
     val oracle:String = "jdbc:oracle:thin:@"+orcl
     sparkSession.read.format("jdbc").option("url", s"$oracle")
-      .option("dbtable","NUMBERIDEN")
+      .option("dbtable","TABLE_PARAMSET")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().createOrReplaceTempView("NUMBERIDEN")
+      .load().createOrReplaceTempView("PARAMSET")
 
-    val t = sparkSession.sql("select LINENAME,UPORDOWN from NUMBERIDEN").collectAsList()
+    val t = sparkSession.sql("select FIELD,VALUE from PARAMSET").collectAsList()
     var i = 0
     var field = ""
     val size = t.size()-1
     if ( !t.isEmpty ) {
       for ( i <- 0 to size ) {
         field = t.get(i).getString(0)
-        if (field.equals("")) s1ContextDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) s1ContextSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) s1ContextFailCnt = t.get(i).getInt(1)
-        else if (field.equals("")) s1ContextHour = t.get(i).getInt(1)
-        else if (field.equals("")) s1ContextDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_s1ContextDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_s1ContextSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_s1ContextHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_s1ContextDay = t.get(i).getInt(1)
-        else if (field.equals("")) tauDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) tauSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) tauFailCnt = t.get(i).getInt(1)
-        else if (field.equals("")) tauHour = t.get(i).getInt(1)
-        else if (field.equals("")) tauDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_tauDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_tauSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_tauHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_tauDay = t.get(i).getInt(1)
-        else if (field.equals("")) ueContextDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) ueContextAbnormalRatio = t.get(i).getInt(1)
-        else if (field.equals("")) ueContextAbnormalCnt = t.get(i).getInt(1)
-        else if (field.equals("")) ueContextHour = t.get(i).getInt(1)
-        else if (field.equals("")) ueContextDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_ueContextDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_ueContextAbnormalRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_ueContextHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_ueContextDay = t.get(i).getInt(1)
-        else if (field.equals("")) handoverDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) handoverSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) handoverFailCnt = t.get(i).getInt(1)
-        else if (field.equals("")) handoverHour = t.get(i).getInt(1)
-        else if (field.equals("")) handoverDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_handoverDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_handoverSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_handoverHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_handoverDay = t.get(i).getInt(1)
-        else if (field.equals("")) imsRegDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) imsRegSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) imsRegCnt = t.get(i).getInt(1)
-        else if (field.equals("")) imsRegHour = t.get(i).getInt(1)
-        else if (field.equals("")) imsRegDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_imsRegDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_imsRegSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_imsRegHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_imsRegDay = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceCnt = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceHour = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDay = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDropDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDropRatio = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDropCnt = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDropHour = t.get(i).getInt(1)
-        else if (field.equals("")) voLteVoiceDropDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDropDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDropRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDropHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_voLteVoiceDropDay = t.get(i).getInt(1)
-        else if (field.equals("")) eSrvccDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) eSrvccSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) eSrvccCnt = t.get(i).getInt(1)
-        else if (field.equals("")) eSrvccHour = t.get(i).getInt(1)
-        else if (field.equals("")) eSrvccDay = t.get(i).getInt(1)
-        else if (field.equals("")) z_eSrvccDispatch = t.get(i).getInt(1)
-        else if (field.equals("")) z_eSrvccSuccRatio = t.get(i).getInt(1)
-        else if (field.equals("")) z_eSrvccHour = t.get(i).getInt(1)
-        else if (field.equals("")) z_eSrvccDay = t.get(i).getInt(1)
+        if (field.equals("S1_single_switch_1")) s1ContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("S1_ratio")) s1ContextSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("S1_count")) s1ContextFailCnt = t.get(i).getInt(1)
+        else if (field.equals("S1_quality_difference_hour")) s1ContextHour = t.get(i).getInt(1)
+        else if (field.equals("S1_continuous_quality_dayCount")) s1ContextDay = t.get(i).getInt(1)
+        else if (field.equals("S1_single_switch_2")) z_s1ContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("S1_ratio_2")) z_s1ContextSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("S1_reach_standard_hour_2")) z_s1ContextHour = t.get(i).getInt(1)
+        else if (field.equals("S1_continuous_reach_dayCount_2")) z_s1ContextDay = t.get(i).getInt(1)
+        else if (field.equals("TAU_single_switch_1")) tauDispatch = t.get(i).getInt(1)
+        else if (field.equals("TAU_ratio")) tauSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("TAU_count")) tauFailCnt = t.get(i).getInt(1)
+        else if (field.equals("TAU_quality_difference_hour")) tauHour = t.get(i).getInt(1)
+        else if (field.equals("TAU_continuous_quality_dayCount")) tauDay = t.get(i).getInt(1)
+        else if (field.equals("TAU_single_switch_2")) z_tauDispatch = t.get(i).getInt(1)
+        else if (field.equals("TAU_ratio_2")) z_tauSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("TAU_reach_standard_hour_2")) z_tauHour = t.get(i).getInt(1)
+        else if (field.equals("TAU_continuous_reach_dayCount_2")) z_tauDay = t.get(i).getInt(1)
+        else if (field.equals("UE_single_switch_1")) ueContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("UE_ratio")) ueContextAbnormalRatio = t.get(i).getInt(1)
+        else if (field.equals("UE_count")) ueContextAbnormalCnt = t.get(i).getInt(1)
+        else if (field.equals("UE_quality_difference_hour")) ueContextHour = t.get(i).getInt(1)
+        else if (field.equals("UE_continuous_quality_dayCount")) ueContextDay = t.get(i).getInt(1)
+        else if (field.equals("UE_single_switch_2")) z_ueContextDispatch = t.get(i).getInt(1)
+        else if (field.equals("UE_ratio_2")) z_ueContextAbnormalRatio = t.get(i).getInt(1)
+        else if (field.equals("UE_reach_standard_hour_2")) z_ueContextHour = t.get(i).getInt(1)
+        else if (field.equals("UE_continuous_reach_dayCount_2")) z_ueContextDay = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_single_switch_1")) handoverDispatch = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_ratio")) handoverSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_count")) handoverFailCnt = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_quality_difference_hour")) handoverHour = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_continuous_quality_dayCount")) handoverDay = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_single_switch_2")) z_handoverDispatch = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_ratio_2")) z_handoverSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_reach_standard_hour_2")) z_handoverHour = t.get(i).getInt(1)
+        else if (field.equals("SWITCH_continuous_reach_dayCount_2")) z_handoverDay = t.get(i).getInt(1)
+        else if (field.equals("IMS_single_switch_1")) imsRegDispatch = t.get(i).getInt(1)
+        else if (field.equals("IMS_ratio")) imsRegSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("IMS_count")) imsRegCnt = t.get(i).getInt(1)
+        else if (field.equals("IMS_quality_difference_hour")) imsRegHour = t.get(i).getInt(1)
+        else if (field.equals("IMS_continuous_quality_dayCount")) imsRegDay = t.get(i).getInt(1)
+        else if (field.equals("IMS_single_switch_2")) z_imsRegDispatch = t.get(i).getInt(1)
+        else if (field.equals("IMS_ratio_2")) z_imsRegSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("IMS_reach_standard_hour_2")) z_imsRegHour = t.get(i).getInt(1)
+        else if (field.equals("IMS_continuous_reach_dayCount_2")) z_imsRegDay = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_single_switch_1")) voLteVoiceDispatch = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_ratio")) voLteVoiceSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_count")) voLteVoiceCnt = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_quality_difference_hour")) voLteVoiceHour = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_continuous_quality_dayCount")) voLteVoiceDay = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_single_switch_2")) z_voLteVoiceDispatch = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_ratio_2")) z_voLteVoiceSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_reach_standard_hour_2")) z_voLteVoiceHour = t.get(i).getInt(1)
+        else if (field.equals("UNCONNECTED_continuous_reach_dayCount_2")) z_voLteVoiceDay = t.get(i).getInt(1)
+        else if (field.equals("DROP_single_switch_1")) voLteVoiceDropDispatch = t.get(i).getInt(1)
+        else if (field.equals("DROP_ratio")) voLteVoiceDropRatio = t.get(i).getInt(1)
+        else if (field.equals("DROP_count")) voLteVoiceDropCnt = t.get(i).getInt(1)
+        else if (field.equals("DROP_quality_difference_hour")) voLteVoiceDropHour = t.get(i).getInt(1)
+        else if (field.equals("DROP_continuous_quality_dayCount")) voLteVoiceDropDay = t.get(i).getInt(1)
+        else if (field.equals("DROP_single_switch_2")) z_voLteVoiceDropDispatch = t.get(i).getInt(1)
+        else if (field.equals("DROP_ratio_2")) z_voLteVoiceDropRatio = t.get(i).getInt(1)
+        else if (field.equals("DROP_reach_standard_hour_2")) z_voLteVoiceDropHour = t.get(i).getInt(1)
+        else if (field.equals("DROP_continuous_reach_dayCount_2")) z_voLteVoiceDropDay = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_single_switch_1")) eSrvccDispatch = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_ratio")) eSrvccSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_count")) eSrvccCnt = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_quality_difference_hour")) eSrvccHour = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_continuous_quality_dayCount")) eSrvccDay = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_single_switch_2")) z_eSrvccDispatch = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_ratio_2")) z_eSrvccSuccRatio = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_reach_standard_hour_2")) z_eSrvccHour = t.get(i).getInt(1)
+        else if (field.equals("ESRVCC_continuous_reach_dayCount_2")) z_eSrvccDay = t.get(i).getInt(1)
       }
     }
   }
