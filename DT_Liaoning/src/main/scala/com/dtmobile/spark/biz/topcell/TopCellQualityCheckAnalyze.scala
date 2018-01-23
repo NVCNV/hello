@@ -3,8 +3,6 @@ package com.dtmobile.spark.biz.topcell
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import com.dtmobile.spark.SparkSessionSingleton
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
@@ -753,7 +751,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     yesterday
   }
 }
-
+/*
 object TopCellQualityCheck {
 
   /**
@@ -761,7 +759,6 @@ object TopCellQualityCheck {
     * args(1) hive数据库
     * args(2) 数据结果保存路径
     * args(3) 门限Oracle数据库
-    */
   def main(args: Array[String]): Unit = {
     if (args.length < 4 ){
       println(s"Please input four parameters, Thank you!\n")
@@ -775,4 +772,4 @@ object TopCellQualityCheck {
     analysis.analyse(sparkSession)
   }
 
-}
+}*/*/

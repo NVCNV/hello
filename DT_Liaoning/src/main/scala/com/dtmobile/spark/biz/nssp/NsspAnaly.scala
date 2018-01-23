@@ -257,12 +257,12 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load().registerTempTable("ltecell")
 
-    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
+/*    sparkSession.read.format("jdbc").option("url", s"jdbc:oracle:thin:@$ORCAL")
       .option("dbtable","lte2lteadj")
       .option("user", "scott")
       .option("password", "tiger")
       .option("driver", "oracle.jdbc.driver.OracleDriver")
-      .load().registerTempTable("lte2lteadj")
+      .load().registerTempTable("lte2lteadj")*/
 
     sql(s"use $DDB")
     sparkSession.udf.register("calcdis", (fLon:Float,fLat:Float,tLon:Float,tLat:Float)=>(2 * scala.math.asin(scala.math.sqrt(scala.math.pow(scala.math.sin((fLat*3.14159265/180 - tLat*3.14159265/180)/2),2) + scala.math.cos(fLat*3.14159265/180)*scala.math.cos(tLat*3.14159265/180)*scala.math.pow(scala.math.sin((fLon*3.14159265/180 - tLon*3.14159265/180)/2),2))))*6378.137)
