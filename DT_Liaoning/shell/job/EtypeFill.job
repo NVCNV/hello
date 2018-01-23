@@ -1,4 +1,4 @@
 # EtypeFill.job
 type=command
-dependencies=importHbaseData
+dependencies=NsspAnaly
 command=sh /dt/bin/EtypeFill.sh ${ANALY_DATE} ${ANALY_HOUR}

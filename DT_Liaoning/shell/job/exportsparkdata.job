@@ -1,0 +1,3 @@
+# exportsparkdata.job
+type=command
+command=sh /dt/bin/cpsparkdata.sh ${ANALY_DATE} ${ANALY_HOUR}
