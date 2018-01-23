@@ -1,0 +1,4 @@
+# exportDataDayComplete.job
+type=command
+dependencies=hdfs2dbDay,exportTopCellQualityCheck
+command=echo "exportDayDataComplete"

@@ -1,0 +1,3 @@
+# exportTopCellQualityCheck.job
+type=command
+command=sh /dt/bin/ftp.sh ${ANALY_DATE}
