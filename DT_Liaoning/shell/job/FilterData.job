@@ -1,0 +1,3 @@
+# FilterData.job
+type=command
+command=sh /dt/bin/crontab.sh ${ANALY_DATE} ${ANALY_HOUR} 1

@@ -1,0 +1,4 @@
+# exportDataComplete.job
+type=command
+dependencies=exportsparkdata,hdfs2db
+command=echo "exportDataComplete"

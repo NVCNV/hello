@@ -1,4 +1,3 @@
 # NsspAnaly.job
 type=command
-dependencies=ImportDataComplete
 command=sh /dt/bin/nsspAnaly.sh ${ANALY_DATE} ${ANALY_HOUR}

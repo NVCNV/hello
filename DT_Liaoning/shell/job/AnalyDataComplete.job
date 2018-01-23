@@ -1,0 +1,3 @@
+# AnalyDataComplete.job
+type=command
+command=sh /dt/bin/asynimportData.sh ${ANALY_DATE} ${ANALY_HOUR}

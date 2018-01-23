@@ -1,0 +1,3 @@
+# hdfs2dbDay.job
+type=command
+command=sh /dt/bin/sqlldr2dbday.sh ${ANALY_DATE}
