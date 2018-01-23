@@ -913,7 +913,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 1
          |		AND interface = 14
          |		AND ProcedureStatus = $procedurestatussuccess
-         |  and sourceneip in
+         |  and destneip in
          |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
          |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
          |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
@@ -1298,9 +1298,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
     val rx = sql(
       s"""
          |SELECT
-         |imsi,
-         |msisdn,
-         |CELLID,
+         |t1.imsi,
+         |t1.msisdn,
+         |t1.CELLID,
          |0 AS voltemcsucc,
          |0 AS voltemcatt,
          |0 AS voltevdsucc,
@@ -1310,11 +1310,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltemctimey,
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
-         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 0
-         |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
+         |count(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 0
+         |and t1.AbortCause in (0, 1, 2, 4)  and t2.procedurestarttime is not null then 1 end)voltemchandover,
          |0 AS volteanswer,
-         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 1
-         |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
+         |count(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 1
+         |and t1.AbortCause in (0, 1, 2, 4) and t2.procedurestarttime is not null then 1 end)voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
          |0 AS srvccatt,
@@ -1357,15 +1357,20 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as srvccsucc_Sv,
          |0 as srvccatt_Sv
          |FROM
-         |$SDB.tb_xdr_ifc_gxrx
+         |$SDB.tb_xdr_ifc_gxrx t1
+         |left join $SDB.TB_XDR_IFC_mw t2
+         |on t1.imsi=t2.imsi
          |WHERE
-         |dt = $ANALY_DATE
-         |AND h = $ANALY_HOUR
+         |t1.dt = $ANALY_DATE
+         |AND t1.h = $ANALY_HOUR and t2.dt = $ANALY_DATE
+         |AND t2.h = $ANALY_HOUR and t1.procedurestarttime>=t2.procedurestarttime
+         |and t1.procedurestarttime<=t2.procedureendtime
          |GROUP BY
-         |cellid,
-         |imsi,
-         |msisdn
+         |t1.cellid,
+         |t1.imsi,
+         |t1.msisdn
        """.stripMargin)
+    rx.registerTempTable("rx_temp")
 //    uu.union(x2).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
     uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).createOrReplaceTempView("temp_kpi")
     sql(
@@ -2282,7 +2287,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 1
          |		AND interface = 14
-         |		AND ProcedureStatus = 0 and sourceneip in
+         |		AND ProcedureStatus = 0 and destneip in
          |('10.187.74.5','10.189.147.119','10.187.74.8','10.189.147.116','10.187.74.34','10.189.144.32',
          |'10.189.145.32','10.184.149.164','10.189.145.35','10.189.145.37','10.189.145.39','10.189.145.41','10.184.149.166',
          |'10.187.74.38','10.187.74.39','10.187.74.40') THEN
@@ -2666,11 +2671,9 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltemctimey,
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
-         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE =0
-         |and AbortCause in (0, 1, 2, 4) then 1 end)voltemchandover,
+         |sum(voltemchandover)voltemchandover,
          |0 AS volteanswer,
-         |count(case when Interface = 26 and ProcedureType = 4 and MEDIATYPE = 1
-         |and AbortCause in (0, 1, 2, 4) then 1 end)voltevdhandover,
+         |sum(voltevdhandover)voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
          |0 AS srvccatt,
@@ -2713,10 +2716,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as srvccsucc_Sv,
          |0 as srvccatt_Sv
          |FROM
-         |$SDB.tb_xdr_ifc_gxrx
-         |WHERE
-         |dt = $ANALY_DATE
-         |AND h = $ANALY_HOUR
+         |rx_temp
          |GROUP BY
          |cellid
        """.stripMargin)
