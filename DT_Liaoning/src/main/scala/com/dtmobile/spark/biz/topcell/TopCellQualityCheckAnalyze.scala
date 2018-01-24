@@ -3,8 +3,6 @@ package com.dtmobile.spark.biz.topcell
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
-import com.dtmobile.spark.SparkSessionSingleton
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
@@ -41,7 +39,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     println(s"date: $date\n")
     println(s"exDate: $exDate\n")
     var strSQL:String = ""
-    if ( isDispatch == 1){
+    if ( isDispatch == 0){
       strSQL =s"""
              |select exx.cellid, $eType eType, exx.falurecause, exx.cellregion, exx.prointerface, exx.exceptioncode,
              |sum(1)over(partition by exx.cellid) as cellcount,
@@ -70,7 +68,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |select 0 cellid, $eType eType, '' falurecause, '' cellregion, '' prointerface, '' exceptioncode,
              |0 cellcount,
              |'' descf,'' suggestionf,'' descw,'' suggestionw,
-             |'$topTip' topTip, '$qualityTip' qualityTip from ltecell where cellid=-1
+             |'$topTip' topTip, '$qualityTip' qualityTip from $dcl.ltecell where cellid=-1
              |""".stripMargin
     }
 
@@ -83,7 +81,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     println(s"date: $date\n")
     println(s"exDate: $exDate\n")
     var strSQL:String = ""
-    if ( isDispatch == 1){
+    if ( isDispatch == 0){
       strSQL =s"""
              |select cellid, $eType eType from (
              |select cellid, count(1), sum(case when hourcount >= $hourNum then 1 else 0 end) as daycount from (
@@ -96,7 +94,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
              |""".stripMargin
     }else{ //这个是一个查询为空的SQL，为了后面的union all
       strSQL =s"""
-             |select 0 cellid, $eType eType from ltecell where cellid=-1
+             |select 0 cellid, $eType eType from $dcl.ltecell where cellid=-1
              |""".stripMargin
     }
 
@@ -386,7 +384,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load().createOrReplaceTempView("PARAMSET")
 
-    val t = sparkSession.sql("select FIELD,VALUE from PARAMSET").collectAsList()
+    val t = sparkSession.sql("select FIELD,cast(VALUE as int) VALUE from PARAMSET").collectAsList()
     var i = 0
     var field = ""
     val size = t.size()-1
@@ -556,8 +554,30 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
        """.stripMargin
 
     //查出TopCell相对应的异常事件
+    sql(s"""drop table IF EXISTS $dcl.context_tmp""")
     sql(
       s"""
+         |create table $dcl.context_tmp(
+         |cellid int,
+         |eType int,
+         |falurecause string,
+         |cellregion string,
+         |prointerface string,
+         |exceptioncode string,
+         |cellcount int,
+         |descf string,
+         |suggestionf string,
+         |descw string,
+         |suggestionw string,
+         |topTip string,
+         |qualityTip string)
+         |ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+         """.stripMargin)
+
+    //查出TopCell相对应的异常事件
+    sql(
+      s"""
+         |insert into $dcl.context_tmp select * from(
          |${strS1ContextSQL}
          |union all
          |${strTauSQL}
@@ -573,7 +593,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |${strVoLteVoiceDropSQL}
          |union all
          |${streSrvccSQL}
-       """.stripMargin).createOrReplaceTempView("context_tmp")
+         |)
+       """.stripMargin) //.createOrReplaceTempView("context_tmp")
 
     //统计并生成Top小区表
     sql(
@@ -615,7 +636,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |case when min(t2.cellcount)=0 then 0 else round(count(t2.exceptioncode)/min(t2.cellcount),4)*100 end coderatio,
          |min(descw) desc, min(suggestionw) suggestion,
          |row_number() over(partition by t2.cellid,t2.eType order by count(t2.exceptioncode) desc) r1
-         |from context_tmp t2 where t2.exceptioncode is not null and t2.exceptioncode <> ''
+         |from $dcl.context_tmp t2 where t2.exceptioncode is not null and t2.exceptioncode <> ''
          |--from context_tmp t2
          |group by t2.cellid, t2.eType, t2.exceptioncode,t2.topTip,t2.qualityTip
          |) t3
@@ -636,7 +657,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |case when min(t2.cellcount)=0 then 0 else round(count(t2.falurecause)/min(t2.cellcount),4)*100 end coderatio,
          |min(descf) desc, min(suggestionf) suggestion,
          |row_number() over(partition by t2.cellid,t2.eType order by count(t2.falurecause) desc) r1
-         |from context_tmp t2 where t2.falurecause is not null and t2.falurecause <> ''
+         |from $dcl.context_tmp t2 where t2.falurecause is not null and t2.falurecause <> ''
          |--from context_tmp t2
          |group by t2.cellid, t2.eType,t2.falurecause,t2.topTip,t2.qualityTip
          |) t3
@@ -653,30 +674,29 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |case when min(t2.cellcount)=0 then 0 else round(count(t2.cellregion)/min(t2.cellcount),4)*100 end coderatio,
          |'' desc, '' suggestion,
          |row_number() over(partition by t2.cellid,t2.eType order by count(t2.cellregion) desc) r1
-         |from context_tmp t2 where t2.cellregion is not null and t2.cellregion <> ''
+         |from $dcl.context_tmp t2 where t2.cellregion is not null and t2.cellregion <> ''
          |--from context_tmp t2
          |group by t2.cellid, t2.eType, t2.cellregion,t2.topTip,t2.qualityTip
          |) t3
          |where t3.r1 <= 1
          |) t4
          |) t5 group by cellid,eType,topTip,qualityTip
-         |) t6 inner join ltecell lte on t6.cellid = lte.cellid
+         |) t6 inner join $dcl.ltecell lte on t6.cellid = lte.cellid
       """.stripMargin).repartition(1).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/topcell/dt=${analyDate}")//.show() //createOrReplaceTempView("note_tmp") //show()
 
     //统计并生成质检小区表
+    sql(s"""drop table IF EXISTS $dcl.z_context_tmp""")
     sql(
       s"""
-         |select "辽宁" province,
-         |lte.city city,
-         |'EUTRAN' rat,
-         |lte.cellname cellname,
-         |lte.cellname objectname,
-         |${strEType} Title,
-         |from_unixtime(unix_timestamp(), 'yyyy-MM-dd HH:mm:ss') time,
-         |lte.company company,
-         |from_unixtime(unix_timestamp(), 'yyyy-MM-dd HH:mm:ss') foundtime,
-         |'质检小区' type
-         |from (
+         |create table $dcl.z_context_tmp(
+         |cellid int,
+         |eType int)
+         |ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+         """.stripMargin)
+
+    sql(
+      s"""
+         |insert into $dcl.z_context_tmp select * from (
          |${z_strS1ContextSQL}
          |union all
          |${z_strTauSQL}
@@ -692,7 +712,23 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |${z_strVoLteVoiceDropSQL}
          |union all
          |${z_streSrvccSQL}
-         |) t6 inner join ltecell lte on t6.cellid = lte.cellid
+         |)
+       """.stripMargin
+    )
+
+    sql(
+      s"""
+         |select "辽宁" province,
+         |lte.city city,
+         |'EUTRAN' rat,
+         |lte.cellname cellname,
+         |lte.cellname objectname,
+         |${strEType} Title,
+         |from_unixtime(unix_timestamp(), 'yyyy-MM-dd HH:mm:ss') time,
+         |lte.company company,
+         |from_unixtime(unix_timestamp(), 'yyyy-MM-dd HH:mm:ss') foundtime,
+         |'质检小区' type
+         |from $dcl.z_context_tmp t6 inner join $dcl.ltecell lte on t6.cellid = lte.cellid
        """.stripMargin).repartition(1).write.mode(SaveMode.Overwrite).csv(s"$warhouseDir/qualityCheck/dt=${analyDate}")//.show()
 
     return
@@ -715,7 +751,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     yesterday
   }
 }
-
+/*
 object TopCellQualityCheck {
 
   /**
@@ -723,7 +759,6 @@ object TopCellQualityCheck {
     * args(1) hive数据库
     * args(2) 数据结果保存路径
     * args(3) 门限Oracle数据库
-    */
   def main(args: Array[String]): Unit = {
     if (args.length < 4 ){
       println(s"Please input four parameters, Thank you!\n")
@@ -737,4 +772,4 @@ object TopCellQualityCheck {
     analysis.analyse(sparkSession)
   }
 
-}
+}*/*/

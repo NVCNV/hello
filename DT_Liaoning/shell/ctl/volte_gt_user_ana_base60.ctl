@@ -55,5 +55,11 @@ swy,
 attachx,
 attachy,
 voltesucc,
-srvccsuccS1
+srvccsuccS1,
+s1contextbuild,
+enbrelese,
+nenbrelese,
+remaincontext,
+srvccsucc_Sv,
+srvccatt_Sv
 )
