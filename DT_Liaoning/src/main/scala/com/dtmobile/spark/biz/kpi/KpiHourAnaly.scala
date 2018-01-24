@@ -1144,7 +1144,8 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |	sum(
          |		CASE
          |		WHEN INTERFACE = 5
-         |		AND proceduretype = 16 THEN
+         |		AND proceduretype = 16
+         |  AND keyword1 = 1 THEN
          |			1
          |		ELSE
          |			0
