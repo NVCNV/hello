@@ -8,6 +8,12 @@ export NLS_LANG="AMERICAN_AMERICA.UTF8"
 
 #HQL
 hive<<EOF
+DROP TABLE IF EXISTS ${DDLDB}.MW_IP;
+CREATE EXTERNAL TABLE ${DDLDB}.MW_IP(
+  MWIP string)
+LOCATION
+  'hdfs://dtcluster/user/hive/warehouse/${DDLDB}.db/MW_IP';
+
 CREATE DATABASE IF NOT EXISTS ${DDLDB};
 USE ${DDLDB};
 DROP TABLE IF EXISTS tb_xdr_ifc_gxrx;
