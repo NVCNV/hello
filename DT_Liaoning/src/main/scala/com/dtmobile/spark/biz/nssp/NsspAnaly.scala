@@ -18,7 +18,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
     sql(s"use $SDB")
     sql(
       s"""
-         |alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)
+         |alter table lte_mro_source add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/LTE_MRO_SOURCE/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
     sql(
