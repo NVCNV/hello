@@ -34,3 +34,4 @@ hdfs dfs -getmerge ${HDFS_ADDR}/ue_hour_http/dt=${TAKING_DATE}/h=${TAKING_HOUR}/
 sqlldr ${DB_ADDR} control=${CTLDIR}/imsi_hour_http.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/imsi_hour_http.dat log=${LOG_DIR}/imsi_hour_http/${TAKING_DATE}/${TAKING_HOUR}
 exit 0
 
+
