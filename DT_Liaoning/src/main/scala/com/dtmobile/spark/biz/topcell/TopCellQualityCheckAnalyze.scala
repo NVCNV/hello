@@ -36,8 +36,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   //Top小区SQL
   def GetExceptionTmpSQL(dcl:String,date:String,exDate:String,hourNum:Integer,dayNum:Integer,strConSQL:String, eType:Integer,
                          topTip:String, qualityTip:String, isDispatch:Integer):String ={
-    println(s"date: $date\n")
-    println(s"exDate: $exDate\n")
+//    println(s"date: $date\n")
+//    println(s"exDate: $exDate\n")
     var strSQL:String = ""
     if ( isDispatch == 0){
       strSQL =s"""
@@ -78,8 +78,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   //质检SQL
   def GetExceptionTmpSQL_z(dcl:String,date:String,exDate:String,hourNum:Integer,dayNum:Integer,strConSQL:String,
                            eType:Integer, isDispatch:Integer):String ={
-    println(s"date: $date\n")
-    println(s"exDate: $exDate\n")
+//    println(s"date: $date\n")
+//    println(s"exDate: $exDate\n")
     var strSQL:String = ""
     if ( isDispatch == 0){
       strSQL =s"""
@@ -122,8 +122,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_s1ContextTip = ""
   var z_s1ContextSQL = ""
   def GetS1ContextSQLInfo(analyDate:String):Unit ={
-    s1ContextTip = s"告警门限：小时级S1初始上下文建立成功率<$s1ContextSuccRatio%，小时级S2初始上下文建立失败次数>${s1ContextFailCnt}次，质差小时数>=${s1ContextHour}小时，连续质差天数>=${s1ContextDay}天；\n"
-    z_s1ContextTip = s"；\n质检门限：小时级S1初始上下文建立成功率>=$z_s1ContextSuccRatio%，达标小时数>=${z_s1ContextHour}小时，连续达标天数>=${z_s1ContextDay}天；"
+    s1ContextTip = s"告警门限：小时级S1初始上下文建立成功率<$s1ContextSuccRatio%，小时级S2初始上下文建立失败次数>${s1ContextFailCnt}次，质差小时数>=${s1ContextHour}小时，连续质差天数>=${s1ContextDay}天；~"
+    z_s1ContextTip = s"；~质检门限：小时级S1初始上下文建立成功率>=$z_s1ContextSuccRatio%，达标小时数>=${z_s1ContextHour}小时，连续达标天数>=${z_s1ContextDay}天；"
     s1ContextSQL = s"""
                   |(s1contextbuild-wireless) > ${s1ContextFailCnt} and
                   |wireless > 0 and ((s1contextbuild-wireless)/wireless)*100 < ${s1ContextSuccRatio}""".stripMargin
@@ -156,8 +156,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_tauTip = ""
   var z_tauSQL = ""
   def GetTauSQLInfo(analyDate:String):Unit ={
-    tauTip = s"告警门限：小时级TAU成功率<${tauSuccRatio}%，小时级TAU失败次数>${tauFailCnt}次，质差小时数>=${tauHour}小时，连续质差天数>=${tauDay}天；\n"
-    z_tauTip = s"；\n质检门限：小时级TAU成功率>=${z_tauSuccRatio}%，达标小时数>=${z_tauHour}小时，连续达标天数>=${z_tauDay}天；"
+    tauTip = s"告警门限：小时级TAU成功率<${tauSuccRatio}%，小时级TAU失败次数>${tauFailCnt}次，质差小时数>=${tauHour}小时，连续质差天数>=${tauDay}天；~"
+    z_tauTip = s"；~质检门限：小时级TAU成功率>=${z_tauSuccRatio}%，达标小时数>=${z_tauHour}小时，连续达标天数>=${z_tauDay}天；"
     tauSQL = s"""
              |(tauatt-tausucc) > ${tauFailCnt} and
              |tauatt > 0 and (tausucc/tauatt)*100 < ${tauSuccRatio}""".stripMargin
@@ -190,8 +190,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_ueContextTip = ""
   var z_ueContextSQL = ""
   def GetUeContextSQLInfo(analyDate:String):Unit ={
-    ueContextTip = s"告警门限：小时级UE上下文异常释放率>${ueContextAbnormalRatio}%，小时级UE上下文异常释放次数>${ueContextAbnormalCnt}次，质差小时数>=${ueContextHour}小时，连续质差天数>=${ueContextDay}天；\n"
-    z_ueContextTip = s"；\n质检门限：小时级UE上下文异常释放率<=${z_ueContextAbnormalRatio}%，达标小时数>=${z_ueContextHour}小时，连续达标天数>=${z_ueContextDay}天；"
+    ueContextTip = s"告警门限：小时级UE上下文异常释放率>${ueContextAbnormalRatio}%，小时级UE上下文异常释放次数>${ueContextAbnormalCnt}次，质差小时数>=${ueContextHour}小时，连续质差天数>=${ueContextDay}天；~"
+    z_ueContextTip = s"；~质检门限：小时级UE上下文异常释放率<=${z_ueContextAbnormalRatio}%，达标小时数>=${z_ueContextHour}小时，连续达标天数>=${z_ueContextDay}天；"
     ueContextSQL = s"""
                   |(enbrelese-nenbrelese) > ${ueContextAbnormalCnt} and
                   |(wireless+remaincontext) > 0 and ((enbrelese-nenbrelese)/(wireless+remaincontext))*100 > $ueContextAbnormalRatio""".stripMargin
@@ -224,8 +224,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_handoverTip = ""
   var z_handoverSQL = ""
   def GetHandoverSQLInfo(analyDate:String):Unit ={
-    handoverTip = s"告警门限：小时级切换成功率<${handoverSuccRatio}%，小时级切换失败次数>${handoverFailCnt}次，质差小时数>=${handoverHour}小时，连续质差天数>=${handoverDay}天；\n"
-    z_handoverTip = s"；\n质检门限：小时级切换成功率>=${z_handoverSuccRatio}%，达标小时数>=${z_handoverHour}小时，连续达标天数>=${z_handoverDay}天；"
+    handoverTip = s"告警门限：小时级切换成功率<${handoverSuccRatio}%，小时级切换失败次数>${handoverFailCnt}次，质差小时数>=${handoverHour}小时，连续质差天数>=${handoverDay}天；~"
+    z_handoverTip = s"；~质检门限：小时级切换成功率>=${z_handoverSuccRatio}%，达标小时数>=${z_handoverHour}小时，连续达标天数>=${z_handoverDay}天；"
     handoverSQL = s"""
                  |(lteswatt+enbx2swy+eabs1swy-lteswsucc-enbx2swx-eabs1swx) > ${handoverFailCnt} and
                  |(lteswatt+enbx2swy+eabs1swy) > 0
@@ -260,8 +260,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_imsRegTip = ""
   var z_imsRegSQL = ""
   def GetImsRegSQLInfo(analyDate:String):Unit ={
-    imsRegTip = s"告警门限：小时级IMS注册成功率<${imsRegSuccRatio}%，小时级IMS注册次数>${imsRegCnt}次，质差小时数>=${imsRegHour}小时，连续质差天数>=${imsRegDay}天；\n"
-    z_imsRegTip = s"；\n质检门限：小时级IMS注册成功率>=${z_imsRegSuccRatio}%，达标小时数>=${z_imsRegHour}小时，连续达标天数>=${z_imsRegDay}天；"
+    imsRegTip = s"告警门限：小时级IMS注册成功率<${imsRegSuccRatio}%，小时级IMS注册次数>${imsRegCnt}次，质差小时数>=${imsRegHour}小时，连续质差天数>=${imsRegDay}天；~"
+    z_imsRegTip = s"；~质检门限：小时级IMS注册成功率>=${z_imsRegSuccRatio}%，达标小时数>=${z_imsRegHour}小时，连续达标天数>=${z_imsRegDay}天；"
     imsRegSQL = s"""
                |imsiregatt > ${imsRegCnt} and
                |imsiregatt > 0 and (imsiregsucc/imsiregatt)*100 < ${imsRegSuccRatio}""".stripMargin
@@ -294,8 +294,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_voLteVoiceTip = ""
   var z_voLteVoiceSQL = ""
   def GetVolteVoiceSQLInfo(analyDate:String):Unit ={
-    voLteVoiceTip = s"告警门限：小时级VoLTE语音接通率<${voLteVoiceSuccRatio}%，小时级VoLTE语音呼叫总次数>${voLteVoiceCnt}次，质差小时数>=${voLteVoiceHour}小时，连续质差天数>=${voLteVoiceDay}天；\n"
-    z_voLteVoiceTip = s"；\n质检门限：小时级VoLTE语音接通率>=${z_voLteVoiceSuccRatio}%，达标小时数>=${z_voLteVoiceHour}小时，连续达标天数>=${z_voLteVoiceDay}天；"
+    voLteVoiceTip = s"告警门限：小时级VoLTE语音接通率<${voLteVoiceSuccRatio}%，小时级VoLTE语音呼叫总次数>${voLteVoiceCnt}次，质差小时数>=${voLteVoiceHour}小时，连续质差天数>=${voLteVoiceDay}天；~"
+    z_voLteVoiceTip = s"；~质检门限：小时级VoLTE语音接通率>=${z_voLteVoiceSuccRatio}%，达标小时数>=${z_voLteVoiceHour}小时，连续达标天数>=${z_voLteVoiceDay}天；"
     voLteVoiceSQL = s"""
                    |voltemcatt > ${voLteVoiceCnt} and
                    |voltemcatt > 0 and (voltemcsucc/voltemcatt)*100 < ${voLteVoiceSuccRatio}""".stripMargin
@@ -328,8 +328,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_voLteVoiceDropTip = ""
   var z_voLteVoiceDropSQL = ""
   def GetVolteVoiceDropSQLInfo(analyDate:String):Unit ={
-    voLteVoiceDropTip = s"告警门限：小时级VoLTE语音掉话率>${voLteVoiceDropRatio}%，小时级VoLTE语音掉话次数>${voLteVoiceDropCnt}次，质差小时数>=${voLteVoiceDropHour}小时，连续质差天数>=${voLteVoiceDropDay}天；\n"
-    z_voLteVoiceDropTip = s"；\n质检门限：小时级VoLTE语音掉话率<=${z_voLteVoiceDropRatio}%，达标小时数>=${z_voLteVoiceDropHour}小时，连续达标天数>=${z_voLteVoiceDropDay}天；"
+    voLteVoiceDropTip = s"告警门限：小时级VoLTE语音掉话率>${voLteVoiceDropRatio}%，小时级VoLTE语音掉话次数>${voLteVoiceDropCnt}次，质差小时数>=${voLteVoiceDropHour}小时，连续质差天数>=${voLteVoiceDropDay}天；~"
+    z_voLteVoiceDropTip = s"；~质检门限：小时级VoLTE语音掉话率<=${z_voLteVoiceDropRatio}%，达标小时数>=${z_voLteVoiceDropHour}小时，连续达标天数>=${z_voLteVoiceDropDay}天；"
     voLteVoiceDropSQL = s"""
                       |voltemchandover > ${voLteVoiceDropCnt} and
                       |(voltemcsucc) > 0 and (voltemchandover / (voltemcsucc))*100 > ${voLteVoiceDropRatio}""".stripMargin
@@ -362,8 +362,8 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
   var z_eSrvccTip = ""
   var z_eSrvccSQL = ""
   def GeteSrvccSQLInfo(analyDate:String):Unit ={
-    eSrvccTip = s"告警门限：小时级eSRVCC成功率<${eSrvccSuccRatio}%，小时级eSRVCC请求次数>${eSrvccCnt}次，质差小时数>=${eSrvccHour}小时，连续质差天数>=${eSrvccDay}天；\n"
-    z_eSrvccTip = s"；\n质检门限：小时级eSRVCC成功率>=${z_eSrvccSuccRatio}%，达标小时数>=${z_eSrvccHour}小时，连续达标天数>=${z_eSrvccDay}天；"
+    eSrvccTip = s"告警门限：小时级eSRVCC成功率<${eSrvccSuccRatio}%，小时级eSRVCC请求次数>${eSrvccCnt}次，质差小时数>=${eSrvccHour}小时，连续质差天数>=${eSrvccDay}天；~"
+    z_eSrvccTip = s"；~质检门限：小时级eSRVCC成功率>=${z_eSrvccSuccRatio}%，达标小时数>=${z_eSrvccHour}小时，连续达标天数>=${z_eSrvccDay}天；"
     eSrvccSQL = s"""
                |srvccatt_Sv > ${eSrvccCnt} and
                |srvccatt_Sv > 0 and (srvccsucc_Sv/srvccatt_Sv)*100 < ${eSrvccSuccRatio}""".stripMargin
@@ -612,7 +612,7 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
          |top
          |from (
          |select cellid,eType,
-         |concat(topTip,getNote(concat_ws('；\n', sort_array(collect_list(top)))),qualityTip,'\n告警来源：软硬采关联端到端信令分析平台') top from(
+         |regexp_replace(concat(topTip,getNote(concat_ws('；~', sort_array(collect_list(top)))),qualityTip,'~告警来源：软硬采关联端到端信令分析平台'),'~','\n') top from(
          |select * from (
          |select t3.cellid,t3.eType,topTip,qualityTip,
          |(case when code in $wirelesscode then
