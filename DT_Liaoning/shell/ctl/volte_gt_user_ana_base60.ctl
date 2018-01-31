@@ -69,7 +69,7 @@ sm_adebSucc_qci1,
 sm_adebReq_qci1,
 sm_adebSucc_qci2,
 sm_adebReq_qci2,
-nbrReqRelenb_qci1_erab
+nbrReqRelenb_qci1_erab,
 nbrReqRelenb_qci1,
 erab_hofail,
 voltewirelessdrop,
@@ -95,7 +95,7 @@ voltecallingvdtime,
 srvcctime_sv,
 voltemcdur,
 voltevddur,
-rrcsucc_rebuild
+rrcsucc_rebuild,
 srvccsucc_s1,
 enbx2insucc,
 enbx2outsucc
