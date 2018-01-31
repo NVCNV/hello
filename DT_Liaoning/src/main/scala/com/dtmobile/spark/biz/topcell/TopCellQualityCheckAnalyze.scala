@@ -365,10 +365,10 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     eSrvccTip = s"告警门限：小时级eSRVCC成功率<${eSrvccSuccRatio}%，小时级eSRVCC请求次数>${eSrvccCnt}次，质差小时数>=${eSrvccHour}小时，连续质差天数>=${eSrvccDay}天；~"
     z_eSrvccTip = s"；~质检门限：小时级eSRVCC成功率>=${z_eSrvccSuccRatio}%，达标小时数>=${z_eSrvccHour}小时，连续达标天数>=${z_eSrvccDay}天；"
     eSrvccSQL = s"""
-               |srvccatt_Sv > ${eSrvccCnt} and
-               |srvccatt_Sv > 0 and (srvccsucc_Sv/srvccatt_Sv)*100 < ${eSrvccSuccRatio}""".stripMargin
+               |srvccatt_s1 > ${eSrvccCnt} and
+               |srvccatt_s1 > 0 and (srvccsucc_Sv/srvccatt_s1)*100 < ${eSrvccSuccRatio}""".stripMargin
     z_eSrvccSQL = s"""
-               |(srvccatt_Sv = 0 or (srvccsucc_Sv/srvccatt_Sv)*100 >= ${z_eSrvccSuccRatio})""".stripMargin
+               |(srvccatt_s1 = 0 or (srvccsucc_Sv/srvccatt_s1)*100 >= ${z_eSrvccSuccRatio})""".stripMargin
     eSrvccDate = GetDateSQL(analyDate, eSrvccDay)
     eSrvccExDate = eSrvccDate.replace("vgu","ex")
     z_eSrvccDate = GetDateSQL(analyDate, z_eSrvccDay)
