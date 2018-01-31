@@ -92,8 +92,8 @@ voltecallingvdtime,
 srvcctime_sv,
 voltemcdur,
 voltevddur,
-rrcsucc_rebuild
-srvccsucc_s1
-enbx2insucc
+rrcsucc_rebuild,
+srvccsucc_s1,
+enbx2insucc,
 enbx2outsucc
 )
