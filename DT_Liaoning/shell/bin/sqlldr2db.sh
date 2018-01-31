@@ -1,4 +1,4 @@
-#!/bash
+#!/bin/bash
 TAKING_DATE=$1
 TAKING_HOUR=$2
 HIVEDB=$3
@@ -32,5 +32,6 @@ sqlldr ${DB_ADDR} control=${CTLDIR}/t_event_msg.ctl data=${LOCALDIR}/${TAKING_DA
 mkdir -p ${LOG_DIR}/imsi_hour_http/${TAKING_DATE}/${TAKING_HOUR}
 hdfs dfs -getmerge ${HDFS_ADDR}/ue_hour_http/dt=${TAKING_DATE}/h=${TAKING_HOUR}/* ${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/imsi_hour_http.dat
 sqlldr ${DB_ADDR} control=${CTLDIR}/imsi_hour_http.ctl data=${LOCALDIR}/${TAKING_DATE}/${TAKING_HOUR}/imsi_hour_http.dat log=${LOG_DIR}/imsi_hour_http/${TAKING_DATE}/${TAKING_HOUR}
-exit
+exit 0
+
 
