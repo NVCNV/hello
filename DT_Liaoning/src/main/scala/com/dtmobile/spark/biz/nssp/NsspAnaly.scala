@@ -34,7 +34,7 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
 
     sql(
       s"""
-         |alter table tb_xdr_ifc_gxrx add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |alter table ` add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/volte_rx/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
     sql(
@@ -52,17 +52,24 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |alter table tb_xdr_ifc_s1mme add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/s1mme_orgn/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
+
     sql(
       s"""
          |alter table tb_xdr_ifc_mw add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/volte_orgn/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
-
     sql(s"use $DDB")
     sql(s"alter table tb_xdr_ifc_uu add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(s"alter table tb_xdr_ifc_x2 add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(s"alter table cell_mr add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
     sql(s"alter table lte_mro_source add if not exists partition(dt=$ANALY_DATE,h=$ANALY_HOUR)")
+
+    //添加异常事件分区 TOP小区分析需要用
+    sql(
+      s"""
+         |alter table exception_analysis add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "$warhouseDir/exception_analysis/dt=${ANALY_DATE}/h=${ANALY_HOUR}"
+       """.stripMargin)
 
     sql(
       s"""
@@ -552,6 +559,89 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0' and MRTIME is not null
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
+
+/*    sql(
+      s"""
+         |  select t.length,
+         |         t.city,
+         |         t.interface,
+         |         t.xdrid,
+         |         t.rat,
+         |         t.imsi,
+         |         t.imei,
+         |         t.msisdn,
+         |         t.proceduretype,
+         |         t.procedurestarttime,
+         |         t.procedureendtime,
+         |         t.icid,
+         |         t.originrealm,
+         |         t.destinationrealm,
+         |         t.originhost,
+         |         t.destinationhost,
+         |         t.sgsnsgwsigip,
+         |         t.afappid,
+         |         t.ccrequesttype,
+         |         t.rxrequesttype,
+         |         t.mediatype,
+         |         t.abortcause,
+         |         t.resultcode,
+         |         t.experimentalresultcode,
+         |         t.sessionreleasecause,
+         |         t.rulefailurecode,
+         |         t.sessionid,
+         |         t.calledstationid,
+         |         t.framedipv6prefix,
+         |         t.framedipaddress,
+         |         t.cellid,
+         |         t.sourcetac,
+         |         t.sourceneip,
+         |         t.sourceneport,
+         |         t.destinationneip,
+         |         t.destinationneport,
+         |         t.qci
+         |    from (select length,
+         |                 city,
+         |                 interface,
+         |                 xdrid,
+         |                 rat,
+         |                 imsi,
+         |                 imei,
+         |                 msisdn,
+         |                 proceduretype,
+         |                 procedurestarttime,
+         |                 procedureendtime,
+         |                 icid,
+         |                 originrealm,
+         |                 destinationrealm,
+         |                 originhost,
+         |                 destinationhost,
+         |                 sgsnsgwsigip,
+         |                 afappid,
+         |                 ccrequesttype,
+         |                 rxrequesttype,
+         |                 mediatype,
+         |                 abortcause,
+         |                 resultcode,
+         |                 experimentalresultcode,
+         |                 sessionreleasecause,
+         |                 rulefailurecode,
+         |                 sessionid,
+         |                 calledstationid,
+         |                 framedipv6prefix,
+         |                 framedipaddress,
+         |                 cellid,
+         |                 sourcetac,
+         |                 sourceneip,
+         |                 sourceneport,
+         |                 destinationneip,
+         |                 destinationneport,
+         |                 qci,
+         |                 row_number() over(partition by imsi, sessionid order by procedurestarttime desc) rownum
+         |            from tb_xdr_ifc_gxrx_all where dt=${ANALY_DATE} and h=${ANALY_HOUR} ) t
+         |   where t.rownum = 1;
+         |
+       """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
+      .csv(s"$warhouseDir/tb_xdr_ifc_gxrx/dt=$ANALY_DATE/h=$ANALY_HOUR")*/
   }
 }
 
