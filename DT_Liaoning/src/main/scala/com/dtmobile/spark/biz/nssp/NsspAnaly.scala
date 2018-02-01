@@ -34,9 +34,15 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
 
     sql(
       s"""
-         |alter table ` add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |alter table tb_xdr_ifc_gxrx_all add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/volte_rx/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
+    sql(
+      s"""
+         |alter table tb_xdr_ifc_gxrx add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
+         |location "/$localStr/tb_xdr_ifc_gxrx/${ANALY_DATE}/${ANALY_HOUR}"
+       """.stripMargin)
+
     sql(
       s"""
          |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
@@ -76,6 +82,8 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |alter table tb_xdr_ifc_http add if not exists partition(dt="$ANALY_DATE",h="$ANALY_HOUR")
          |location "/$localStr/s1u_http_orgn/${ANALY_DATE}/${ANALY_HOUR}"
        """.stripMargin)
+
+/*
 
     sql(
       s"""
@@ -559,8 +567,9 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |where dt='$ANALY_DATE' and h='$ANALY_HOUR' and mrname='MR.LteScRIP0' and MRTIME is not null
        """.stripMargin).repartition(300).write.mode(SaveMode.Overwrite)
       .csv(s"$warhouseDir/cell_mr/dt=$ANALY_DATE/h=$ANALY_HOUR")
+*/
 
-/*    sql(
+    sql(
       s"""
          |  select t.length,
          |         t.city,
@@ -637,11 +646,11 @@ class NsspAnaly(ANALY_DATE: String, ANALY_HOUR: String,SDB: String,DDB: String,l
          |                 destinationneport,
          |                 qci,
          |                 row_number() over(partition by imsi, sessionid order by procedurestarttime desc) rownum
-         |            from tb_xdr_ifc_gxrx_all where dt=${ANALY_DATE} and h=${ANALY_HOUR} ) t
-         |   where t.rownum = 1;
+         |            from ${SDB}.tb_xdr_ifc_gxrx_all where dt=${ANALY_DATE} and h=${ANALY_HOUR} ) t
+         |   where t.rownum = 1
          |
        """.stripMargin).repartition(100).write.mode(SaveMode.Overwrite)
-      .csv(s"$warhouseDir/tb_xdr_ifc_gxrx/dt=$ANALY_DATE/h=$ANALY_HOUR")*/
+      .csv(s"/$localStr/tb_xdr_ifc_gxrx/dt=$ANALY_DATE/h=$ANALY_HOUR")
   }
 }
 
