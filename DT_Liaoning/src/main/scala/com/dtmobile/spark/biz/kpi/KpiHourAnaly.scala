@@ -3645,8 +3645,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as srvccsucc_s1,
          |0 as enbx2insucc,
          |0 as enbx2inatt,
-         |sum(ERAB_NbrS1HoFail_qci1),
-         |sum(ERAB_NbrX2HoFail_qci1),
+         |sum(ERAB_NbrS1HoFail_qci1_1+ERAB_NbrS1HoFail_qci1_2+ERAB_NbrS1HoFail_qci1_3+ERAB_NbrS1HoFail_qci1_4+
+         |ERAB_NbrS1HoFail_qci1_5+ERAB_NbrS1HoFail_qci1_6+ERAB_NbrS1HoFail_qci1_7+ERAB_NbrS1HoFail_qci1_8)ERAB_NbrS1HoFail_qci1,
+         |sum(ERAB_NbrX2HoFail_qci1_1+ERAB_NbrX2HoFail_qci1_2+ERAB_NbrX2HoFail_qci1_3+ERAB_NbrX2HoFail_qci1_4+
+         |ERAB_NbrX2HoFail_qci1_6+ERAB_NbrX2HoFail_qci1_7+ERAB_NbrX2HoFail_qci1_8)ERAB_NbrX2HoFail_qci1,
          |sum(enbreleseSucc)
          |FROM
          |s1mme_tmp
