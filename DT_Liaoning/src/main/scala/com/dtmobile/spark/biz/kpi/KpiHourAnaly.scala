@@ -1071,7 +1071,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
          |		AND alertingtime <> 4294967295 AND
          |   t2.MWIP is not null THEN
-         |			1
+         |			alertingtime
          |		ELSE
          |			0
          |		END
@@ -3261,7 +3261,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
          |		AND alertingtime <> 4294967295 AND
          |   t2.MWIP is not null THEN
-         |			1
+         |			alertingtime
          |		ELSE
          |			0
          |		END
