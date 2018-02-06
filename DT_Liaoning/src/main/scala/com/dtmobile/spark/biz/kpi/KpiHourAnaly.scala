@@ -1068,7 +1068,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
+         |		AND ServiceType = $ServiceTypevideo and alertingtime is not null
          |		AND alertingtime <> 4294967295 AND
          |   t2.MWIP is not null THEN
          |			alertingtime
@@ -3258,7 +3258,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		CASE
          |		WHEN ProcedureType = 5
          |		AND interface = 14
-         |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
+         |		AND ServiceType = $ServiceTypevideo and alertingtime is not null
          |		AND alertingtime <> 4294967295 AND
          |   t2.MWIP is not null THEN
          |			alertingtime
