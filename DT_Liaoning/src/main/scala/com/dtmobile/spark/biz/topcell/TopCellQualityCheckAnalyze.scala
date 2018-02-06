@@ -194,9 +194,9 @@ class TopCellQualityCheckAnalyze(analyDate:String, dcl:String, warhouseDir:Strin
     z_ueContextTip = s"；~质检门限：小时级UE上下文异常释放率<=${z_ueContextAbnormalRatio}%，达标小时数>=${z_ueContextHour}小时，连续达标天数>=${z_ueContextDay}天；"
     ueContextSQL = s"""
                   |(enbrelese-nenbrelese) > ${ueContextAbnormalCnt} and
-                  |(wireless+remaincontext) > 0 and ((enbrelese-nenbrelese)/(wireless+remaincontext))*100 > $ueContextAbnormalRatio""".stripMargin
+                  |(wireless) > 0 and ((enbrelese-nenbrelese)/(wireless))*100 > $ueContextAbnormalRatio""".stripMargin
     z_ueContextSQL = s"""
-                  |((wireless+remaincontext) > 0 and ((enbrelese-nenbrelese)/(wireless+remaincontext))*100 <= $z_ueContextAbnormalRatio)""".stripMargin
+                  |((wireless) > 0 and ((enbrelese-nenbrelese)/(wireless))*100 <= $z_ueContextAbnormalRatio)""".stripMargin
     ueContextDate = GetDateSQL(analyDate, ueContextDay)
     ueContextExDate = ueContextDate.replace("vgu","ex")
     z_ueContextDate = GetDateSQL(analyDate, z_ueContextDay)
