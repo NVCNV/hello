@@ -1637,12 +1637,12 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |sum(case when interface=5 and procedureType=13 and bearer5qci=2 and  bearer5status in (1,2) then 1 else 0 end)sm_adebreq_qci2_6,
          |sum(case when interface=5 and procedureType=13 and bearer6qci=2 and  bearer6status in (1,2) then 1 else 0 end)sm_adebreq_qci2_7,
          |sum(case when interface=5 and procedureType=13 and bearer7qci=2 and  bearer7status in (1,2) then 1 else 0 end)sm_adebreq_qci2_8,
-         |sum(case when Interface=5 and ProcedureType=21 and keyword1=1 and ((bearer0qci =1 and bearer0status=5 or bearer0status=6) or
+         |sum(case when Interface=5 and ProcedureType=21 and keyword1=0 and ((bearer0qci =1 and bearer0status=5 or bearer0status=6) or
          |(bearer1qci =1 and bearer1status=5 or bearer1status=6) or (bearer2qci =1 and bearer2status=5 or bearer2status=6) or
          |(bearer3qci =1 and bearer3status=5 or bearer3status=6) or (bearer4qci =1 and bearer4status=5 or bearer4status=6) or
          |(bearer5qci =1 and bearer5status=5 or bearer5status=6) or (bearer6qci =1 and bearer6status=5 or bearer6status=6) or
          |(bearer7qci =1 and bearer7status=5 or bearer7status=6) or (bearer8qci =1 and bearer8status=5 or bearer8status=6))then 1 else 0 end)nbrreqrelenb_qci1_erab,
-         |sum(case when Interface=5 and ProcedureType=21 and keyword1=2 and ((bearer0qci =1 and bearer0status=5 or bearer0status=6) or
+         |sum(case when Interface=5 and ProcedureType=21 and keyword1=1 and ((bearer0qci =1 and bearer0status=5 or bearer0status=6) or
          |(bearer1qci =1 and bearer1status=5 or bearer1status=6) or (bearer2qci =1 and bearer2status=5 or bearer2status=6) or
          |(bearer3qci =1 and bearer3status=5 or bearer3status=6) or (bearer4qci =1 and bearer4status=5 or bearer4status=6) or
          |(bearer5qci =1 and bearer5status=5 or bearer5status=6) or (bearer6qci =1 and bearer6status=5 or bearer6status=6) or
