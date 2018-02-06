@@ -1011,7 +1011,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
-         |		AND (alertingtime <> 4294967295 or responsecode in (404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
+         |		AND (alertingtime <> 4294967295 or responsecode in (403,404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
          |   t2.MWIP is not null THEN
          |			1
          |		ELSE
@@ -1034,7 +1034,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo and alertingtime is not null
-         |		AND (alertingtime <> 4294967295 or responsecode in (404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
+         |		AND (alertingtime <> 4294967295 or responsecode in (403,404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
          |   t2.MWIP is not null THEN
          |			1
          |		ELSE
@@ -3201,7 +3201,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypeaudio and alertingtime is not null
-         |		AND (alertingtime <> 4294967295 or responsecode in (404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
+         |		AND (alertingtime <> 4294967295 or responsecode in (403,404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
          |   t2.MWIP is not null THEN
          |			1
          |		ELSE
@@ -3224,7 +3224,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |		WHEN ProcedureType = 5
          |		AND interface = 14
          |		AND ServiceType = $ServiceTypevideo and alertingtime is not null
-         |		AND (alertingtime <> 4294967295 or responsecode in (404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
+         |		AND (alertingtime <> 4294967295 or responsecode in (403,404,405,413,414,415,416,422,423,480,486,487,488,600,603,604,606)) AND
          |   t2.MWIP is not null THEN
          |			1
          |		ELSE
