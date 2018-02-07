@@ -1363,7 +1363,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as enbreleseSucc
          |FROM
          |	$SDB.TB_XDR_IFC_mw t1
-         | left join $DDB.MW_IP t2 on t1.sourceneip=t2.MWIP
+         | left join $DDB.MW_IP t2 on t1.destneip=t2.MWIP
          |WHERE
          |	callside = $callsedediacalled
          |AND dt = $ANALY_DATE
