@@ -2153,7 +2153,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
        """.stripMargin)
     rx.registerTempTable("rx_temp")
 //    uu.union(x2).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).union(x2_enbx2).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).union(x2_enbx2).union(s1mmeHandOver_srvccsucc).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
@@ -3739,7 +3739,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as voltevdnetatt,
          |0 as voltecallingmctime,
          |0 as voltecallingvdtime,
-         |count(1) as srvccsucc_s1,
+         |0 as srvccsucc_s1,
          |0 as enbx2insucc,
          |0 as enbx2inatt,
          |0 as ERAB_NbrS1HoFail_qci1,
@@ -3783,6 +3783,137 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |GROUP BY
          |	CELLID
        """.stripMargin)
+
+    val s1mmeHandOver_srvccsucc = sql(
+      s"""
+         |SELECT
+         |	CELLID,
+         |	0 AS voltemcsucc,
+         |	0 AS voltemcatt,
+         |	0 AS voltevdsucc,
+         |	0 AS voltevdatt,
+         |	0 AS voltetime,
+         |	0 AS voltemctime,
+         |	0 AS voltemctimey,
+         |  0 AS voltevdtime,
+         |  0 AS voltevdtimey,
+         |	0 AS voltemchandover,
+         |	0 AS volteanswer,
+         |	0 AS voltevdhandover,
+         |	0 AS voltevdanswer,
+         |	0 AS srvccsucc,
+         |	0 AS srvccatt,
+         |	0 AS srvcctime,
+         |	0 AS lteswsucc,
+         |	0 AS lteswatt,
+         |	0 AS srqatt,
+         |	0 AS srqsucc,
+         |	0 AS tauatt,
+         |	0 AS tausucc,
+         |	0 AS rrcrebuild,
+         |	0 AS rrcsucc,
+         |	0 AS rrcreq,
+         |	0 AS imsiregatt,
+         |	0 AS imsiregsucc,
+         |	0 AS wirelessdrop,
+         |	0 AS wireless,
+         |	0 AS eabdrop,
+         |	0 AS eab,
+         |	0 AS eabs1swx,
+         |	0 AS eabs1swy,
+         |	0 AS s1tox2swx,
+         |	0 AS s1tox2swy,
+         |	0 AS enbx2swx,
+         |	0 AS enbx2swy,
+         |	0 AS uuenbswx,
+         |	0 AS uuenbswy,
+         |	0 AS uuenbinx,
+         |	0 AS uuenbiny,
+         |	0 as swx,
+         |	0 AS swy,
+         |	0 AS attachx,
+         |	0 AS attachy,
+         |	0 AS voltesucc,
+         | 0 AS srvccsuccS1,
+         | 0 as s1contextbuild,
+         |0 as enbrelese,
+         |0 as nenbrelese,
+         |0 as remaincontext,
+         |0 as srvccsucc_Sv,
+         |0 as srvccatt_s1,
+         |0 as erabbuildreq,
+         |0 as erabbuildsucc,
+         |0 as s1contextbuildsucc,
+         |0 as sm_adebreq_qci,
+         |0 as sm_adebsucc_qci1,
+         |0 as sm_adebreq_qci2,
+         |0 as sm_adebsucc_qci2,
+         |0 as nbrreqrelenb_qci1_erab,
+         |0 as nbrreqrelenb_qci1,
+         |0 as s1hooutsucc,
+         |0 as s1hoout,
+         |0 as s1hoinsucc,
+         |0 as s1hoin,
+         |0 as voltecallingmcsucc,
+         |0 as voltecallingmcatt,
+         |0 as voltecalledmcsucc,
+         |0 as voltecalledmcatt,
+         |0 as voltecallingvdsucc,
+         |0 as voltecallingvdatt,
+         |0 as voltecalledvdsucc,
+         |0 as voltecalledvdatt,
+         |0 as voltemcnetsucc,
+         |0 as voltemcnetatt,
+         |0 as voltevdnetsucc,
+         |0 as voltevdnetatt,
+         |0 as voltecallingmctime,
+         |0 as voltecallingvdtime,
+         |count(1) as srvccsucc_s1,
+         |0 as enbx2insucc,
+         |0 as enbx2inatt,
+         |0 as ERAB_NbrS1HoFail_qci1,
+         |0 as ERAB_NbrX2HoFail_qci1,
+         |0 as enbreleseSucc
+         |FROM
+         |	(
+         |		SELECT DISTINCT
+         |			S1MME_1.*
+         |		FROM
+         |			(
+         |				SELECT
+         |					*
+         |				FROM
+         |					$SDB.TB_XDR_IFC_S1MME
+         |				WHERE
+         |					dt = $ANALY_DATE
+         |				AND h = $ANALY_HOUR
+         |				AND PROCEDURETYPE = 16
+         |				AND keyword1 = 3
+         |				AND PROCEDURESTATUS = 0
+         |				AND IMSI IS NOT NULL
+         |			) S1MME_1
+         |		LEFT JOIN (
+         |			SELECT
+         |				*
+         |			FROM
+         |				$SDB.TB_XDR_IFC_S1MME
+         |			WHERE
+         |				dt = $ANALY_DATE
+         |			AND h = $ANALY_HOUR
+         |			AND PROCEDURETYPE = 20
+         |			AND requestcause = 2
+         |			AND IMSI IS NOT NULL
+         |		) S1MME_2 ON S1MME_1.IMSI = S1MME_2.IMSI
+         |		AND S1MME_1.CELLID = S1MME_2.CELLID
+         |		WHERE
+         |			S1MME_2.PROCEDURESTARTTIME BETWEEN S1MME_1.PROCEDURESTARTTIME
+         |		AND S1MME_1.PROCEDURESTARTTIME + 8 * 1000
+         |	) a
+         |GROUP BY
+         |	CELLID
+       """.stripMargin)
+
+
     val rx = sql(
       s"""
          |SELECT
@@ -3879,7 +4010,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |cellid
        """.stripMargin)
 //    uu.union(x2).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).createOrReplaceTempView("temp_kpi")
-    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(rx).union(x2_enbx2).createOrReplaceTempView("temp_kpi")
+    uu.union(x2).union(sv).union(voltesip).union(voltesip0).union(voltesip1).union(s1mme).union(s1mmeHandOver).union(s1mmeHandOver_srvccsucc).union(rx).union(x2_enbx2).createOrReplaceTempView("temp_kpi")
     sql(
       s"""
          |SELECT
