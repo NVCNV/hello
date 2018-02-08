@@ -2139,7 +2139,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as enbreleseSucc
          |FROM
          |$SDB.tb_xdr_ifc_gxrx t1
-         |left join (select * from $SDB.TB_XDR_IFC_mw where proceduretype=5) t2
+         |left join (select * from $SDB.TB_XDR_IFC_mw where interface=14 and proceduretype=5) t2
          |on t1.imsi=t2.imsi
          |WHERE
          |t1.dt = $ANALY_DATE
