@@ -2058,11 +2058,11 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltemctimey,
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
-         |sum(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 0
-         |and t1.AbortCause in (0, 1, 2, 4)  and t2.procedurestarttime is not null then 1 else 0 end)voltemchandover,
+         |count(distinct(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 0
+         |and t1.AbortCause in (0, 1, 2, 4)  and t2.procedurestarttime is not null then xdrid end))voltemchandover,
          |0 AS volteanswer,
-         |sum(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 1
-         |and t1.AbortCause in (0, 1, 2, 4) and t2.procedurestarttime is not null then 1 else 0 end)voltevdhandover,
+         |count(distinct(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 1
+         |and t1.AbortCause in (0, 1, 2, 4) and t2.procedurestarttime is not null then xdrid end))voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
          |0 AS srvccatt,
@@ -2139,7 +2139,7 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 as enbreleseSucc
          |FROM
          |$SDB.tb_xdr_ifc_gxrx t1
-         |left join (select * from $SDB.TB_XDR_IFC_mw where interface=14 and proceduretype=5) t2
+         |left join $SDB.TB_XDR_IFC_mw t2
          |on t1.imsi=t2.imsi
          |WHERE
          |t1.dt = $ANALY_DATE
