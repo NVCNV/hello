@@ -2059,10 +2059,10 @@ class KpiHourAnaly(ANALY_DATE: String, ANALY_HOUR: String, SDB: String, DDB: Str
          |0 AS voltevdtime,
          |0 AS voltevdtimey,
          |count(distinct(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 0
-         |and t1.AbortCause in (0, 1, 2, 4)  and t2.procedurestarttime is not null then xdrid end))voltemchandover,
+         |and t1.AbortCause in (0, 1, 2, 4)  and t2.procedurestarttime is not null then t1.xdrid end))voltemchandover,
          |0 AS volteanswer,
          |count(distinct(case when t1.Interface = 26 and t1.ProcedureType = 4 and t1.MEDIATYPE = 1
-         |and t1.AbortCause in (0, 1, 2, 4) and t2.procedurestarttime is not null then xdrid end))voltevdhandover,
+         |and t1.AbortCause in (0, 1, 2, 4) and t2.procedurestarttime is not null then t1.xdrid end))voltevdhandover,
          |0 AS voltevdanswer,
          |0 AS srvccsucc,
          |0 AS srvccatt,
