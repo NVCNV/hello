@@ -1,0 +1,108 @@
+这儿主要涉及线程安全与非线程安全的区别！ 
+在Java8中对时间日期的解析与格式化提供了一个了 “ DateTimeFormatter ” 类。
+
+java.time.format.DateTimeFormatter 类：该类提供了三种 
+格式化方法： 
+ 预定义的标准格式； 
+ 语言环境相关的格式； 
+ 自定义的格式；
+
+
+  10.1  调用普通时间 API SimpleDateFormat 实现时间格式化
+
+
+@Test
+    public void test01() throws InterruptedException, ExecutionException{
+        // 构建时间格式化实例
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        // 构建一个时间任务
+        Callable<Date> task = new Callable<Date>() {
+
+            @Override
+            public Date call() throws Exception {
+
+                return sdf.parse("20180427");
+            }
+        };
+
+        // 构建一个线程池
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        List<Future<Date>> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(pool.submit(task));
+        }
+
+        for (Future<Date> future : list) {
+            System.out.println(future.get());
+        }
+        pool.shutdown();
+    }123456789101112131415161718192021222324252627
+
+
+  10.2  调用时间 API FormatThreadLocal 实现时间格式化
+
+
+
+
+@Test
+    public void test02() throws InterruptedException, ExecutionException{
+
+        Callable<Date> tesk = new Callable<Date>() {
+
+            @Override
+            public Date call() throws Exception {
+                return FormatThreadLocal.convert("20180427");
+            }
+        };
+
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        List<Future<Date>> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(pool.submit(tesk));
+        }
+
+        for (Future<Date> future : list) {
+            System.out.println(future.get());
+        }
+        pool.shutdown();
+    }
+123456789101112131415161718192021222324
+
+
+  10.3 调用时间 API DateTimeFormatter 实现时间格式化
+
+
+
+
+@Test
+    public void test03() throws InterruptedException, ExecutionException{
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        Callable<LocalDate> task = new Callable<LocalDate>() {
+
+            @Override
+            public LocalDate call() throws Exception {
+                LocalDate date = LocalDate.parse("20180428", dtf);
+                return date;
+            }
+        };
+
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+
+        List<Future<LocalDate>> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(pool.submit(task));
+        }
+
+        for (Future<LocalDate> future : list) {
+            System.out.println(future.get());
+        }
+        pool.shutdown();
+    }
+--------------------- 
+作者：CSDN-华仔 
+来源：CSDN 
+原文：https://blog.csdn.net/Hello_World_QWP/article/details/80278219 
+版权声明：本文为博主原创文章，转载请附上博文链接！
